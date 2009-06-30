@@ -1,0 +1,16 @@
+[liu@biology3 vina-lib]$ ./dot_prod
+Vector DotProduction program
+VEC_TEST_SIZE_N=100000000
+VEC_TEST_GRANULARITY=50000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+STD gflop=1.899101
+ST gflop=1.663437
+thread:0x60f3c0
+thread:0x60f6a0
+MT gflop=1.839165
+Profile info
+======================================================================
+# 0                      STD    1   105313usec            31.5%
+# 1                       ST    1   120233usec            36.0%
+# 2                       MT    1   108745usec            32.5%

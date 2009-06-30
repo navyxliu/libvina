@@ -1,0 +1,48 @@
+float 10, 000, 000 data  
+-O3
+Profile info
+======================================================================
+# 0                   scalar    1    30237usec            52.1%
+# 1                      SSE    1    27779usec            47.9%
+
+float 10, 000, 000 data
+no -OX flag
+Profile info
+======================================================================
+# 0                   scalar    1   175785usec            79.2%
+# 1                      SSE    1    46299usec            20.8%
+
+gcc auto-vectorization optimize simple code  almost the same as manual tweak
+refer to:
+http://gcc.gnu.org/projects/tree-ssa/vectorization.html
+
+float vector addision
+with -O2 flag
+Profile info
+======================================================================
+# 0                   scalar    1    32003usec            53.3%
+# 1                      SSE    1    28054usec            46.7%
+float vector mul
+Profile info
+======================================================================
+# 0                   scalar    1    19663usec            19.8%
+# 1                      SSE    1    19410usec            19.6%
+float vector madd
+Profile info
+======================================================================
+# 0                   scalar    1    17168usec            12.7%
+# 1                      SSE    1    18856usec            14.0%
+
+see parameter as before,shutdown -O2
+Profile info
+======================================================================
+# 0                   scalar    1   175444usec            78.9%
+# 1                      SSE    1    47010usec            21.1%
+Profile info
+======================================================================
+# 0                   scalar    1   118209usec            32.3%
+# 1                      SSE    1    24760usec            6.8%
+Profile info
+======================================================================
+# 0                   scalar    1   118140usec            23.2%
+# 1                      SSE    1    24707usec            4.9%

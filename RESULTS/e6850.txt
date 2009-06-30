@@ -1,0 +1,280 @@
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=5.133210
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   418351usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul 2048   377100usec            90.1%
+# 7                   MM add 2048    16630usec            4.0%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 251913                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=5.235147
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   410205usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul 1024   384689usec            93.8%
+# 7                   MM add 1024    11687usec            2.8%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 237422                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=1.866870
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1 73620001usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul 32768 70566790usec            95.9%
+# 7                   MM add 32768   669799usec            0.9%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 58298281                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=6.176610
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   347680usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul  256   330965usec            95.2%
+# 7                   MM add  256    12619usec            3.6%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 435888                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=  32
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=6.258260
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1  2745151usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul 1024  2624931usec            95.6%
+# 7                   MM add 1024   101546usec            3.7%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 4494522                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=8.124161
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   264333usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul  256   254041usec            96.1%
+# 7                   MM add  256     7016usec            2.7%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 220224                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=8.082157
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1  2125654usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul 1024  2064490usec            97.1%
+# 7                   MM add 1024    47378usec            2.2%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 2096174                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=11.078183
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   193848usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul   64   188082usec            97.0%
+# 7                   MM add   64     4917usec            2.5%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 234811                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=11.049533
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1  1554805usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul  256  1507323usec            96.9%
+# 7                   MM add  256    43235usec            2.8%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 2620616                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=  32
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=7.645453
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1 17976562usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul 1024 17534101usec            97.5%
+# 7                   MM add 1024   417160usec            2.3%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 101532675                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=9.815453
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   218786usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul   32   214654usec            98.1%
+# 7                   MM add   32     3593usec            1.6%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 208244                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=10.988505
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   195430usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul   16   191681usec            98.1%
+# 7                   MM add   16     3441usec            1.8%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 308480                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=9.733560
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1  1765014usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul   64  1732006usec            98.1%
+# 7                   MM add   64    31500usec            1.8%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 4189677                           
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+MT_V gflop=3.876155
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1 35457550usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul  256 35162848usec            99.2%
+# 7                   MM add  256   287273usec            0.8%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 553485178                           
