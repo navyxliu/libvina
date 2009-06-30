@@ -10,7 +10,7 @@ LDFLAGS = -lm $(MTSUPPORT) -lgomp
 OPT= #-O3 -msse2
 
 #test parameters
-TEST_INFO = -DMM_TEST_TYPE=float -DMM_TEST_GRANULARITY=128 -DMM_TEST_SIZE_N=1024 -DMM_TEST_K=8 -DVEC_TEST_TYPE=int -DVEC_TEST_GRANULARITY=25000000 -DVEC_TEST_SIZE_N=100000000 -DVEC_TEST_K=4 #-D__NDEBUG #-DFORK_AT_CALLSITE -DVIZ_CALLSITE
+TEST_INFO = -DMM_TEST_TYPE=float -DMM_TEST_GRANULARITY=128 -DMM_TEST_SIZE_N=1024 -DMM_TEST_K=8 -DVEC_TEST_TYPE=int -DVEC_TEST_GRANULARITY=50000000 -DVEC_TEST_SIZE_N=100000000 -DVEC_TEST_K=2 #-D__NDEBUG #-DFORK_AT_CALLSITE -DVIZ_CALLSITE
 
 ifeq ($(SYSTEM), Linux)
 ISSUE= $(shell cat /etc/issue)
@@ -84,7 +84,7 @@ clean:
 distclean:
 	-rm -f *~ ._*
 dist: 
-	cd .. && tar -cjf vina-lib.`date +%y_%m_%d`.tar.bz2 vina-lib/
+	cd .. && tar -cjf libvina.`date +%y_%m_%d`.tar.bz2 libvina/
 
 lines: 
 	find | grep ".\(c\|h\|hpp\|cc\)$$" | xargs wc -l

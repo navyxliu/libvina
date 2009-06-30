@@ -1,0 +1,59 @@
+mac os x machine.
+
+the first case is over-thread. because the target has only 2 cores, 
+4 thread brought a big hit of perf.
+
+xliu:libvina liushin$ ./saxpy 
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=100000000
+VEC_TEST_GRANULARITY=25000000
+VEC_TEST_K=4
+See Makefile TEST_INFO to set parameters
+STD gflop=0.133128
+ST gflop=0.138148
+thread:0x77600850
+thread:0x77600960
+thread:0x77600a70
+thread:0x77600b80
+MT gflop=0.113888
+OMP gflop=0.108550
+Profile info
+======================================================================
+# 0        #frame kernel seq    4   723776usec            22.1%
+# 1        #frame kernel par    1   878032usec            26.8%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4                      STD    1   751157usec            22.9%
+# 5                       ST    1   723863usec            22.1%
+# 6                       MT    1   878058usec            26.8%
+# 7                   OPENMP    1   921238usec            28.1%
+# 8            thread0 timer    0        0usec            0.0%
+# 9            thread1 timer    0        0usec            0.0%
+#10            thread2 timer    0        0usec            0.0%
+#11            thread3 timer    0        0usec            0.0%
+
+
+xliu:libvina liushin$ ./saxpy
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=100000000
+VEC_TEST_GRANULARITY=50000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+STD gflop=0.133060
+ST gflop=0.136585
+thread:0x77600770
+thread:0x77600890
+MT gflop=0.238796
+OMP gflop=0.250046
+Profile info
+======================================================================
+# 0        #frame kernel seq    2   731608usec            31.8%
+# 1        #frame kernel par    1   418734usec            18.2%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4                      STD    1   751538usec            32.6%
+# 5                       ST    1   732146usec            31.8%
+# 6                       MT    1   418768usec            18.2%
+# 7                   OPENMP    1   399927usec            17.4%
+# 8            thread0 timer    0        0usec            0.0%
+# 9            thread1 timer    0        0usec            0.0%
