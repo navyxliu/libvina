@@ -1,7 +1,7 @@
 #! /bin/bash
 
 echo checking...
-cp Makefile.def Makefile
+cp test_parameter.def test_parameter
 make $1
 ./$1 > /dev/null
 
@@ -13,7 +13,7 @@ else
     exit
 fi
 
-sed -in 's/#-D__NDEBUG/-D__NDEBUG/g' Makefile 
+sed -in 's/#-D__NDEBUG/-D__NDEBUG/g' test_parameter
 
 echo testing...
 for g in 64 128 256 512; do 
@@ -31,14 +31,13 @@ for g in 64 128 256 512; do
 
 	sed -in -e "s/-DMM_TEST_GRANULARITY=[0-9]*/-DMM_TEST_GRANULARITY=$g/g" \
 	    -e "s/-DMM_TEST_SIZE_N=[0-9]*/-DMM_TEST_SIZE_N=$n/g" \
-	    -e "s/-DMM_TEST_K=[0-9]*/-DMM_TEST_K=$k/g" Makefile
+	    -e "s/-DMM_TEST_K=[0-9]*/-DMM_TEST_K=$k/g" test_parameter
 	
-	make clean
 	make $1
 	./$1 >> out.txt
     done
 
 done
-cp Makefile.def Makefile
+cp test_parameter.def test_parameter
 echo finish, check out.txt
 
