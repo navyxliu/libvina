@@ -1,7 +1,7 @@
 #This file is not supposed to be distributed.
 
 SYSTEM := $(shell uname -s)
-ePWD    := $(shell pwd)
+PWD    := $(shell pwd)
 
 #compiler conf.
 CXX = g++
