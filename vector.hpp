@@ -487,32 +487,32 @@ namespace vina {
     typedef typename view_trait<Result>::_M_ty       _M_ty;
     const static int DIM_N = view_trait<Result>::WRITER_SIZE;
 
-    static void doit(const _M_ty& alpha, const Arg0& arg0, 
-		     Result& result
-#ifndef __NDEBUG
-		     , event_id t =-1
-#endif
-		      )
-
-
+    static void 
+    doit(const _M_ty& alpha, const Arg0& arg0, 
+		     Result& result)
     {
-#ifndef __NDEBUG
-      if (t != -1) Profiler::getInstance().eventStart(t);
-#endif
-
       vecArithImpl<T, DIM_N>::madd(alpha, arg0, result);
-
-#ifndef __NDEBUG
-      if ( t != -1) Profiler::getInstance().eventEnd(t);
-#endif
-
     }
-    static void doitMT(const _M_ty& alpha, const Arg0& arg0,
-		       Result& result, mt::barrier_t barrier)
+    static void 
+    doitMT(const _M_ty& alpha, const Arg0& arg0,
+	   Result& result, mt::barrier_t barrier)
     {
       doit(alpha, arg0, result);
       barrier->wait();
     }
+#ifndef __NDEBUG
+    static void 
+    doitMT_t(const _M_ty& alpha, const Arg0& arg0, 
+	     Result& result, mt::barrier_t barrier, 
+	     event_id t)
+    {
+      Profiler::getInstance().eventStart(t);
+      doit(alpha, arg0, result);
+      Profiler::getInstance().eventEnd(t);
+      barrier->wait();
+    }
+#endif
+
   };
   template <class T, class Arg0, class Arg1>
   struct vecDotProdWrapper {

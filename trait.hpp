@@ -29,7 +29,6 @@ namespace vina {
     typedef typename T::container_type               container_type;
     typedef typename T::reader_type                  reader_type;
     typedef typename T::writer_type                  writer_type;
-    
     enum {
       READER_SIZE_X = reader_type::VIEW_SIZE_X,
       READER_SIZE_Y = reader_type::VIEW_SIZE_Y,

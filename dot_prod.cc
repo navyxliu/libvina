@@ -129,7 +129,7 @@ See Makefile TEST_INFO to set parameters\n",
 
   NumRandGen<VEC_TEST_TYPE> gen(2009);
   for (int i=0; i<VEC_TEST_SIZE_N; ++i)
-    x[i] = x_v[i] = gen()%10, y[i] = y_v[i] = gen()%10;
+    x[i] = x_v[i] = gen(), y[i] = y_v[i] = gen();
 
   double Comp = VEC_TEST_SIZE_N * 2.0;
   Profiler & prof = Profiler::getInstance();

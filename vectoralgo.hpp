@@ -5,6 +5,9 @@
 #else
 // for X86_64 ISA
 #include <emmintrin.h> // SEE2 instrisincs
+#ifdef __SSE_4_1__
+#include <smmintrin.h> // SSE4
+#endif
   //==============================================//
   //~~             ALGORITHMS                   ~~//
   //==============================================//
@@ -173,6 +176,145 @@ struct vecArithImpl<vFloat, DIM_N>
   static void dotprod(const RView& X, const RView& Y, 
 		      float& result)
     ;
+};
+
+template <int DIM_N>
+struct vecArithImpl<vInt, DIM_N>
+{
+  typedef ReadView<vInt, DIM_N>   RView;
+  typedef WriteView<vInt, DIM_N>  Result;
+  static void add(const RView& X, const RView& Y, 
+		  Result& result)
+  {
+    const int * x = X.data();
+    const int * y = Y.data();
+    int * z = result.data();
+    
+    __m128i px, py, pz, px1, py1, pz1;
+    for(int i=0; i<DIM_N-(DIM_N&0x7); i+=8)
+      {
+	px  = _mm_load_si128((const __m128i *)x);
+	py  = _mm_load_si128((const __m128i *)y);
+	pz  = _mm_add_epi32(px, py);
+	px1 = _mm_load_si128((const __m128i *)(x+4));
+	py1 = _mm_load_si128((const __m128i *)(y+4));
+	_mm_store_si128((__m128i *)z, pz);
+	pz1 = _mm_add_epi32(px1, py1);
+	_mm_store_si128((__m128i *)(z+4), pz1);
+	
+	x += 8;
+	y += 8;
+	z += 8;
+      }
+    for(int i=DIM_N-(DIM_N&0x7); i<DIM_N; ++i)
+      {
+	result[i] = X[i] + Y[i];
+      }
+  }
+
+  static void sub(const RView& X, const RView& Y, 
+		  Result& result)
+  {
+    const int * x = X.data();
+    const int * y = Y.data();
+    int * z = result.data();
+    
+    __m128i px, py, pz, px1, py1, pz1;
+    for(int i=0; i<DIM_N-(DIM_N&0x7); i+=8)
+      {
+	px  = _mm_load_si128((const __m128i *)x);
+	py  = _mm_load_si128((const __m128i *)y);
+	pz  = _mm_sub_epi32(px, py);
+	px1 = _mm_load_si128((const __m128i *)(x+4));
+	py1 = _mm_load_si128((const __m128i *)(y+4));
+	_mm_store_si128((__m128i *)z, pz);
+	pz1 = _mm_sub_epi32(px1, py1);
+	_mm_store_si128((__m128i *)(z+4), pz1);
+	
+	x += 8;
+	y += 8;
+	z += 8;
+      }
+    for(int i=DIM_N-(DIM_N&0x7); i<DIM_N; ++i)
+      {
+	result[i] = X[i] - Y[i];
+      }
+  }
+  // Y = alpha * X
+  static void mul(const int& alpha, const RView& X, 
+		  Result& result)
+#ifdef __SSE_4_1__
+  {
+    const int * x = X.data();
+    int * y       = result.data();
+    __m128i alpha_p = _mm_set_epi32(alpha, alpha, alpha, alpha);
+    __m128i px, px1, px2, py, py1, py2;
+
+    for(int i=0; i<DIM_N - (DIM_N%12); i+=12)
+      {
+	px  = _mm_load_si128((const __m128i *)x);
+	px1 = _mm_load_si128((const __m128i *)(x+4));
+	px2 = _mm_load_si128((const __m128i *)(x+8));
+	py  = _mm_mullo_epi32(alpha_p, px);
+	py1 = _mm_mullo_epi32(alpha_p, px1);
+	py2 = _mm_mullo_epi32(alpha_p, px2);
+	_mm_store_si128((__m128i *)y, py);
+	_mm_store_si128((__m128i *)(y+4), py1);
+	_mm_store_si128((__m128i *)(y+8), py2);
+	x += 12;
+	y += 12;
+      }
+    for(int i=DIM_N - DIM_N%12; i<DIM_N; ++i)
+      {
+	result[i] = alpha * X[i];	
+      }
+  }
+#else 
+  ;
+#endif
+  // Y = Y + alpha * X
+  // saddly, there is no madd instr. for Fp in SSE
+  static void madd(const float& alpha, const RView& X, 
+		   Result& result)
+#ifdef __SSE_4_1__    
+  {
+    const int * x = X.data();
+    int * y       = result.data();
+    __m128i px, px1, px2, py, py1, py2;
+    __m128i alpha_p = _mm_set_epi32(alpha, alpha, alpha, alpha);
+
+    for(int i=0; i<DIM_N - (DIM_N%12); i+=12)
+      {
+	px  = _mm_load_si128((const __m128i *)x);
+	px1 = _mm_load_si128((const __m128i *)(x+4));
+	px2 = _mm_load_si128(x+8)
+	py  = _mm_load_si128(y);
+	py1 = _mm_load_si128(y+4);
+	py2 = _mm_load_si128(y+8);
+
+	py  = _mm_add_epi32(py,  _mm_mullo_epi32(alpha_a, px));
+	py1 = _mm_add_epi32(py1, _mm_mullo_epi32(alpha_a, px1));
+	py2 = _mm_add_epi32(py2, _mm_mullo_epi32(alpha_a, px2));
+
+	_mm_store_si128(y, py);
+	_mm_store_si128(y+4, py1);
+	_mm_store_si128(y+8, py2);
+
+	x += 12;
+	y += 12;
+      }
+    for(int i=DIM_N - (DIM_N%12); i<DIM_N; ++i)
+      {
+	result[i] += alpha * X[i];	
+      }
+  }
+#else 
+  ;
+#endif
+  static void dotprod(const RView& X, const RView& Y, 
+		      float& result)
+    ;
+  
 };
 
 // standard dot-production, for debug

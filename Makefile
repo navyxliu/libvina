@@ -1,15 +1,18 @@
 #This file is not supposed to be distributed.
 
 SYSTEM := $(shell uname -s)
+ePWD    := $(shell pwd)
 
 #compiler conf.
 CXX = g++
-CFLAGS = -g -I $(BOOST_PATH) -std=c++0x $(TEST_INFO) $(OPT) -fopenmp
-MTSUPPORT = -l$(THREAD_LIB)
-LDFLAGS = -lm $(MTSUPPORT) -lgomp
-OPT= #-O3 -msse2
+CFLAGS = -g -I $(BOOST_PATH) -std=c++0x $(TEST_INFO) $(OPT) #-fopenmp
+MTSUPPORT = -l$(THREAD_LIB) #-lgomp
+GLSUPPORT = -lGL -lGLU -lglut
+LDFLAGS = -lm $(MTSUPPORT) -lpng
+OPT= -O3 -msse
 
-include test_parameter
+#test parameters
+TEST_INFO = -DMM_TEST_TYPE=float -DMM_TEST_GRANULARITY=256 -DMM_TEST_SIZE_N=1024 -DMM_TEST_K=4 -DVEC_TEST_TYPE=int -DVEC_TEST_GRANULARITY=2500000 -DVEC_TEST_SIZE_N=10000000 -DVEC_TEST_K=2 -DIMG_TEST_SIZE_M=256 -DIMG_TEST_SIZE_N=256 -DIMG_TEST_GRANULARITY=128 -D__NDEBUG #-DFORK_AT_CALLSITE -DVIZ_CALLSITE
 
 ifeq ($(SYSTEM), Linux)
 ISSUE= $(shell cat /etc/issue)
@@ -17,11 +20,14 @@ ifeq ($(word 1, $(ISSUE)), Ubuntu)
 THREAD_LIB = boost_thread-gcc44-mt#for jw system
 MTSUPPORT+= -L /root/Desktop/boost_1_39_0/stage/lib
 BOOST_PATH=/usr/local/include/boost-1_39/
-else
+else#fedora7, default
 THREAD_LIB=boost_thread	
 BOOST_PATH=/usr/local/include
 endif
+#default linux feature(s)
 CFLAGS += -DPMC_SUPPORT
+LDFLAGS += -lrt
+TEST_SIZE += -D__USEPOOL
 else ifeq ($(SYSTEM), Darwin)
 BOOST_PATH = /opt/local/include
 THREAD_LIB = boost_thread-mt
@@ -30,17 +36,14 @@ else
 #other system
 endif
 
-AUX_OBJS = profiler.o toolkits.o mtsupport.o
-OBJS = mat_mul.o test_vector.o test_pipe.o dot_prod.o saxpy.o
+AUX_OBJS = profiler.o toolkits.o mtsupport.o imgsupport.o
+OBJS = mat_mul.o test_pipe.o dot_prod.o saxpy.o conv2d.o
 OBJS += $(AUX_OBJS)
 
 
-all: vec_add mat_mul lang_pipe dot_prod
+all: mat_mul lang_pipe dot_prod conv2d saxpy
 
 mat_mul: mat_mul.o $(AUX_OBJS) 
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
-
-vec_add: test_vector.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 
 lang_pipe: test_pipe.o $(AUX_OBJS)
@@ -48,17 +51,19 @@ lang_pipe: test_pipe.o $(AUX_OBJS)
 
 dot_prod: dot_prod.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
-
 saxpy: saxpy.o $(AUX_OBJS)
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) 
-
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
+conv2d: conv2d.o $(AUX_OBJS)
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 $(OBJS):%.o:%.cc frame.hpp Makefile
 	$(CXX) -o $@ -c $< $(CFLAGS)
+
+
 
 ###################################################
 #                   TEST                          #
 ###################################################
-TEST_SET = test_profiler test_toolkits test_trait
+TEST_SET = test_profiler test_toolkits test_trait test_img
 TEST_OBJS = $(addsuffix .o, $(TEST_SET))
 
 test: $(TEST_SET)
@@ -70,20 +75,25 @@ test: $(TEST_SET)
 
 $(TEST_SET):%:%.cc $(AUX_OBJS)
 	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $(AUX_OBJS)  $<
+#tpbench: libSPMD/tpbench.o profiler.o toolkits.o mtsupport.o
+#	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $<
 
 
 ###################################################
 #               Miscellaneous                     #
 ###################################################
-
+LAST=`date +%y_%m_`$$((`date +%d`-1))
 .PHONY: clean dist distclean lines all
 
 clean: 
-	-rm -f *.o vec_add mat_mul lang_pipe dot_prod saxpy $(TEST_SET)
+	-rm -f *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET)
 distclean:
 	-rm -f *~ ._*
 dist: 
+	@make clean && make distclean
+	@-rm -fr /tmp/libvina
 	cd .. && tar -cjf libvina.`date +%y_%m_%d`.tar.bz2 libvina/
-
+	tar xjf $(dir $(PWD))libvina.$(LAST).tar.bz2 -C /tmp/
+	diff -Nur /tmp/libvina $(dir $(PWD))libvina/ > $(dir $(PWD))new.patch
 lines: 
 	find | grep ".\(c\|h\|hpp\|cc\)$$" | xargs wc -l

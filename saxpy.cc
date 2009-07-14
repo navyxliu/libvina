@@ -3,7 +3,9 @@
 #include "frame.hpp"
 #include "toolkits.hpp"
 #include <tr1/functional>
-#include <omp.h>
+#include <boost/mpl/bool.hpp>
+
+//#include <omp.h>
 using namespace vina;
 
 #ifdef __NDEBUG 
@@ -20,29 +22,29 @@ using namespace vina;
 #endif
 
 
-template <class RESULT, class T, class LHS, 
+template <class RESULT, class T, class RHS, 
 	  template <typename, typename> class Func,
 	  template <typename, int>      class Pred,
 	  int K = 2 , bool IsMT = false>
 struct saxpy{
-  typedef mappar<saxpy, K, IsMT,
-		 Pred<T, view_trait<LHS>::READER_SIZE>::value
- 		 > Map;
-  typedef view_trait<LHS> trait1;
+  typedef view_trait<RHS> trait1;
   typedef view_trait<RESULT> trait_result;
-
-  typedef typename trait_result::writer_type Result;
-  typedef T   Arg0;
-  typedef typename trait1::reader_type  Arg1;
   
-  typedef T   
-  SubRView0;
+  typedef typename trait_result::writer_type Result;
+  typedef T                                  Arg0;
+  typedef typename trait1::reader_type       Arg1;
+
+  typedef mappar<saxpy, K, IsMT,
+		 Pred<T, view_trait<RHS>::READER_SIZE>::value
+ 		 > Map;
+
   typedef ReadView<T, trait1::READER_SIZE/K>
   SubRView1;
   typedef WriteView<T, trait_result::WRITER_SIZE/K>
   SubWView;
 
-  const static bool _pred = Pred<T, view_trait<SubRView1>::READER_SIZE>::value;
+  const static bool _pred 
+  = Pred<T, view_trait<RHS>::READER_SIZE>::value;
 
   typedef saxpy<SubWView, T, SubRView1, Func, Pred, K, IsMT> SubTask;
   
@@ -50,10 +52,13 @@ struct saxpy{
   doit(const T& alpha, const Arg1& lhs, 
        Result& rhs)
   {
+    printf("_pred=%d, SubTask::_pred=%d\n", 
+	   _pred, SubTask::_pred);
+
     Map::doit(alpha, lhs, rhs);
   }
   
-  typedef std::tr1::function<void (const T&, const Arg1&, Result&, event_id)> 
+  typedef std::tr1::function<void (const T&, const Arg1&, Result&)> 
   _Comp;
   static _Comp
   computation()
@@ -67,11 +72,19 @@ struct saxpy{
   {
     return &(Func<Result, Arg1>::doitMT);
   }
+#ifndef __NDEBUG
+  typedef std::tr1::function<void (const T&, const Arg1&, Result&, mt::barrier_t, event_id)>
+  _CompMT_t;
+  static _CompMT_t
+  computationMT_t() {
+    return &(Func<Result, Arg1>::doitMT_t);
+  }
+#endif
+
 };
 template <class T, int DIM>
-struct p_simple{
-  const static bool value = DIM <= VEC_TEST_GRANULARITY;
-};
+struct p_simple: mpl::bool_<DIM <= VEC_TEST_GRANULARITY>
+{};
 
 
 int 
@@ -117,12 +130,12 @@ See Makefile TEST_INFO to set parameters\n",
   */
   STD_result.zero();
   prof.eventStart(temp0);
-  //  vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
-  
+  vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
+  /*
   worker w;
   for(int i=0; i<VEC_TEST_K; ++i)
   w();
-  
+  */
   prof.eventEnd(temp0);  
 
   //printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
@@ -135,21 +148,20 @@ See Makefile TEST_INFO to set parameters\n",
   prof.eventStart(temp1);
   TF::doit(7, x, result);
   prof.eventEnd(temp1);
-  //CHECK_RESULT(y);
+  CHECK_RESULT(y);
   printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed()));
-  
-  
+
+
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE, TestVector, vecMAddWrapper, p_simple, VEC_TEST_K, true>
     TF_MT;
   prof.eventStart(temp2);
-  //for(int i=0; i<100; ++i)
-    TF_MT::doit(7, x, result);
+  TF_MT::doit(7, x, result);
   prof.eventEnd(temp2);
-  //CHECK_RESULT(y);
+  CHECK_RESULT(y);
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed()));
-  
-  
+
+  /*  
   worker w0;
   prof.eventStart(temp3);
 
@@ -160,6 +172,6 @@ See Makefile TEST_INFO to set parameters\n",
     }
   prof.eventEnd(temp3);
   printf("OMP gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
-
+  */
   prof.dump();
 }

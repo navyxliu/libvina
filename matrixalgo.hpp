@@ -269,8 +269,48 @@ struct matArithImpl2<vFloat, SIZE_A, SIZE_B>
   }
 };
 
+template <class T, int DIM_A, int DIM_B,
+	  class U, int KERL_A, int KERL_B>
+struct matConvlImpl{
+  typedef FramedReadView2<T, DIM_A, DIM_B>   Arg0;
+  typedef ReadView2<U, KERL_A, KERL_B>       Arg1;
+  typedef WriteView2<T, DIM_A, DIM_B>        Result;
+  
+  static void 
+  conv2d(const Arg0& in, const Arg1& kernel,
+	 Result& result)
+  {
+    /*
+    printf("in=%p kernel=%p\n", &in, &kernel);
+    printf("in.data=%p, kernel.data=%p, result=%p\n",
+	   in.data(), kernel.data(), result.data());
+    printf("DIM_A=%2d, DIM_B=%2d, KEREL_A=%2d KERNEL_B=%2d\n",
+	   DIM_A, DIM_B, KERL_A, KERL_B);
+    */
+    for (int i=0; i<DIM_A; ++i) 
+      for (int j=0; j<DIM_B; ++j){
+	result[i][j] = 0;
+	int dx, dy;
+	for (int ki=0; ki<KERL_A; ++ki, dx++) 
+	  {
+	    dx=i+ki-(KERL_A>>1);
+	    for (int kj=0; kj<KERL_B; ++kj, dy++)  {
+		dy=j+kj-(KERL_B>>1);
+		//if (dx >= 0 && dx < DIM_A && dy >= 0 && dy < DIM_B){
 
-// a standard MM. for debug usage
+		/*	       
+		  printf("result=%2d += kernel[%2d][%2d]=%f * in[%2d][%2d]=%2d\n",
+			 (unsigned int)result[i][j], ki, kj, kernel[ki][kj], dx, dy, 
+			 (unsigned int)in[dx][dy]);
+		*/
+		result[i][j] += kernel[ki][kj] * in[dx][dy];
+	    }
+	  }
+      }
+  }//func
+};
+
+// a standard MM. for debug
 template<class T, int dim_A, int dim_B, int dim_C> 
 void multiply(const Matrix<T, dim_A, dim_B>& X, 
 	      const Matrix<T, dim_B, dim_C>& Y, 
@@ -284,5 +324,40 @@ void multiply(const Matrix<T, dim_A, dim_B>& X,
 	  tmp += X[i][k] * Y[k][j];
 	R[i][j] = tmp;
       }
+}
+// a standard Conv2D for debug
+
+template<class T, int DIM_A, int DIM_B,
+	 class U, int KERNL_A, int KERNL_B>
+void conv2d(const Matrix<T, DIM_A, DIM_B>& in,
+	    const Matrix<U, KERNL_A, KERNL_B>& kernel,
+	    Matrix<T, DIM_A, DIM_B>& result)
+{
+  printf("in=%p kernel=%p\n", &in, &kernel);
+  printf("in.data=%p, kernel.data=%p, result=%p\n",
+	 in.data(), kernel.data(), result.data());
+  printf("DIM_A=%2d, DIM_B=%2d, KEREL_A=%2d KERNEL_B=%2d\n",
+	 DIM_A, DIM_B, KERNL_A, KERNL_B);
+
+  for (int i=0; i<DIM_A; ++i) 
+    for (int j=0; j<DIM_B; ++j){
+      result[i][j] = 0;
+      int dx, dy;
+      for (int ki=0; ki<KERNL_A; ++ki, dx++) {
+	  dx=i+ki-(KERNL_A>>1);
+	  for (int kj=0; kj<KERNL_B; ++kj, dy++) {
+	      dy=j+kj-(KERNL_B>>1);
+	      if (dx >= 0 && dx < DIM_A && dy >= 0 && dy < DIM_B) 
+	      {
+		/*
+		  printf("result=%2d += kernel[%2d][%2d]=%f * in[%2d][%2d]=%2d\n",
+			 (unsigned int)result[i][j], ki, kj, kernel[ki][kj], dx, dy, 
+			 (unsigned int)in[dx][dy]);
+		*/
+		  result[i][j] += kernel[ki][kj] * in[dx][dy];
+	      }
+	  }
+      }
+  }
 }
 #endif 

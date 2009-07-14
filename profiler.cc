@@ -114,7 +114,15 @@ namespace vina {
 	}
       }
     }
+#ifdef __NDEBUG
+    // it if an error to re-register the event with same name,
+    // however, breakdown need this to cumulate thread-time
     throw profiler_exception();	  
+#else
+    else {
+      return _table[name];
+    }
+#endif
   }
   void Profiler::eventUnregister(const string& name) 
   {

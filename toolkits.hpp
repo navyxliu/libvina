@@ -1,8 +1,8 @@
 // This file is not supposed to be distributed.
-#ifndef XLIU_TOOLKITS_HXX
-#define XLIU_TOOLKITS_HXX 1
+#ifndef VINA_TOOLKITS_HXX
+#define VINA_TOOLKITS_HXX 1
 
-#include <cstdlib>
+#include <stdlib.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -12,7 +12,8 @@
 #include <tr1/type_traits>
 #include <boost/shared_ptr.hpp>
 
-//#include "matrix2.hpp"
+#include "matrix2.hpp"
+#include "trait.hpp"
 #include "profiler.hpp"
 
 #define assert_s(con_expr) \
@@ -138,7 +139,9 @@ namespace vina {
     unsigned usec = timer.elapsed();
     return ticks / usec;
   }
-  /*
+  bool initialize_ck_burning();
+  void burn_usecs(unsigned long usecs/*micro-sec*/);
+  
   template<class T, int M, int N>
   inline void dump_m(const Matrix<T, M, N>& m, const std::string& verbose = "")
   {
@@ -151,11 +154,44 @@ namespace vina {
       for (int j=0, J=N; j != J; ++j)
 	std::cout << *iter++ << " ";
   }
-  */
+  
   template <class T>
   struct Identity{
     typedef T type;
   };
+#ifdef __USEPOOL
+  template <class T, int k, bool leaf>
+  struct memory_pool{
+    static int size();
+    static void * get();
+  };
   
+  template <class Matrix, int k>
+  struct memory_pool<Matrix, k, true>{
+    static int  size_;
+    static int size();
+    static void * get();
+  };
+
+  template<class M, int k>
+  int memory_pool<M, k, true>::size_ = sizeof(typename view_trait2<M>::_M_ty) 
+		      * (view_trait2<M>::container_type::DIM_M) 
+		      * (view_trait2<M>::container_type::DIM_N);
+
+  template <class T, int k>
+  void * memory_pool<T, k, true>::get() {
+    static void * ptr;
+    static bool init_ = false;
+
+    if ( !init_ ) {
+      int ret = posix_memalign(&ptr, 128, k * size_);
+      assert( ret == 0 && "error in posix_memalign");
+      init_ = true;
+    }
+    return ptr;
+  }
+  template <class T, int k>
+  int memory_pool<T, k, true>::size() {return size_;}
+#endif
 } // end of NS
-#endif /* XLIU_TOOLKITS_HXX */
+#endif /* VINA_TOOLKITS_HXX */
