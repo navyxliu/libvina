@@ -25,7 +25,7 @@ int nr_thread;
 int nr_group;
 int wkr_delay;
 int enf_yield;
-
+int pol_size;
 mt::thread_pool * thr_pool;
 
 void worker(mt::barrier_t barrier,
@@ -71,6 +71,8 @@ void print_result(unsigned long t,
   printf("Group Num is: %d\n", nr_group);
   printf("Thread in one group is: %d\n", nr_thread);
   printf("Enforce to yield process: %d\n", enf_yield);
+  printf("Poll size is: %d\n", pol_size);
+
   if ( wkr_delay >= 0 ) 
     printf("Worker delay is %d\n", wkr_delay);
   
@@ -110,13 +112,13 @@ main(int argc, char *argv[])
   enf_yield = ENFORCE_YIELD;
   int opt;
 
-  while ( (opt=getopt(argc, argv, "yt:g:d:")) 
+  while ( (opt=getopt(argc, argv, "yt:i:d:")) 
 	  != -1 ) {
     switch(opt) {
     case 't':
       nr_thread = atoi(optarg);
       break;
-    case 'g':
+    case 'i':
       nr_group  = atoi(optarg);
       break;
     case 'd':
@@ -126,13 +128,16 @@ main(int argc, char *argv[])
       enf_yield = 1;
       break;
     default:
-      fprintf(stderr, "Usage: %s [-t num_of_thread] [-g num_of_group] [-d delay time]\n",
+      fprintf(stderr, "Usage: %s [-t num_of_thread] [-i iteration] [-d delay time] [-y yeild]\n",
 	      argv[1]);
       exit(-1);
     }
   }
-  thr_pool = new mt::thread_pool(nr_thread*2);
-
+  //  thr_pool = new mt::thread_pool(nr_thread*2);
+  pol_size = nr_thread >= 16 ? nr_thread * 1.6
+    : nr_thread * 1.2;
+  
+  thr_pool = new mt::thread_pool(pol_size);
   test_function_of(group_with_tp, "threadpool");
   test_function_of(group_without_tp, "mt::thread");
 

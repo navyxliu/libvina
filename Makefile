@@ -9,7 +9,7 @@ CFLAGS = -g -I $(BOOST_PATH) -std=c++0x $(TEST_INFO) $(OPT) #-fopenmp
 MTSUPPORT = -l$(THREAD_LIB) #-lgomp
 GLSUPPORT = -lGL -lGLU -lglut
 LDFLAGS = -lm $(MTSUPPORT) -lpng
-OPT= -O3 -msse
+OPT= -O2 -msse
 
 #test parameters
 TEST_INFO = -DMM_TEST_TYPE=float -DMM_TEST_GRANULARITY=256 -DMM_TEST_SIZE_N=1024 -DMM_TEST_K=4 -DVEC_TEST_TYPE=int -DVEC_TEST_GRANULARITY=2500000 -DVEC_TEST_SIZE_N=10000000 -DVEC_TEST_K=2 -DIMG_TEST_SIZE_M=256 -DIMG_TEST_SIZE_N=256 -DIMG_TEST_GRANULARITY=128 -D__NDEBUG #-DFORK_AT_CALLSITE -DVIZ_CALLSITE
@@ -24,10 +24,9 @@ else#fedora7, default
 THREAD_LIB=boost_thread	
 BOOST_PATH=/usr/local/include
 endif
-#default linux feature(s)
-CFLAGS += -DPMC_SUPPORT
+#general linux features
+CFLAGS += -DPMC_SUPPORT -DLINUX -D__USEPOOL
 LDFLAGS += -lrt
-TEST_SIZE += -D__USEPOOL
 else ifeq ($(SYSTEM), Darwin)
 BOOST_PATH = /opt/local/include
 THREAD_LIB = boost_thread-mt
@@ -50,7 +49,7 @@ lang_pipe: test_pipe.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 
 dot_prod: dot_prod.o $(AUX_OBJS)
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
+	
 saxpy: saxpy.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 conv2d: conv2d.o $(AUX_OBJS)
@@ -75,8 +74,8 @@ test: $(TEST_SET)
 
 $(TEST_SET):%:%.cc $(AUX_OBJS)
 	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $(AUX_OBJS)  $<
-#tpbench: libSPMD/tpbench.o profiler.o toolkits.o mtsupport.o
-#	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $<
+tpbench: libSPMD/tpbench.o profiler.o toolkits.o mtsupport.o
+	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $<
 
 
 ###################################################

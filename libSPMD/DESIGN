@@ -1,0 +1,77 @@
+// This file is not supposed to be distributed.
+libSPMD Design Document
+1. hardware
+
+W.Dally argued that cost of ALUs was significantly lower than storage and communication on chip. The term cost here refers to both real-estate and energy.  Stream processor is proposed based on his thought. Commercial hotchips such as CellBE and GP-GPUs are obviously affected by it. Basically, massive ALUs are provided in those systems, and memory hierarchy is more explicit than traditional hectometre. They unleashed impressive high performance comparing with desktop or Server commodity processors. IMO, Larrabee is the instant response from Intel.
+
+Posix thread has obtained its dominant position for SMP and CMP systems. Linux thread support and NPTL(glibc pthread impl.) improved a lot in terms of performance. However, deriving the concept of pocesses, primary purpose of thread is to hide latency, all kind of latencies. Synchronization operations of pthread are prone to complex and lock-based. Applications of pthread usually deploy a plenty of locks to safeguard data. e.g. programmers are familiar with thread pool to reuse pthread with conditional variable. The complexity of lock usually reflects the essence of concurrency. Lock-free is approachable. The only problem is that it need hhhhhhhhuge investment to replace legacy systems. Anyway, after ten year efforts, Linux kernel is still dealing with BKL(big kernel lock), reader can image the rocky road of delock-lization process. On the other side, transactional solution emerged recent years to ease programming. It is compelling but difficult to achieve same performance of man-crafted sources. Again, community needs time to polish transactional algorithms and develop new software.
+
+Thread model describing above does not fit Streaming architectures. Exposed ALUs array, it is desirable to exploit data-parallelism instead of latency-hiding. Ideally, the number of implicitly synchronized threads working simultaneously should be in proportion to ALUs. Single-Program-Multiple-Data(SPMD) it the simplest model to fit it. nvidia G8 (which is better known as first support of Cuda)supports SPMD in hardware level. It is also possible to implement SPMD thread model on x86 and cellbe. SPMD reflects the essence of parallelism. The primary horsepower of future computer system comes from duplication of ALUs, SPMD thread model takes advantage of it. 
+
+2. design
+
+A warp consists of a leader and a collect of tasks.  All of them run on separate threads. Tasks execute the same program with different data. Because we assume that array of computational resource is presented by hardware (Processing Elements(PE) in the following doc), Task abstracts computation-intensive programs and physically corresponds to PEs. Leader models a manager and orchestrates tasks. It is worthy noting that leader is not necessary to map on a specific phyical PE and it is actually latency-tolerant, i.e. it is not urgent to do post task as long as leader releases PEs. Again, we assume massive ALUs deliver major horsepower, libSPMD utilizes them aggressively and relax managing leader. Implementation might tighten leader execution in present of more hardware resource. 
+
+Signal is the primary communication utility. libSPMD signal could implemented using posix signal. Systems without complete posix could choose other mechanisms. even sysV semaphore can trivially achieve the requirement of signal. Furthermore, some multicore architectures provide hardware support of event, so big chance exists to write an efficient one.
+
+libSPMD runtime manages a group of native threads. Usually the number of pre-allocated thread corresponds to the number of isolated PEs in system. Those threads are idle and supposed to sleep when no task is mounted on them. Task creation reserves K native threads and registers called function. This is obviously different from traditional thread-pool. Actually, reader can regard libSPMD as a thread pool with vector extend. libSPMD also blocks when no more enough native thread are available. After successfully reservation, libSPMD associates following contiguous K thread creation with the registered function and mounts it to native thread. Leader signals his managed native threads in the warp to start executing tasks simultaneously. This terms `fire' in streaming community.
+
+                               signal
+ (setup all of tasks)leader ----------->[task0]
+                              |-------->[task1]
+                              |-------->[task2]
+                              |-------->[task3]
+fig 1 -- fire action
+
+Leader waits for its tasks after fire. libSPMD guarantees that all native threads occupied by tasks are released when waiting returns. Perfect utilization of PE is to balance task running in parallel. Leader could spot out lazy worker and report to programmer as an advice. An aggressive implementation of libSPMD allows native thread release itself, partial computational resource are released in advance, this tolerates occasional slag of individual task.
+
+         signal
+leader <--------[task0]
+       <--------[task1]
+       <--------[task2]
+       <--------[task3]
+fig 2 -- signal to leader.
+
+3. implementation
+
+3.1 x86_64 implementation
+x86_64 based multiprocessor system lacks of dedicated co-processors. However, it has evolved to a well-suited vector processor per core with maturing SSE instructions  and the number of cores has grown to a descent amount. In addition, larrabee architecture basing on x86 ISA promised to widen vector operations with brand new vector ISA(INL). So serious utilize of x86_64 processor as Stream processor becomes practical. 
+
+Implementation in this directory is for x86_64 Linux system. We used posix supports, *clone*, and sysV semaphore.  The names surrounded by stars are syscallls of linux.
+
+OC GRP  ARG
+-----------------
+|1|gid |args    |
+-----------------
+|1|gid |args'   |
+-----------------
+|1|gid |args''  |  
+-----------------
+|1|gid |args''' |
+-----------------
+|0|nil |        |
+-----------------
+|0|nil |        |
+-----------------
+|1|gid'|        | 
+-----------------
+|0|nil |        |
+-----------------
+fig 3 -- reservation table
+
+Leader create threads using *clone*, with CLONE_THREAD flag. In this way,linux creates child threads with the same parent as leader. i.e. *getppid* returns the same pid as it called in leader. *getpid* returns tgid, which is task group id and should return distinct identifiers by *gettid* respectively. Leader sents signal by *tgkill* to fire tasks, then wait completion using *waitpid*. As depicted by figure-3, libSPMD runtime maintains a reservation table. OC(occupied) field is implemented by sysV semaphore. Obtaining a group of OCs is achieved by *semop* an array of semaphore. System guarantees this is atomic.
+libSPMD runtime creates thread pool based on the parallel task number, i.e, combines following threads into a virtual reservation table: leader1[PE], leader2[PE/2], leader4[PE/4], ... leaderPE[1]. This pattern is similar to Doug's malloc w.r.t memory management.
+
+Linux kernel contains 2 types of schedulers. The philosophy of CFS scheduler is "completely" fair. This obviously conflicts with libSPMD thread design. x86_64 cores co-host both leader and task threads. We fully map physical cores to task threads and leaders obtains CPUs when computation is not intensive. Fortunately, linux kernel provides RealTime(RT) scheduler. In this implementation, we used FIFO scheduler for task threads and OTHER(CFS) for leaders. Task threads consume CPUs greedily so that no context-switch affects computation.
+
+leader takes responsible for setting up environments of tasks in a warp before firing tasks. In shared addresses systems, this means that leader unfolds arguments to specific locations of tasks respectively. task thread stacks are allocated by theirs leaders, so they get this information from the first argument on private stack.
+
+int
+task_entry(void * env);
+
+
+3.2 CellBE implementation
+comming soon...
+
+4. interface
+see [warp.h]

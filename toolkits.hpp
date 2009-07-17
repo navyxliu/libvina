@@ -139,9 +139,18 @@ namespace vina {
     unsigned usec = timer.elapsed();
     return ticks / usec;
   }
+  //ck burning delay
   bool initialize_ck_burning();
   void burn_usecs(unsigned long usecs/*micro-sec*/);
-  
+#ifdef LINUX
+  ///set schduler to rt fifo.
+  //[prio] -- priority of rt schduler (0-99)
+  //99 is the highest priority
+  void set_fifo(int prio);
+
+  void set_normal(void);
+#endif
+
   template<class T, int M, int N>
   inline void dump_m(const Matrix<T, M, N>& m, const std::string& verbose = "")
   {

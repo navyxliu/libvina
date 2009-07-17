@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <string.h> // for memset
 
-#include <sched.h>
 #include <sys/time.h>
 #include <errno.h>
 #include <unistd.h>
 #ifdef LINUX
 #include <time.h> // for clock_gettime
+#include <sched.h>
 #endif
 
 namespace vina {
@@ -88,7 +88,6 @@ namespace vina {
   }  
 
 #ifdef LINUX
-
   unsigned long long get_nsecs(struct timespec *myts)
   {
     if (clock_gettime(CLOCK_REALTIME, myts))
@@ -176,32 +175,6 @@ redo:
         return bogus_loop;
 }
 
-#ifdef LINUX
-static void 
-set_fifo(int prio)
-{
-        struct sched_param sp;
-
-        memset(&sp, 0, sizeof(sp));
-        sp.sched_priority = prio;
-        if (sched_setscheduler(0, SCHED_FIFO, &sp) == -1) {
-                if (errno != EPERM)
-                        printf("sched_setscheduler failed\n");
-        }
-}
-
-static void 
-set_normal(void)
-{
-        struct sched_param sp;
-        memset(&sp, 0, sizeof(sp));
-        sp.sched_priority = 0;
-        if (sched_setscheduler(0, SCHED_OTHER, &sp) == -1) {
-                fprintf(stderr, "Weird, could not unset RT scheduling!\n");
-        }
-}
-#endif
-
 /*
  * This function measures the loops per msec
  * and write the result to file vina.loops_per_ms
@@ -282,5 +255,29 @@ calc_loop()
     ms_loops = loops_per_msec / 1000 * usecs;
     burn_loops(ms_loops);
   }
-
+#ifdef LINUX
+  void 
+  set_fifo(int prio)
+  {
+    struct sched_param sp;
+    
+    memset(&sp, 0, sizeof(sp));
+    sp.sched_priority = prio;
+    if (sched_setscheduler(0, SCHED_FIFO, &sp) == -1) {
+      if (errno != EPERM)
+	printf("sched_setscheduler failed\n");
+    }
+  }
+  
+  void 
+  set_normal(void)
+  {
+    struct sched_param sp;
+    memset(&sp, 0, sizeof(sp));
+    sp.sched_priority = 0;
+    if (sched_setscheduler(0, SCHED_OTHER, &sp) == -1) {
+      fprintf(stderr, "Weird, could not unset RT scheduling!\n");
+    }
+  }
+#endif
 }//endof NS
