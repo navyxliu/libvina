@@ -33,6 +33,7 @@ check_env()
 
 result()
 {
+	cleanup
 	echo
 	echo "Total running times is: $total_times"
 	echo "Max value log is: "
@@ -83,8 +84,6 @@ main()
 		run_once
 		total_times=`expr $total_times + 1`
 	done
-
-	cleanup
 }
 
 main
