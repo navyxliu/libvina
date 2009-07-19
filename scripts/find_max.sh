@@ -22,6 +22,12 @@ max_log=`date +%h%d-%H%M`-mat_mul-max.log
 
 check_env()
 {
+	cp ../mat_mul . > /dev/null 2>&1
+	if [ $? -eq 1 ]; then 
+		echo "can't find mat_mul in ../!"
+		exit 1
+	fi
+
 	echo "to do"
 }
 
@@ -50,8 +56,14 @@ run_once()
 	fi
 }
 
+cleanup()
+{
+	rm -f ./mat_mul
+}
+
 main()
 {
+	check_env
 	while [ "$target_name" = "" ]; do
 		PS3="Choose (1-4):"
 		echo "Choose the max target value from the list below."
@@ -66,12 +78,13 @@ main()
 	echo -e '\E[31mPress Ctrl+C to get the final result'
 	echo -e '\E[0m '
 
-	# check_env
 	while true
 	do
 		run_once
 		total_times=`expr $total_times + 1`
 	done
+
+	cleanup
 }
 
 main
