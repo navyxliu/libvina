@@ -37,7 +37,8 @@ extern "C" {
    *  -1 when failed, otherwise,
    *  task_id
    */
-  extern int spmd_create_thread(int id, int argc, ...);
+  //  extern int spmd_create_thread(int warp_id, int argc, ...);
+  extern int spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1);
   /*check out avaialable threads in runtime.
    */
   extern int smpd_available_thread();
