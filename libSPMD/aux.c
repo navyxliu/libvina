@@ -84,3 +84,47 @@ int tkill(int tid, int sig)
 {
   return syscall(SYS_tkill, tid, sig);
 }
+
+void wait_for_tg(leader_struct_p leader)
+{
+  int eno;
+  int sem = leader->sem;
+  struct sembuf buf = {
+    .sem_num = 0,
+    .sem_op = 0,
+    .sem_flg = 0
+  };
+
+  if ( -1 == (eno=semop(sem, &buf, 1)) ) {
+    perror( "semop failed\n");
+    exit(EXIT_FAILURE);
+  }
+  return 1;
+}
+/**set schduler to rt fifo.
+   [prio] -- priority of rt schduler (0-99)
+   99 is the highest priority
+**/
+void 
+set_fifo(int pid, int prio)
+{
+  struct sched_param sp;
+  
+  memset(&sp, 0, sizeof(sp));
+  sp.sched_priority = prio;
+  if (sched_setscheduler(pid, SCHED_FIFO, &sp) == -1) {
+    if (errno != EPERM)
+      printf("sched_setscheduler failed\n");
+  }
+}
+
+void 
+set_normal(int pid)
+{
+  struct sched_param sp;
+  memset(&sp, 0, sizeof(sp));
+  sp.sched_priority = 0;
+  if (sched_setscheduler(pid, SCHED_OTHER, &sp) == -1) {
+    fprintf(stderr, "Weird, could not unset RT scheduling!\n");
+  }
+}

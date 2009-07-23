@@ -16,51 +16,70 @@ extern void spinlock_unlock(spinlock_t * lck);
 extern int  spinlock_trylock(spinlock_t * lck);
 extern pid_t gettid(void);
 extern int tkill(int tid, int sig);
+extern void wait_for_tg(leader_struct_p leader);
+extern  void set_fifo(int pid, int prio);
+extern  void set_normal(int pid);
 
 int __task 
 default_task_entry(void * arg)
 {
   fprintf(stderr, "@task created, getppid=%d, getpid=%d gettid=%d, arg=%p\n",
 	  getppid(), getpid(), gettid(), arg);
+  task_sturct_p task = (task_sturct_p)arg;
+  struct sembuf buf;
 
   while(1) {
     pause();
+    task->fn(task->args[0], task->args[1], task->args[2]);
+
     fprintf(stderr, "@task %d:%d start working\n", getpid(), gettid());
+    /*release physical pe */
+    buf.sem_num = task->oc;
+    buf.sem_op = 1;
+    buf.sem_flag = 0;
+    semop(task->sem_pe, &buf, 1);
+    
   }
 
   fprintf(stderr, "@got signal, task quit");
   return 0;
 }
+
 void __leader
 default_leader_entry()
 {
   while (1) {
-    pause();
-    
+    fprintf(stderr, "#waiting for thread group");
+    wait_for_tg();
+    fprintf(stderr, "#wait returned, reduce...");
   }
 }
+
 int __leader 
 default_creator_entry(void *arg)
 {
 
-  warp_init_struct_p warpi = (struct warp_init_struct *)arg;
-  int nr = warpi->nr;
+  leader_struct_p ldr = (leader_struct_p)arg;
+  warp_sturct_p warp = &(ldr->warp);
+  int nr = warp->nr;
   void * stacks[nr]; // gcc ext.
   int i, status, tid;
-
 
   printf("leader created, getppid=%d, getpid=%d\n",
 	 getppid(), getpid());
   
   printf("warpi=%p, warpi->nr=%d warpi->fn =%p\n", 
 	 arg, warpi->nr, warpi->fn);
-  
+
+  warp->gid = getpid();
+
+  /*
   for (i=0; i<nr; ++i) {
     stacks[i] = warpi->stks[i];
     printf("stack[%2d]=%p\n", i, stacks[i]);
   }
   
-  /*  
+    
   int args[10];  
   for (i=0; i<nr; ++i) {
     void ** newstack =(void **)malloc(16*1024);
@@ -76,37 +95,28 @@ default_creator_entry(void *arg)
   }
   //waitpid(-1, NULL, 0);
   */
-#if 1
+
   for(i=0; i<nr; ++i) {
+    task_struct_p task = &(warp->tsk[i]);
+    task->gid = warp->gid;
+    task->sem_pe = the_pool.sem_pe;
+    task->sem_ldr = warp->sem;
+    task->fn = warp->fn;
     if ( -1 == (tid = clone(&default_task_entry, stacks[i], 
 			   CLONE_THREAD | CLONE_SIGHAND | CLONE_SYSVSEM | CLONE_VM | CLONE_FS \
 			   | SIGCHLD/*signal sent to parent when the child dies*/,
-			   NULL/*arg*/)) )
-      {
+			   task/*arg*/)) )  {
 	perror("clone failed");
 	exit(EXIT_FAILURE);
       }
     else {
        printf("task is created = %d\n", tid);
-      *(warpi->wb_tsks + i) = tid;
+       *((warp->init_list).wb_tsks + i) = task->tid = tid;
     }
+    set_fifo(sched_get_priority_max());
   }
-  if ( -1 == waitpid(-1, &status, 0) ) {
-    fprintf(stderr, "waitpid failed in leader %d\n", getpid());
-    perror("waitpid in creator");
-  }
-  else {
-    if ( WIFEXITED(status) ) {
-      printf("children exited\n");
-    }
-    else {
-      printf("err...");
-    }
-  }
-  printf("leader's waiting return\n");
-#endif
-
-  pause();
+  default_leader_entry();
+  
   return 0;
 }
 
@@ -117,7 +127,7 @@ init_semphore(int nr)
   int semid, i;
   unsigned short array[nr];
 
-  key = ftok(SPMD_SEM_KEY, 'E');
+  key = ftok(SPMD_SEM_KEY, 0xff);
   semid = semget(key, nr, 0666 | IPC_CREAT);
   if ( semid == -1 ) {
     perror("semget failed");
@@ -136,7 +146,6 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
 {
   int i, j;
   leader_t pid;
-  struct warp_init_struct warps[size];
   /*
   printf("allocate_slot width=%d, size=%d, slot=%p, ldrs=%p\n",
 	 width, size, slot, ldrs);
@@ -148,7 +157,6 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
   assert( slot->leaders_stacks && "default stack malloc failed");
   slot->children_stacks = (void ***)malloc(sizeof(void**) * size);
   assert( slot->children_stacks && "default stack malloc failed");
-
 
   for (i=0; i<size; ++i) {
     slot->children_stacks[i] = (void *)malloc(sizeof(void*) * width);
@@ -174,29 +182,30 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
 	printf("children[%d][%d] stack position=%p\n", i, j, slot->children_stacks[i][j]);
       }
     }
-
-    warps[i].stk_sz = SPMD_TASK_STACK_SIZE;
-    warps[i].fn     = (void *)(&default_task_entry);
-    warps[i].stks   = slot->children_stacks[i];
-    warps[i].nr     = width;
-    warps[i].wb_tsks = slot->wb_tasks + i * width;
+    /* postpone gid to creator function */
+    /* sem is initialized in spmd_initialize */
+    ldrs[i].warp.nr = width;   
+    ldrs[i].warp.fn = NULL;
+    ldrs[i].warp.hook = NULL;
+    ldrs[i].warp.tsks = malloc(sizeof(struct task_struct) * width);
+    if ( ldrs[i].warp.tsks == NULL ) {
+      perror("malloc failed");
+      exit(EXIT_FAILURE);
+    }
+    
+    ldrs[i].warp.init_list.stk_sz = SPMD_TASK_STACK_SIZE;
+    ldrs[i].warp.init_list.stks   = slot->children_stacks[i];
+    ldrs[i].warp.init_list.wb_tsks = slot->wb_tasks + i * width;
 
     //printf("alloc clone stack pointer=%p\n", slot->leaders_stacks[i]);
     if (-1 == (pid = clone(&default_creator_entry, slot->leaders_stacks[i], 
-			   CLONE_VM | CLONE_FS, warps+i)) ) {
+			   CLONE_VM | CLONE_FS, &(ldrs[i].warp))) ) {
       perror("clone failed");
       exit(EXIT_FAILURE);
     }
     else {
       printf("create leader %d\n", pid);	
       *(slot->wb_leaders + i) = pid; /*writeback*/
-      ldrs[i].warp.gid = pid;
-      ldrs[i].warp.nr = width;
-      ldrs[i].warp.tsks = malloc(sizeof(struct task_struct) * width);
-      if ( ldrs[i].warp.tsks == NULL ) {
-	perror("malloc failed");
-	exit(EXIT_FAILURE);
-      }
     }
   }// for   
 }
@@ -257,7 +266,7 @@ spmd_initialize()
     slot->wb_tasks = tsk;
     
     allocate_slot(j, nr_pe/j, slot, leaders);
-
+    
     ldr = ldr + j;
     tsk = tsk + nr_pe;
     leaders += j;
@@ -265,16 +274,26 @@ spmd_initialize()
         
  ldr = the_pool.thr_leaders;
  for (i=0; i<nr_leader; ++i) {
-    spinlock_init(&(the_pool.leaders[i].lock));
-    the_pool.leaders[i].oc = 0; 
-    the_pool.leaders[i].gid = *(ldr++);
+   key = ftok(SPMD_SEM_KEY, 'a' + i);
+
+   if ( key == -1 ) {
+     perror("ftok failed");
+     goto err_happened3;
+   }
+
+   the_pool.leaders[i].sem = semget(key, 
+				    the_pool.leaders[i].nr, 
+				    0666 | IPC_CREAT);
+   spinlock_init(&(the_pool.leaders[i].lck));
+   the_pool.leaders[i].oc = 0; 
+   the_pool.leaders[i].gid = *(ldr++);
  }
 
  return nr_pe;
- /* 
+ 
  err_happened3:
         free(the_pool.leaders);       
- */
+
  err_happened2:
 	free(the_pool.thr_tasks);
  err_happened1:
@@ -396,18 +415,30 @@ static void
 spmd_fire_up(leader_struct_p leader)
 {
   int i, eno;
+  task_struct_p tsk;
+
+  assert( 0 == semctrl(leader->sem, 0, GETVAL)
+	  && "leader sem is not zero");
+
   for(i=0; i<leader->nr; ++i) {
-    task_struct_p tsk = &leader->warp.tsks[i];
     cpu_set_t mask;
-    CPU_ZERO(&mask);
+    tsk  = &leader->warp.tsks[i];
+    CPU_ZERO(&maskq);
     CPU_SET(tsk->oc, &mask);
     if ( -1 == (eno=sched_setaffinity(tsk->tid, sizeof(cpu_set_t), &mask)) ) {
       perror("sched_setaffinity");
       //FIXME: unload rt task for gentle quit
       exit(EXIT_FAILURE);
     }
-    tkill(tsk->tid, SIGCONT);
   }
+  if ( 0 != semctl(leader->sem, 0, SETVAL, leader->nr) ) {
+    perror("failed set up leader sem");
+    exit(EXIT_FAILURE);
+  }
+  
+  for (i=0; i<leader->nr; ++i)
+    tkill(tsk->tid, SIGCONT);
+
 }
 
 int __spmd_export

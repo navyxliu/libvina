@@ -32,56 +32,61 @@
 #define __task
 #define __spmd_export
 
-#define FIXED_PARAMETER
+/*variable parameter is unimplemented*/
+#define SPMD_FIXED_PARAMETER
 
 typedef pid_t             thread_t;
 typedef pid_t             leader_t;
 typedef pid_t             task_t;
-typedef pthread_mutex_t     spinlock_t;
+typedef pthread_mutex_t   spinlock_t;
 typedef void (*hook_handler_t)(void);
 typedef void (*task_entry_t)(void *);
 
-#ifdef FIXED_PARAMETER 
-typedef void (*task_function_t)(void * ret, void * arg0, void * arg1);
+#ifdef SPMD_FIXED_PARAMETER 
+typedef void (*task_func_t)(void * ret, void * arg0, void * arg1);
 #else
-typedef void* task_function_t;
+typedef void* task_func_t;
 #endif
 
 typedef struct task_struct {
-  task_t           tid;
-  unsigned short   oc;     /*sem num, indicated occupied*/
-  leader_t         gid;    /*group id*/
+  task_t           tid;     /* task id, task shall not suppose to use gettid, getpid */
+  leader_t         gid;     /* group id */
+  task_func_t      fn;
+  unsigned short   oc;      /* sem num in sem_pe, indicated occupied */
+  int              sem_pe;  /* sem set for PEs */
+  int              sem_ldr; /* sem set for leader */
   void *           args[3];   
 }* task_struct_p;
 
-typedef struct task_environment {
-  leader_t         gid;
-  task_function_t  fn;
-  void *           args[3];
-}* task_environment_p;
+struct tag_init_list {
+  unsigned int stk_sz;   /* stack size per task */
+  void **      stks;     /* stacks for children */
+  thread *     wb_tsks;  /* write back task id to pool */
+};
 
 typedef struct warp_struct {
   leader_t        gid; 
+  int             sem;
   int             nr;      /* number of task thread */
-  void *          fn;      /* task function */
+  task_func_t     fn;      /* task function */
   hook_handler_t  hook;    /* hook function, call after wait */
   task_struct_p   tsks;    
+  struct tag_init_list init_list;
 }* warp_struct_p;
-
-typedef struct warp_init_struct {
-  leader_t        gid; 
-  int             nr;        /* number of task thread */
-  void *          fn;        /* task function */
-  unsigned int    stk_sz;    /* stack size per task */
-  void **         stks;      /* stacks for children */
-  thread_t *      wb_tsks;   /* write back task id to pool */
-}* warp_init_struct_p;
 
 typedef struct leader_struct{
   leader_t           gid;
-  spinlock_t         lock;
-  int                oc;   /* occupied */
-  int                nr;
+  spinlock_t         lck;
+  int                oc;   /* occupied bit protected by lck
+			      1: leader is used and has not finished yet.
+			      0: unused
+			   */
+  int                sem;  /* current linux kernel lacks syscall to wait for all thread group
+			      after discussed to tomida, i decided to simulate it using
+			      semaphore temporarily and hopefully it wouldn't hurt performance
+			      to much. the affect of this change from [DESIGN] will be evaluated
+			      in later experiment.
+			   */
   struct warp_struct warp;
 }* leader_struct_p;
 
@@ -94,7 +99,6 @@ typedef struct spmd_thread_slot{
 
   thread_t        * wb_leaders;      /* write back leaders in the slot to pool */
   thread_t        * wb_tasks;        /* write back tasks in the slot to pool */
-  struct spmd_thread_slot * next;    /* point to finer slot */
 }* spmd_thread_slot_p;
 
 typedef struct spmd_thread_pool

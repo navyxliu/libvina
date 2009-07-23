@@ -59,6 +59,36 @@ OC GRP  ARG
 -----------------
 fig 3 -- reservation table
 
+the_pool
+|
+|__slot0
+| |__leader0
+| | |__task0
+| |__leader1
+| | |__task0
+| |__leader2
+| | |__task0
+| |__leader3
+|   |__task0
+|
+|__slot1
+| |__leader0
+| | |__task0
+| | |__task1
+| |
+| |__leader1
+|   |__task0
+|   |__task1
+|
+|__slot2
+  |__leader1
+  |___task0
+  |___task1
+  |___task2
+  |___task3
+
+fig 4 -- threadpool tree
+
 Leader create threads using *clone*, with CLONE_THREAD flag. In this way,linux creates child threads with the same parent as leader. i.e. *getppid* returns the same pid as it called in leader. *getpid* returns tgid, which is task group id and should return distinct identifiers by *gettid* respectively. Leader sents signal by *tgkill* to fire tasks, then wait completion using *waitpid*. As depicted by figure-3, libSPMD runtime maintains a reservation table. OC(occupied) field is implemented by sysV semaphore. Obtaining a group of OCs is achieved by *semop* an array of semaphore. System guarantees this is atomic.
 libSPMD runtime creates thread pool based on the parallel task number, i.e, combines following threads into a virtual reservation table: leader1[PE], leader2[PE/2], leader4[PE/4], ... leaderPE[1]. This pattern is similar to Doug's malloc w.r.t memory management.
 

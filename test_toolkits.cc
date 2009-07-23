@@ -42,13 +42,13 @@ main()
   // however, jw reported it is relative accurate in (RHEL, nehalem)
   // we strongly encourage users to use sleep(2) for large time-span.
   // hot burning approach serve for short delay.
-  set_fifo(99);
+  set_fifo(0, 99);
   {
     prof.eventStart(timer3);
     burn_usecs(1000000);
     prof.eventEnd(timer3);
   }
-  set_normal();
+  set_normal(0);
 
   auto timer4 = prof.eventRegister("sleep 1sec");
   prof.eventStart(timer4);

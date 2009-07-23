@@ -61,8 +61,7 @@ namespace vina {
       RAII(CallsiteOutput * cso) : ptr_(cso) {
 	ptr_->enter();
       }
-      ~RAII()
-      {
+      ~RAII() {
 	ptr_->leave();
       }
     private:
@@ -146,9 +145,9 @@ namespace vina {
   ///set schduler to rt fifo.
   //[prio] -- priority of rt schduler (0-99)
   //99 is the highest priority
-  void set_fifo(int prio);
+  void set_fifo(int pid, int prio);
 
-  void set_normal(void);
+  void set_normal(int pid);
 #endif
 
   template<class T, int M, int N>

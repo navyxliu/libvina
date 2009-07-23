@@ -193,10 +193,10 @@ calc_loop()
 
 	printf("Start to benchmark loops_per_ms...\n");
 #ifdef LINUX
-	set_fifo(99);
+	set_fifo(0, 99);
 	loops_per_msec = calibrate_loop();
 	printf("loop per msec: %lu\n", loops_per_msec);
-	set_normal();
+	set_normal(0);
 #else
 	loops_per_msec = calibrate_loop();
 #endif
@@ -257,25 +257,25 @@ calc_loop()
   }
 #ifdef LINUX
   void 
-  set_fifo(int prio)
+  set_fifo(int pid, int prio)
   {
     struct sched_param sp;
     
     memset(&sp, 0, sizeof(sp));
     sp.sched_priority = prio;
-    if (sched_setscheduler(0, SCHED_FIFO, &sp) == -1) {
+    if (sched_setscheduler(pid, SCHED_FIFO, &sp) == -1) {
       if (errno != EPERM)
 	printf("sched_setscheduler failed\n");
     }
   }
   
   void 
-  set_normal(void)
+  set_normal(int pid)
   {
     struct sched_param sp;
     memset(&sp, 0, sizeof(sp));
     sp.sched_priority = 0;
-    if (sched_setscheduler(0, SCHED_OTHER, &sp) == -1) {
+    if (sched_setscheduler(pid, SCHED_OTHER, &sp) == -1) {
       fprintf(stderr, "Weird, could not unset RT scheduling!\n");
     }
   }
