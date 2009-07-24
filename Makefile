@@ -16,7 +16,7 @@ TEST_INFO = -DMM_TEST_TYPE=float -DMM_TEST_GRANULARITY=256 -DMM_TEST_SIZE_N=1024
 
 ifeq ($(SYSTEM), Linux)
 ISSUE= $(shell cat /etc/issue)
-ifeq ($(word 1, $(ISSUE)), Ubuntu)
+ifeq ($(word 1, $(ISSUE)), Red)
 THREAD_LIB = boost_thread-gcc44-mt#for jw system
 MTSUPPORT+= -L /root/Desktop/boost_1_39_0/stage/lib
 BOOST_PATH=/usr/local/include/boost-1_39/
@@ -74,18 +74,20 @@ test: $(TEST_SET)
 
 $(TEST_SET):%:%.cc $(AUX_OBJS)
 	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $(AUX_OBJS)  $<
-tpbench: libSPMD/tpbench.o profiler.o toolkits.o mtsupport.o
-	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $<
+tpbench.o : libSPMD/tpbench.cc
+	g++ -O2 -c -o tpbench.o libSPMD/tpbench.cc -std=c++0x -I /usr/local/include/boost-1_39/
+tpbench: tpbench.o profiler.o toolkits.o mtsupport.o imgsupport.o
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -I /usr/local/include/boost-1_39/
 
 
 ###################################################
 #               Miscellaneous                     #
 ###################################################
 LAST=`date +%y_%m_`$$((`date +%d`-1))
-.PHONY: clean dist distclean lines all
+.PHONY: clean dist distclean lines all test_threadlib
 
 clean: 
-	-rm -f *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET)
+	-rm -f *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib
 distclean:
 	-rm -f *~ ._*
 dist: 
@@ -96,3 +98,7 @@ dist:
 	diff -Nur /tmp/libvina $(dir $(PWD))libvina/ > $(dir $(PWD))new.patch
 lines: 
 	find | grep ".\(c\|h\|hpp\|cc\)$$" | xargs wc -l
+test_threadlib: tpbench
+	cp test_threadlib.sh test_threadlib
+	chmod 777 test_threadlib
+

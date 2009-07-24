@@ -7,6 +7,7 @@
 
 #include "../mtsupport.hpp"
 #include "../profiler.hpp"
+#include "../toolkits.hpp"
 #include "threadpool.hpp"
 
 #include <stdio.h>
@@ -31,7 +32,8 @@ mt::thread_pool * thr_pool;
 void worker(mt::barrier_t barrier,
 	    int delay /*sec*/)
 {
-  if ( delay >= 0 ) sleep(delay);
+  if ( likely(delay >= 0) ) 
+	burn_usecs(delay);
   else if ( enf_yield )
     sched_yield();
 
@@ -74,11 +76,11 @@ void print_result(unsigned long t,
   printf("Poll size is: %d\n", pol_size);
 
   if ( wkr_delay >= 0 ) 
-    printf("Worker delay is %d\n", wkr_delay);
+    printf("Worker delay is %d us using CK-Burning\n", wkr_delay);
   
   printf("Total time is %u ms\n", t);
   if ( wkr_delay >= 0 ) 
-    grp = (float)t / nr_group - (float)wkr_delay * 1000000;
+    grp = (float)t / nr_group - (float)wkr_delay;
   else {
     grp = (float)t / nr_group;
   }
@@ -133,6 +135,11 @@ main(int argc, char *argv[])
       exit(-1);
     }
   }
+
+  // init ck_burning
+  assert( initialize_ck_burning()
+    && "failed to initialize ck burning");
+
   //  thr_pool = new mt::thread_pool(nr_thread*2);
   pol_size = nr_thread >= 16 ? nr_thread * 1.6
     : nr_thread * 1.2;

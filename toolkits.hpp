@@ -22,6 +22,12 @@
 #define verify(T0, T1) \
   assert_s((std::tr1::is_same<T0, T1>::value))
 
+#define likely(x) \
+  __builtin_expect(!!(x), 1)
+
+#define unlikely(x) \
+  __builtin_expect(!!(x), 0)
+
 namespace vina {
   /// a very simple random number generator
   template<class T>
