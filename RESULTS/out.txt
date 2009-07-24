@@ -1,0 +1,868 @@
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.170615
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185569usec            96.5%
+# 2          #frame mem cost  128      411usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192244usec            100.0%
+# 9        mat thread0 timer   64    37615usec            19.6%
+#10        mat thread1 timer   64    37212usec            19.4%
+#11        mat thread2 timer   64    37270usec            19.4%
+#12        mat thread3 timer   64    37690usec            19.6%
+#13        mat thread4 timer   64    37549usec            19.5%
+#14        mat thread5 timer   64    37540usec            19.5%
+#15        mat thread6 timer   64    38486usec            20.0%
+#16        mat thread7 timer   64    38067usec            19.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.130665
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   186293usec            96.6%
+# 2          #frame mem cost  128      402usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192934usec            100.0%
+# 9        mat thread0 timer   64    37551usec            19.5%
+#10        mat thread1 timer   64    37394usec            19.4%
+#11        mat thread2 timer   64    37434usec            19.4%
+#12        mat thread3 timer   64    37758usec            19.6%
+#13        mat thread4 timer   64    37558usec            19.5%
+#14        mat thread5 timer   64    37819usec            19.6%
+#15        mat thread6 timer   64    38284usec            19.8%
+#16        mat thread7 timer   64    37987usec            19.7%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.114419
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   186607usec            96.6%
+# 2          #frame mem cost  128      397usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   193216usec            100.0%
+# 9        mat thread0 timer   64    37471usec            19.4%
+#10        mat thread1 timer   64    37134usec            19.2%
+#11        mat thread2 timer   64    37298usec            19.3%
+#12        mat thread3 timer   64    37980usec            19.7%
+#13        mat thread4 timer   64    37500usec            19.4%
+#14        mat thread5 timer   64    37543usec            19.4%
+#15        mat thread6 timer   64    38336usec            19.8%
+#16        mat thread7 timer   64    38015usec            19.7%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.102467
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   186785usec            96.6%
+# 2          #frame mem cost  128      403usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   193424usec            100.0%
+# 9        mat thread0 timer   64    37434usec            19.4%
+#10        mat thread1 timer   64    37214usec            19.2%
+#11        mat thread2 timer   64    37280usec            19.3%
+#12        mat thread3 timer   64    37877usec            19.6%
+#13        mat thread4 timer   64    37485usec            19.4%
+#14        mat thread5 timer   64    37429usec            19.3%
+#15        mat thread6 timer   64    37993usec            19.6%
+#16        mat thread7 timer   64    37997usec            19.6%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.107291
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   186584usec            96.5%
+# 2          #frame mem cost  128      409usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   193340usec            100.0%
+# 9        mat thread0 timer   64    37554usec            19.4%
+#10        mat thread1 timer   64    37262usec            19.3%
+#11        mat thread2 timer   64    37326usec            19.3%
+#12        mat thread3 timer   64    37751usec            19.5%
+#13        mat thread4 timer   64    37422usec            19.4%
+#14        mat thread5 timer   64    37522usec            19.4%
+#15        mat thread6 timer   64    38455usec            19.9%
+#16        mat thread7 timer   64    37956usec            19.6%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.175091
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185470usec            96.5%
+# 2          #frame mem cost  128      396usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192167usec            100.0%
+# 9        mat thread0 timer   64    37537usec            19.5%
+#10        mat thread1 timer   64    37273usec            19.4%
+#11        mat thread2 timer   64    37321usec            19.4%
+#12        mat thread3 timer   64    37836usec            19.7%
+#13        mat thread4 timer   64    37343usec            19.4%
+#14        mat thread5 timer   64    37538usec            19.5%
+#15        mat thread6 timer   64    38732usec            20.2%
+#16        mat thread7 timer   64    38320usec            19.9%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.165620
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185564usec            96.5%
+# 2          #frame mem cost  128      421usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192330usec            100.0%
+# 9        mat thread0 timer   64    37638usec            19.6%
+#10        mat thread1 timer   64    37232usec            19.4%
+#11        mat thread2 timer   64    37233usec            19.4%
+#12        mat thread3 timer   64    37777usec            19.6%
+#13        mat thread4 timer   64    37545usec            19.5%
+#14        mat thread5 timer   64    37392usec            19.4%
+#15        mat thread6 timer   64    38563usec            20.0%
+#16        mat thread7 timer   64    38178usec            19.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.143718
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185925usec            96.5%
+# 2          #frame mem cost  128      401usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192708usec            100.0%
+# 9        mat thread0 timer   64    37475usec            19.4%
+#10        mat thread1 timer   64    37146usec            19.3%
+#11        mat thread2 timer   64    37226usec            19.3%
+#12        mat thread3 timer   64    37817usec            19.6%
+#13        mat thread4 timer   64    37617usec            19.5%
+#14        mat thread5 timer   64    37441usec            19.4%
+#15        mat thread6 timer   64    38161usec            19.8%
+#16        mat thread7 timer   64    37999usec            19.7%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.181142
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185333usec            96.5%
+# 2          #frame mem cost  128      433usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192063usec            100.0%
+# 9        mat thread0 timer   64    37583usec            19.6%
+#10        mat thread1 timer   64    37315usec            19.4%
+#11        mat thread2 timer   64    37281usec            19.4%
+#12        mat thread3 timer   64    37841usec            19.7%
+#13        mat thread4 timer   64    37471usec            19.5%
+#14        mat thread5 timer   64    37806usec            19.7%
+#15        mat thread6 timer   64    38906usec            20.3%
+#16        mat thread7 timer   64    38264usec            19.9%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.099254
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   186741usec            96.5%
+# 2          #frame mem cost  128      450usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   193480usec            100.0%
+# 9        mat thread0 timer   64    37437usec            19.3%
+#10        mat thread1 timer   64    37202usec            19.2%
+#11        mat thread2 timer   64    37342usec            19.3%
+#12        mat thread3 timer   64    37774usec            19.5%
+#13        mat thread4 timer   64    37451usec            19.4%
+#14        mat thread5 timer   64    37703usec            19.5%
+#15        mat thread6 timer   64    38188usec            19.7%
+#16        mat thread7 timer   64    37961usec            19.6%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.053265
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   187658usec            96.6%
+# 2          #frame mem cost  128      445usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   194285usec            100.0%
+# 9        mat thread0 timer   64    37544usec            19.3%
+#10        mat thread1 timer   64    37167usec            19.1%
+#11        mat thread2 timer   64    37277usec            19.2%
+#12        mat thread3 timer   64    37781usec            19.4%
+#13        mat thread4 timer   64    37365usec            19.2%
+#14        mat thread5 timer   64    37378usec            19.2%
+#15        mat thread6 timer   64    38048usec            19.6%
+#16        mat thread7 timer   64    38055usec            19.6%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.153615
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185804usec            96.5%
+# 2          #frame mem cost  128      406usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192537usec            100.0%
+# 9        mat thread0 timer   64    37406usec            19.4%
+#10        mat thread1 timer   64    37273usec            19.4%
+#11        mat thread2 timer   64    37302usec            19.4%
+#12        mat thread3 timer   64    37808usec            19.6%
+#13        mat thread4 timer   64    37426usec            19.4%
+#14        mat thread5 timer   64    37312usec            19.4%
+#15        mat thread6 timer   64    38166usec            19.8%
+#16        mat thread7 timer   64    37856usec            19.7%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.056566
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   187629usec            96.6%
+# 2          #frame mem cost  128      417usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   194227usec            100.0%
+# 9        mat thread0 timer   64    37505usec            19.3%
+#10        mat thread1 timer   64    37279usec            19.2%
+#11        mat thread2 timer   64    37342usec            19.2%
+#12        mat thread3 timer   64    37702usec            19.4%
+#13        mat thread4 timer   64    37580usec            19.3%
+#14        mat thread5 timer   64    37591usec            19.4%
+#15        mat thread6 timer   64    38296usec            19.7%
+#16        mat thread7 timer   64    37921usec            19.5%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.194606
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185192usec            96.5%
+# 2          #frame mem cost  128      428usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   191832usec            100.0%
+# 9        mat thread0 timer   64    37452usec            19.5%
+#10        mat thread1 timer   64    37257usec            19.4%
+#11        mat thread2 timer   64    37400usec            19.5%
+#12        mat thread3 timer   64    37775usec            19.7%
+#13        mat thread4 timer   64    37540usec            19.6%
+#14        mat thread5 timer   64    37512usec            19.6%
+#15        mat thread6 timer   64    38549usec            20.1%
+#16        mat thread7 timer   64    38080usec            19.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.173695
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185393usec            96.5%
+# 2          #frame mem cost  128      444usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   192191usec            100.0%
+# 9        mat thread0 timer   64    37507usec            19.5%
+#10        mat thread1 timer   64    37239usec            19.4%
+#11        mat thread2 timer   64    37215usec            19.4%
+#12        mat thread3 timer   64    37859usec            19.7%
+#13        mat thread4 timer   64    37575usec            19.6%
+#14        mat thread5 timer   64    37540usec            19.5%
+#15        mat thread6 timer   64    38443usec            20.0%
+#16        mat thread7 timer   64    38181usec            19.9%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.002411
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   188436usec            96.5%
+# 2          #frame mem cost  128      403usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   195183usec            100.0%
+# 9        mat thread0 timer   64    37432usec            19.2%
+#10        mat thread1 timer   64    37565usec            19.2%
+#11        mat thread2 timer   64    37434usec            19.2%
+#12        mat thread3 timer   64    37695usec            19.3%
+#13        mat thread4 timer   64    37640usec            19.3%
+#14        mat thread5 timer   64    37381usec            19.2%
+#15        mat thread6 timer   64    37501usec            19.2%
+#16        mat thread7 timer   64    37530usec            19.2%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.105510
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   186631usec            96.5%
+# 2          #frame mem cost  128      433usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   193371usec            100.0%
+# 9        mat thread0 timer   64    37648usec            19.5%
+#10        mat thread1 timer   64    37425usec            19.4%
+#11        mat thread2 timer   64    37407usec            19.3%
+#12        mat thread3 timer   64    37865usec            19.6%
+#13        mat thread4 timer   64    37823usec            19.6%
+#14        mat thread5 timer   64    37604usec            19.4%
+#15        mat thread6 timer   64    38216usec            19.8%
+#16        mat thread7 timer   64    38232usec            19.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.054517
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   187714usec            96.6%
+# 2          #frame mem cost  128      409usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   194263usec            100.0%
+# 9        mat thread0 timer   64    37336usec            19.2%
+#10        mat thread1 timer   64    37412usec            19.3%
+#11        mat thread2 timer   64    37381usec            19.2%
+#12        mat thread3 timer   64    37489usec            19.3%
+#13        mat thread4 timer   64    38208usec            19.7%
+#14        mat thread5 timer   64    39010usec            20.1%
+#15        mat thread6 timer   64    38628usec            19.9%
+#16        mat thread7 timer   64    38031usec            19.6%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=10.185468
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   207203usec            98.3%
+# 2          #frame mem cost   32      199usec            0.1%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   210838usec            100.0%
+# 9        mat thread0 timer   16   108444usec            51.4%
+#10        mat thread1 timer   16   119524usec            56.7%
+#11        mat thread2 timer   16   138566usec            65.7%
+#12        mat thread3 timer   16   131038usec            62.2%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=10.189092
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   207102usec            98.3%
+# 2          #frame mem cost   32      201usec            0.1%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   210763usec            100.0%
+# 9        mat thread0 timer   16   113315usec            53.8%
+#10        mat thread1 timer   16   135840usec            64.5%
+#11        mat thread2 timer   16   149322usec            70.8%
+#12        mat thread3 timer   16   120507usec            57.2%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=6.067915
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par  256   330329usec            94.9%
+# 2          #frame mem cost  512     1788usec            0.5%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   353908usec            101.7%
+# 9        mat thread0 timer  256    20541usec            5.9%
+#10        mat thread1 timer  256    20392usec            5.9%
+#11        mat thread2 timer  256    20452usec            5.9%
+#12        mat thread3 timer  256    20509usec            5.9%
+#13        mat thread4 timer  256    20423usec            5.9%
+#14        mat thread5 timer  256    20463usec            5.9%
+#15        mat thread6 timer  256    20484usec            5.9%
+#16        mat thread7 timer  256    20412usec            5.9%
+#17        mat thread8 timer  256    20409usec            5.9%
+#18        mat thread9 timer  256    20592usec            5.9%
+#19       mat thread10 timer  256    20588usec            5.9%
+#20       mat thread11 timer  256    20575usec            5.9%
+#21       mat thread12 timer  256    20528usec            5.9%
+#22       mat thread13 timer  256    20631usec            5.9%
+#23       mat thread14 timer  256    20506usec            5.9%
+#24       mat thread15 timer  256    20304usec            5.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=5.935079
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            nan%
+# 1        #frame kernel par  256   336820usec            inf%
+# 2          #frame mem cost  512     1863usec            inf%
+# 3       #frame thread cost    0        0usec            nan%
+# 4             STD multiply    0        0usec            nan%
+# 5          Single-threaded    0        0usec            nan%
+# 6                   ST SSE    0        0usec            nan%
+# 7          mulmat_parallel    0        0usec            nan%
+# 8      mulmat_parallel SSE    1   361829usec            inf%
+# 9        mat thread0 timer  256    20520usec            inf%
+#10        mat thread1 timer  256    20308usec            inf%
+#11        mat thread2 timer  256    20518usec            inf%
+#12        mat thread3 timer  256    20458usec            inf%
+#13        mat thread4 timer  256    20428usec            inf%
+#14        mat thread5 timer  256    20429usec            inf%
+#15        mat thread6 timer  256    20472usec            inf%
+#16        mat thread7 timer  256    20527usec            inf%
+#17        mat thread8 timer  256    20489usec            inf%
+#18        mat thread9 timer  256    20550usec            inf%
+#19       mat thread10 timer  256    20484usec            inf%
+#20       mat thread11 timer  256    20588usec            inf%
+#21       mat thread12 timer  256    20431usec            inf%
+#22       mat thread13 timer  256    20545usec            inf%
+#23       mat thread14 timer  256    20466usec            inf%
+#24       mat thread15 timer  256    20307usec            inf%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=8.709428
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   32   242437usec            98.3%
+# 2          #frame mem cost   64      241usec            0.1%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   246570usec            100.0%
+# 9        mat thread0 timer   32   192563usec            78.1%
+#10        mat thread1 timer   32   198041usec            80.3%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=2.782932
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16  6153161usec            99.7%
+# 2          #frame mem cost   32      435usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1  6173299usec            100.0%
+# 9        mat thread0 timer   16  2257938usec            36.6%
+#10        mat thread1 timer   16  4814115usec            78.0%
+#11        mat thread2 timer   16  5852234usec            94.8%
+#12        mat thread3 timer   16  5706124usec            92.4%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=11.194431
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64   185227usec            96.6%
+# 2          #frame mem cost  128      406usec            0.2%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   191835usec            100.0%
+# 9        mat thread0 timer   64    37528usec            19.6%
+#10        mat thread1 timer   64    37268usec            19.4%
+#11        mat thread2 timer   64    37240usec            19.4%
+#12        mat thread3 timer   64    37568usec            19.6%
+#13        mat thread4 timer   64    37716usec            19.7%
+#14        mat thread5 timer   64    38266usec            19.9%
+#15        mat thread6 timer   64    38967usec            20.3%
+#16        mat thread7 timer   64    38085usec            19.9%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=10.808899
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par  256  1538533usec            96.8%
+# 2          #frame mem cost  512     1939usec            0.1%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1  1589419usec            100.0%
+# 9        mat thread0 timer  256   521009usec            32.8%
+#10        mat thread1 timer  256   189521usec            11.9%
+#11        mat thread2 timer  256   638801usec            40.2%
+#12        mat thread3 timer  256   199707usec            12.6%
+#13        mat thread4 timer  256   473335usec            29.8%
+#14        mat thread5 timer  256   185376usec            11.7%
+#15        mat thread6 timer  256   390362usec            24.6%
+#16        mat thread7 timer  256   193917usec            12.2%
+#17        mat thread8 timer  256   183110usec            11.5%
+#18        mat thread9 timer  256   184377usec            11.6%
+#19       mat thread10 timer  256   270712usec            17.0%
+#20       mat thread11 timer  256   284522usec            17.9%
+#21       mat thread12 timer  256   246237usec            15.5%
+#22       mat thread13 timer  256   236237usec            14.9%
+#23       mat thread14 timer  256   222263usec            14.0%
+#24       mat thread15 timer  256   208662usec            13.1%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=  32
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=2.960560
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par 1024 45993602usec            99.1%
+# 2          #frame mem cost 2048    11301usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1 46423300usec            100.0%
+# 9        mat thread0 timer 1024  4429912usec            9.5%
+#10        mat thread1 timer 1024  2890284usec            6.2%
+#11        mat thread2 timer 1024  6740262usec            14.5%
+#12        mat thread3 timer 1024  3588567usec            7.7%
+#13        mat thread4 timer 1024  6528354usec            14.1%
+#14        mat thread5 timer 1024 10100726usec            21.8%
+#15        mat thread6 timer 1024  9456562usec            20.4%
+#16        mat thread7 timer 1024  9096011usec            19.6%
+#17        mat thread8 timer 1024  8099311usec            17.4%
+#18        mat thread9 timer 1024  8362919usec            18.0%
+#19       mat thread10 timer 1024  8194134usec            17.7%
+#20       mat thread11 timer 1024 10187549usec            21.9%
+#21       mat thread12 timer 1024 13882222usec            29.9%
+#22       mat thread13 timer 1024 13697713usec            29.5%
+#23       mat thread14 timer 1024 14043482usec            30.3%
+#24       mat thread15 timer 1024 13396305usec            28.9%
+#25       mat thread16 timer 1024 13322264usec            28.7%
+#26       mat thread17 timer 1024 13983064usec            30.1%
+#27       mat thread18 timer 1024 19900137usec            42.9%
+#28       mat thread19 timer 1024 15262735usec            32.9%
+#29       mat thread20 timer 1024 18151955usec            39.1%
+#30       mat thread21 timer 1024 16787369usec            36.2%
+#31       mat thread22 timer 1024 15039661usec            32.4%
+#32       mat thread23 timer 1024 13457051usec            29.0%
+#33       mat thread24 timer 1024 14654503usec            31.6%
+#34       mat thread25 timer 1024 14407794usec            31.0%
+#35       mat thread26 timer 1024 14707501usec            31.7%
+#36       mat thread27 timer 1024 14278143usec            30.8%
+#37       mat thread28 timer 1024 13242586usec            28.5%
+#38       mat thread29 timer 1024 10803228usec            23.3%
+#39       mat thread30 timer 1024  9169179usec            19.8%
+#40       mat thread31 timer 1024  7662052usec            16.5%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=3.750998
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    4   569903usec            99.5%
+# 2          #frame mem cost    8      192usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   572510usec            100.0%
+# 9        mat thread0 timer    4   270507usec            47.2%
+#10        mat thread1 timer    4   569029usec            99.4%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=9.835728
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   214691usec            98.3%
+# 2          #frame mem cost   32      219usec            0.1%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   218335usec            100.0%
+# 9        mat thread0 timer   16   111422usec            51.0%
+#10        mat thread1 timer   16   116470usec            53.3%
+#11        mat thread2 timer   16   139976usec            64.1%
+#12        mat thread3 timer   16   126671usec            58.0%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=4.456893
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64  3827864usec            99.3%
+# 2          #frame mem cost  128      796usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1  3854674usec            100.0%
+# 9        mat thread0 timer   64  1040884usec            27.0%
+#10        mat thread1 timer   64  2162851usec            56.1%
+#11        mat thread2 timer   64  2048861usec            53.2%
+#12        mat thread3 timer   64  1975426usec            51.2%
+#13        mat thread4 timer   64  2009931usec            52.1%
+#14        mat thread5 timer   64  2918401usec            75.7%
+#15        mat thread6 timer   64  3124076usec            81.0%
+#16        mat thread7 timer   64  2883080usec            74.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=2.553751
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par  256 53545134usec            99.5%
+# 2          #frame mem cost  512     3672usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1 53818458usec            100.0%
+# 9        mat thread0 timer  256 14093625usec            26.2%
+#10        mat thread1 timer  256 17330723usec            32.2%
+#11        mat thread2 timer  256 24625910usec            45.8%
+#12        mat thread3 timer  256 42842309usec            79.6%
+#13        mat thread4 timer  256 44235580usec            82.2%
+#14        mat thread5 timer  256 45211016usec            84.0%
+#15        mat thread6 timer  256 43391477usec            80.6%
+#16        mat thread7 timer  256 42884079usec            79.7%
+#17        mat thread8 timer  256 44547808usec            82.8%
+#18        mat thread9 timer  256 49554531usec            92.1%
+#19       mat thread10 timer  256 49725835usec            92.4%
+#20       mat thread11 timer  256 48928359usec            90.9%
+#21       mat thread12 timer  256 47708091usec            88.6%
+#22       mat thread13 timer  256 46499021usec            86.4%
+#23       mat thread14 timer  256 45008030usec            83.6%
+#24       mat thread15 timer  256 44118651usec            82.0%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=3.709625
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    4   576282usec            99.5%
+# 2          #frame mem cost    8      190usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   578895usec            100.0%
+# 9        mat thread0 timer    4   296539usec            51.2%
+#10        mat thread1 timer    4   573127usec            99.0%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=2.445792
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16  7003921usec            99.7%
+# 2          #frame mem cost   32      443usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1  7024256usec            100.0%
+# 9        mat thread0 timer   16  4524328usec            64.4%
+#10        mat thread1 timer   16  6310090usec            89.8%
+#11        mat thread2 timer   16  6798566usec            96.8%
+#12        mat thread3 timer   16  6477610usec            92.2%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+MT SSE gflop=2.130125
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   64 64328092usec            99.7%
+# 2          #frame mem cost  128     1351usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    0        0usec            0.0%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    0        0usec            0.0%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1 64521531usec            100.0%
+# 9        mat thread0 timer   64 38909427usec            60.3%
+#10        mat thread1 timer   64 60173832usec            93.3%
+#11        mat thread2 timer   64 62731662usec            97.2%
+#12        mat thread3 timer   64 63219781usec            98.0%
+#13        mat thread4 timer   64 62690160usec            97.2%
+#14        mat thread5 timer   64 62473363usec            96.8%
+#15        mat thread6 timer   64 61842425usec            95.8%
+#16        mat thread7 timer   64 61268260usec            95.0%

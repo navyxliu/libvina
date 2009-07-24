@@ -1,0 +1,52 @@
+digraph G_VIEWS {
+
+	edge [fontsize=8, fontname="Times-Italic"]
+//	label="Relationship of entities and views"
+
+        Entity[label="Vector or Matrix",
+	       shape=box];
+	
+	{
+		node [shape=ellipse]
+		rank=same
+		ReadView;
+		WriteView;
+	}
+	Entity -> ReadView[label="N>=SZ"];
+	Entity -> WriteView [label="N>=SZ", style=dashed];
+
+	ReadView -> ReadView[label="SZ--"];
+	WriteView : nw-> WriteView : s[label="SZ--", style=dashed];
+	WriteView -> ReadView[label="writer.sz>=reader.size"]
+	{
+		rank=same
+		WriteViewMT_local [label="WriteViewMT"]
+		ReadViewMT_local [label="ReadViewMT"];
+	}
+	WriteView -> WriteViewMT_local[style=dashed, label="protected"]
+	WriteViewMT_local -> WriteView[label="ready"]
+	WriteView -> ReadViewMT_local[style=dashed, label="protected"]
+	ReadViewMT_local -> ReadView[label="ready"]
+	
+	subgraph cluster0 {
+		label="other_thread_space"
+		labeljust="r"
+		style=filled
+		color=lightgray
+		{
+			rank=same
+			ReadViewMT;
+			WriteViewMT;
+		}
+		
+		WriteViewMT_local -> WriteViewMT[label="writer.sz>=writerMT.sz,\nwriterMT.signal:=writer", labelfloat=false]
+
+		
+		
+		ReadViewMT->ReadViewMT_local[label="writer.sz>=readerMT.sz,\nreaderMT.signal:=writer", labelfloat=false, dir=back]
+		
+		
+		WriteViewMT -> ReadViewMT[label="writerMT.sz>=readerMT.sz,\nreaderMT.signal:=writerMT.signal", constraint=false]
+		
+	}
+}

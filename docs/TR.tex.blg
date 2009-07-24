@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99c (Web2C 7.5.4)
+The top-level auxiliary file: TR.tex.aux
+The style file: plain.bst
+Database file #1: my.bib
+Warning--empty institution in todd-temp
+Warning--empty year in todd-temp
+You've used 5 entries,
+            2118 wiz_defined-function locations,
+            526 strings with 4999 characters,
+and the built_in function-call counts, 1599 in all, are:
+= -- 139
+> -- 103
+< -- 1
++ -- 41
+- -- 36
+* -- 106
+:= -- 288
+add.period$ -- 16
+call.type$ -- 5
+change.case$ -- 31
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 63
+empty$ -- 113
+format.name$ -- 36
+if$ -- 324
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 7
+newline$ -- 28
+num.names$ -- 10
+pop$ -- 48
+preamble$ -- 1
+purify$ -- 28
+quote$ -- 0
+skip$ -- 35
+stack$ -- 0
+substring$ -- 29
+swap$ -- 10
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 14
+warning$ -- 2
+while$ -- 11
+width$ -- 6
+write$ -- 55
+(There were 2 warnings)
