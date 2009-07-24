@@ -42,6 +42,9 @@ extern "C" {
   /*check out avaialable threads in runtime.
    */
   extern int smpd_available_thread();
+  /*
+   */
+  extern int spmd_all_complete();
 #ifdef __cplusplus
 }
 #endif

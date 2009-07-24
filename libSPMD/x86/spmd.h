@@ -40,7 +40,7 @@ typedef pid_t             leader_t;
 typedef pid_t             task_t;
 typedef pthread_mutex_t   spinlock_t;
 typedef void (*hook_handler_t)(void);
-typedef void (*task_entry_t)(void *);
+typedef void (*task_entry_t)(void);
 
 #ifdef SPMD_FIXED_PARAMETER 
 typedef void (*task_func_t)(void * ret, void * arg0, void * arg1);
@@ -58,12 +58,6 @@ typedef struct task_struct {
   void *           args[3];   
 }* task_struct_p;
 
-struct tag_init_list {
-  unsigned int stk_sz;   /* stack size per task */
-  void **      stks;     /* stacks for children */
-  thread *     wb_tsks;  /* write back task id to pool */
-};
-
 typedef struct warp_struct {
   leader_t        gid; 
   int             sem;
@@ -71,12 +65,18 @@ typedef struct warp_struct {
   task_func_t     fn;      /* task function */
   hook_handler_t  hook;    /* hook function, call after wait */
   task_struct_p   tsks;    
-  struct tag_init_list init_list;
+
+  struct tag_init_list {
+    unsigned int stk_sz;   /* stack size per task */
+    void **      stks;     /* stacks for children */
+    thread_t *     wb_tsks;  /* write back task id to pool */
+  } init_list;
 }* warp_struct_p;
 
 typedef struct leader_struct{
   leader_t           gid;
   spinlock_t         lck;
+  int                nr;   /* num. of task installed on warp */
   int                oc;   /* occupied bit protected by lck
 			      1: leader is used and has not finished yet.
 			      0: unused

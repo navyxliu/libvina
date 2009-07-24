@@ -85,16 +85,17 @@ int tkill(int tid, int sig)
   return syscall(SYS_tkill, tid, sig);
 }
 
-void wait_for_tg(leader_struct_p leader)
+void wait_for_tg(int sem)
 {
   int eno;
-  int sem = leader->sem;
   struct sembuf buf = {
     .sem_num = 0,
     .sem_op = 0,
     .sem_flg = 0
   };
-
+  /*sleep until all of his managed threads 
+    finished
+  */
   if ( -1 == (eno=semop(sem, &buf, 1)) ) {
     perror( "semop failed\n");
     exit(EXIT_FAILURE);
