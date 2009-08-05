@@ -191,6 +191,7 @@ main(int argc, char **argv)
     typedef conv2d_map<ImageBuffer, ImageBuffer, KernelBuffer, 
     matConv2dWrapper, p_simple, 2> TF;
     TF::doit(in, kerl, out);
+
     sleep(1);
     for(int i=0; i<256; ++i) for (int j=0; j<256; ++j) {
 	if ( out[i][j] !=  STD_out[i][j] ) {
