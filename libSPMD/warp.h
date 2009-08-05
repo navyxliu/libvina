@@ -10,6 +10,11 @@ extern "C" {
    *-1 when failed
    */
   extern int spmd_initialize();
+  /*kill threads managed by spmd RT.
+   *reclaim memory
+   *no error is returned.
+   */
+  extern void spmd_cleanup();
   /*build a new warp. this function may block when no
    *sufficient physical resource is available
    *
@@ -40,6 +45,9 @@ extern "C" {
   //  extern int spmd_create_thread(int warp_id, int argc, ...);
   extern int spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1);
   /*check out avaialable threads in runtime.
+   *return the maximal number of available PEs. libSPMD RT can not guarantee
+   *that spawn threads continuously in returned number is non-blocking. it depends on
+   *implementation.
    */
   extern int smpd_available_thread();
   /*

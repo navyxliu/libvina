@@ -82,10 +82,10 @@ the_pool
 |
 |__slot2
   |__leader1
-  |___task0
-  |___task1
-  |___task2
-  |___task3
+    |___task0
+    |___task1
+    |___task2
+    |___task3
 
 fig 4 -- threadpool tree
 

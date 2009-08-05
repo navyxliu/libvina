@@ -30,7 +30,7 @@ int pol_size;
 mt::thread_pool * thr_pool;
 
 void worker(mt::barrier_t barrier,
-	    int delay /*sec*/)
+	    int delay /*us*/)
 {
   if ( likely(delay >= 0) ) 
 	burn_usecs(delay);
@@ -64,7 +64,7 @@ void group_with_tp()
   barrier->wait();
 }
 
-void print_result(unsigned long t, 
+void print_result(unsigned long t,/*in micro sec, us*/ 
 		  const char *s)
 {
   float grp;
@@ -78,14 +78,14 @@ void print_result(unsigned long t,
   if ( wkr_delay >= 0 ) 
     printf("Worker delay is %d us using CK-Burning\n", wkr_delay);
   
-  printf("Total time is %u ms\n", t);
+  printf("Total time is %ul us\n", t);
   if ( wkr_delay >= 0 ) 
     grp = (float)t / nr_group - (float)wkr_delay;
   else {
     grp = (float)t / nr_group;
   }
-  printf("One group overhead is %8.2lf ms\n", grp);
-  printf("amortized thread cost %8.2lf ms\n", grp/nr_thread);
+  printf("One group overhead is %8.2lf us\n", grp);
+  printf("amortized thread cost %8.2lf us\n", grp/nr_thread);
   printf("\n");
 }
 
@@ -130,7 +130,7 @@ main(int argc, char *argv[])
       enf_yield = 1;
       break;
     default:
-      fprintf(stderr, "Usage: %s [-t num_of_thread] [-i iteration] [-d delay time] [-y yeild]\n",
+      fprintf(stderr, "Usage: %s [-t num_of_thread] [-i iteration] [-d delay(us)] [-y yeild]\n",
 	      argv[1]);
       exit(-1);
     }
