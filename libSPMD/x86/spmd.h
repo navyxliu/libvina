@@ -69,7 +69,7 @@ typedef struct warp_struct {
   struct tag_init_list {
     unsigned int stk_sz;   /* stack size per task */
     void **      stks;     /* stacks for children */
-    thread_t *     wb_tsks;  /* write back task id to pool */
+    thread_t *   wb_tsks;  /* write back task id to pool */
   } init_list;
 }* warp_struct_p;
 

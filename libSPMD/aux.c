@@ -45,6 +45,22 @@ spinlock_init(spinlock_t * lck)
 }
 
 void
+spinlock_destroy(spinlock_t * lck)
+{
+  int ret;
+
+  if ( 0 != (ret=pthread_mutex_destroy(lck)) ) {
+    perror("pthread mutex destroy failed");
+    if ( ret == EBUSY ) fprintf(stderr, "EBUSY\n");
+    else if ( ret == EINVAL ) fprintf(stderr, "EINVAL\n");
+    else if ( ret == EINTR ) 
+      fprintf(stderr, "EINTR, These functions shall not return an error code \
+of [EINTR]--man pthread_mutex_destroy\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
+void
 spinlock_lock(spinlock_t * lck)
 {
   if ( 0 != pthread_mutex_lock(lck) ) {
@@ -87,7 +103,7 @@ int tkill(int tid, int sig)
 
 void wait_for_tg(int sem)
 {
-  int eno;
+  int ret;
   struct sembuf buf = {
     .sem_num = 0,
     .sem_op = 0,
@@ -96,11 +112,14 @@ void wait_for_tg(int sem)
   /*sleep until all of his managed threads 
     finished
   */
-  if ( -1 == (eno=semop(sem, &buf, 1)) ) {
-    perror( "semop failed\n");
+  do {
+    ret = semop(sem, &buf, 1);
+  } while( ret == -1 && errno == EINTR );
+  
+  if ( ret != 0 ) {
+    perror("wait_for_tg failed");
     exit(EXIT_FAILURE);
   }
-  return 1;
 }
 /**set schduler to rt fifo.
    [prio] -- priority of rt schduler (0-99)
@@ -114,8 +133,8 @@ set_fifo(int pid, int prio)
   memset(&sp, 0, sizeof(sp));
   sp.sched_priority = prio;
   if (sched_setscheduler(pid, SCHED_FIFO, &sp) == -1) {
-    if (errno != EPERM)
-      printf("sched_setscheduler failed\n");
+    fprintf(stderr, "sched_setscheduler failed\n");
+    perror("sched to SCHED_FIFO faied");
   }
 }
 
