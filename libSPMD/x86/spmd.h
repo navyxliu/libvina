@@ -25,7 +25,7 @@
 #define SPMD_SPINLOCK_INITIALIZER PTHREAD_MUTEX_INITIALIZER
 
 #ifndef SPMD_SEM_KEY
-#define SPMD_SEM_KEY  "/home/liu"
+#define SPMD_SEM_KEY  "/tmp/tmp"
 #endif
 
 #define __leader

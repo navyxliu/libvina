@@ -9,6 +9,7 @@
 #include "../profiler.hpp"
 #include "../toolkits.hpp"
 #include "threadpool.hpp"
+#include "warp.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +40,16 @@ void worker(mt::barrier_t barrier,
 
   barrier->wait();
 }
-
+void worker2(void)
+{
+  static int counter;
+  if ( likely(wkr_delay >= 0) ) 
+    burn_usecs(wkr_delay);
+  else if ( enf_yield ) 
+    sched_yield();
+  
+  //printf("worker2 cnt=%d\n", ++counter);
+}
 void group_without_tp()
 {
   mt::barrier_t barrier(new boost::barrier(nr_thread + 1));
@@ -62,6 +72,14 @@ void group_with_tp()
     }
   
   barrier->wait();
+}
+void group_with_warp()
+{
+  int id = spmd_create_warp(nr_thread, (void *)worker2, 0, NULL);
+  assert( id != -1 && "create warp failed");
+  //printf("create warp %d\n", id);
+  for(int i=0; i<nr_thread; ++i)
+    spmd_create_thread(id, NULL, NULL, NULL);
 }
 
 void print_result(unsigned long t,/*in micro sec, us*/ 
@@ -97,8 +115,10 @@ void test_function_of(void(*f)(),
   //start
   prof.eventStart(temp0);
   //work load
-  for(int i=0; i<nr_group; i++)
+  for(int i=0; i<nr_group; i++) {
+    //printf("group %d\n", i);
     f();
+  }
 
   //end
   prof.eventEnd(temp0);
@@ -147,6 +167,13 @@ main(int argc, char *argv[])
   thr_pool = new mt::thread_pool(pol_size);
   test_function_of(group_with_tp, "threadpool");
   test_function_of(group_without_tp, "mt::thread");
+  
+  nr_thread = spmd_initialize();
+  printf("nr_thread =%d\n", nr_thread);
+  assert( nr_thread != -1 );
+  //sleep(1);
+  test_function_of(group_with_warp, "libspmd");
+  spmd_cleanup();
 
   Profiler::getInstance().dump();
   return 0;

@@ -49,7 +49,7 @@ extern "C" {
    *that spawn threads continuously in returned number is non-blocking. it depends on
    *implementation.
    */
-  extern int smpd_available_thread();
+  extern int spmd_available_thread();
   /*
    */
   extern int spmd_all_complete();
