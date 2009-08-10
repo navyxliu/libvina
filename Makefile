@@ -87,7 +87,7 @@ LAST=`date +%y_%m_`$$((`date +%d`-1))
 .PHONY: clean dist distclean lines all test_threadlib
 
 clean: 
-	-rm -f *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib
+	-rm -f *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms
 distclean:
 	-rm -f *~ ._*
 dist: 
