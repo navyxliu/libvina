@@ -50,13 +50,13 @@ spinlock_destroy(spinlock_t * lck)
   int ret;
 
   if ( 0 != (ret=pthread_mutex_destroy(lck)) ) {
-    perror("pthread mutex destroy failed");
+    //perror("pthread mutex destroy failed");
     if ( ret == EBUSY ) fprintf(stderr, "EBUSY\n");
     else if ( ret == EINVAL ) fprintf(stderr, "EINVAL\n");
     else if ( ret == EINTR ) 
       fprintf(stderr, "EINTR, These functions shall not return an error code \
 of [EINTR]--man pthread_mutex_destroy\n");
-    exit(EXIT_FAILURE);
+    // exit(EXIT_FAILURE);
   }
 }
 
@@ -118,7 +118,7 @@ void wait_for_tg(int sem)
   
   if ( ret != 0 ) {
     perror("wait_for_tg failed");
-    exit(EXIT_FAILURE);
+    /*exit(EXIT_FAILURE);*/
   }
 }
 /**set schduler to rt fifo.

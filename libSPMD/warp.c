@@ -27,27 +27,34 @@ extern  void set_normal(int pid);
 
 void children_handler(int signum)
 {
+#ifndef __NDEBUG
   printf("sigcont is caught\n");
+#endif
 }
 
 int __task 
 default_task_entry(void * arg)
 {
+#ifndef __NDEBUG
   fprintf(stderr, "@task created, getppid=%d, getpid=%d gettid=%d, arg=%p\n",
 	  getppid(), getpid(), gettid(), arg);
+#endif
+
   task_struct_p task = (task_struct_p)arg;
   struct sembuf buf;
+  set_fifo(gettid(), sched_get_priority_max(SCHED_FIFO));
 
   while(1) {
     pause();
-
+#ifndef __NDEBUG
     fprintf(stderr, "@task [%d:%d] start working, task ptr = %p fn = %p\n", 
 	    getpid(), gettid(), task, task->fn);
+#endif
     task->fn(task->args[0], task->args[1], task->args[2]);
-
+#ifndef __NDEBUG
     printf("task [%d:%d] gonna release pe: %d\n",
 	   getpid(), gettid(), task->oc);
-
+#endif
     /*release physical pe */
     buf.sem_num = task->oc;
     buf.sem_op = 1;
@@ -64,11 +71,14 @@ default_task_entry(void * arg)
       perror("notify leader failed");
       exit(EXIT_FAILURE);
     }
+#ifndef __NDEBUG
     fprintf(stderr, "@task [%d:%d] complete working, task ptr = %p fn = %p\n", 
 	    getpid(), gettid(), task, task->fn);    
+#endif
   }
-
+#ifndef __NDEBUG
   fprintf(stderr, "@got signal, task quit");
+#endif
   return 0;
 }
 
@@ -77,19 +87,23 @@ default_leader_entry(leader_struct_p leader)
 {
   while (1) {
     leader->nr = 0;
+#ifndef __NDEBUG
     printf("#leader %d, leader->sem = %d, sem number = %d\n", 
 	   leader->gid, leader->sem, leader->warp.nr);
+#endif
     if ( 0 != semctl(leader->sem, 0, SETVAL, leader->warp.nr) ) {
       printf("leader->sem %d\n", leader->sem);
       perror("failed set up leader sem");
       exit(EXIT_FAILURE);
     }
-
+#ifndef __NDEBUG
     fprintf(stderr, "#waiting for thread group %d\n", leader->gid);
-    
+#endif    
     wait_for_tg(leader->sem);
-    
+
+#ifndef __NDEBUG
     fprintf(stderr, "#wait returned, reduce...%d\n", leader->gid);
+#endif
 
     if ( NULL != leader->warp.hook ) 
       (leader->warp.hook)();
@@ -109,15 +123,17 @@ default_creator_entry(void *arg)
   int nr = warp->nr;
   void * stacks[nr]; // gcc ext.
   int i, tid;
-
-  printf("leader created, getppid=%d, getpid=%d\n",
-	 getppid(), getpid());
-  
+#if 0
+  fprintf(stderr, "leader created, getppid=%d, getpid=%d ldr=%p\n",
+	 getppid(), getpid(), arg);
+#endif
   ldr->gid = warp->gid = getpid();
-
+  
   for(i=0; i<nr; ++i) {
     task_struct_p task = &(warp->tsks[i]);
+#ifndef __NDEBUG
     printf("#leader %d task %d, task ptr = %p ldr->sem=%d\n", warp->gid, i, task, ldr->sem);
+#endif
     task->gid = warp->gid;
     task->sem_pe = the_pool.sem_pe;
     task->sem_ldr = ldr->sem;
@@ -132,10 +148,11 @@ default_creator_entry(void *arg)
 	exit(EXIT_FAILURE);
       }
     else {
+#ifndef __NDEBUG
        printf("task is created = %d\n", tid);
+#endif
        *((warp->init_list).wb_tsks + i) = task->tid = tid;
     }
-    set_fifo(tid, sched_get_priority_max(SCHED_FIFO));
   }
 
   signal(SIGCONT, children_handler);
@@ -227,7 +244,9 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
       exit(EXIT_FAILURE);
     }
     else {
+#if 0
       printf("create leader %d\n", pid);	
+#endif
       *(slot->wb_leaders + i) = pid; /*writeback*/
     }
   }/*for*/
@@ -256,7 +275,7 @@ spmd_initialize()
     return -1; /* fail to obtain sem set */
   else 
     the_pool.sem_pe = semid;
-  
+
   /*reallocate resouce*/
   the_pool.nr_pe    = nr_pe;
   the_pool.nr_slot  = nr_slot;
@@ -304,7 +323,9 @@ spmd_initialize()
     
     the_pool.leaders[i].sem = 
       semget(key, 1, 0666 | IPC_CREAT);
+#ifndef __NDEBUG
     printf("sem leader[%1d].sem = %d\n", i, the_pool.leaders[i].sem);
+#endif
   }
 
   thread_t * ldr = the_pool.thr_leaders;
@@ -326,7 +347,7 @@ spmd_initialize()
  for (i=0; i<nr_leader; ++i) {
    spinlock_init(&(the_pool.leaders[i].lck));
    the_pool.leaders[i].oc = 0; 
-   the_pool.leaders[i].gid = *(ldr++);
+   //the_pool.leaders[i].gid = *(ldr++);
  }
 
  return nr_pe;
@@ -351,48 +372,55 @@ spmd_cleanup()
   while ( !spmd_all_complete() ) {
     sleep(1);
   }
-  
+  //  printf("spmd completed\n");
   for (i=0; i<the_pool.nr_leader; ++i) {
     leader_struct_p ldr = &(the_pool.leaders[i]);
-
+    //printf("clean up ldr = %p\n", ldr);
     /*kill task threads first, to prevent phatom awake*/
     for (j=0; j<ldr->warp.nr; ++j) {
       task_struct_p tsk = &(ldr->warp.tsks[j]);
-      tkill(tsk->tid, SIGTERM);
+      //      printf("tkill task %d\n", tsk->tid);
+      //assert( 0 == tkill(tsk->tid, SIGTERM) );
       //kill(tsk->tid, SIGTERM);
     }
-
-    kill(ldr->gid, SIGTERM);
-    //FIXME: libc 2.6 nptl seems like have problem.
-    //document says that pthread_mutex_destroy shall never return EINTR,
-    //however, i did catch it.
+    //    printf("i =%d : kill leader %d\n", i, ldr->gid);
+    assert( 0 == kill(ldr->gid, SIGTERM) );
     
     spinlock_destroy(&(ldr->lck));
-    semctl(ldr->sem, 0, IPC_RMID, dummy);
+    if ( -1 == semctl(ldr->sem, 0, IPC_RMID, dummy) ) {
+      perror("semctl IPC RMID");
+    }
   }
+  //  printf("spmd close all children\n");
 
   free(the_pool.leaders);
   free(the_pool.thr_tasks);
   free(the_pool.thr_leaders);
   free(the_pool.slots);
-  semctl(the_pool.sem_pe, 0, IPC_RMID, dummy);
+  
+  if ( -1 == semctl(the_pool.sem_pe, 0, IPC_RMID, dummy) ) {
+    perror("semctl IPC RMID");
+  }
 }
 
 int  __spmd_export
 spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
 {
-  int offset, i, j, warp_id;
+  int i, j, warp_id;
   leader_struct_p cand, ldr;
   warp_struct_p warp;
+  int offset;
 
-  for (offset=0, i=the_pool.nr_pe; i>nr && i>=1; 
-       offset += i, i <<= 1);
+  for (i=the_pool.nr_pe, offset=0; i>nr && i>=1; 
+       offset += the_pool.nr_pe / i, i>>=1);
+
   if ( i == 0 || (the_pool.nr_pe % nr) != 0 ) 
     return -1; /*ILL nr */
 
   ldr = NULL;
-  cand = the_pool.leaders + offset;
  pick_leader:
+  cand = the_pool.leaders + offset;
+  //  printf("warp offset=%d\n", offset);
   for (i=0; i < the_pool.nr_pe / nr; ++i, cand++) {
     if ( spinlock_trylock(&(cand->lck)) ) { /* don't contend hot lock */
       if ( cand->oc == 0 )
@@ -404,10 +432,17 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
   }
 
   if ( ldr == NULL ) {
-    sleep(1); /*gentlely re-try*/
+    //sleep(1); /*gentlely re-try*/
+    //printf("content leader, sleep(1)\n");
+    struct timespec spec = {
+      .tv_sec = 0,
+      .tv_nsec = 2000 /*2 usec*/
+    };
+    fprintf(stderr, "pick leader no choice, nanosleep 2 us\n");
+    nanosleep(&spec, NULL);
     goto pick_leader;
   }
-
+  
   ldr->oc = 1;
   warp = &(ldr->warp);
   spinlock_unlock(&(ldr->lck));
@@ -427,7 +462,7 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
 
   for (i=0; i<nr; ++i) buf[i].sem_op = -1;
   ts.tv_sec = 0;
-  ts.tv_nsec = 100000000; /* 100 ms timeout*/
+  ts.tv_nsec = 2000; /* 2us timeout*/
  retry:  
   semctl(the_pool.sem_pe, 0, GETALL, snapshot);
   for(i=0, j=0; j<nr && i<the_pool.nr_pe; ++i) {
@@ -436,12 +471,13 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
     }
   }
   if ( j < nr ) {
-    sleep(1);  /*really busy*/
+    //sleep(1);  /*really busy*/
     goto retry;
   }
     
   if ( -1 == (eno=semtimedop(the_pool.sem_pe, buf, nr, &ts)) ) {
     if ( eno == EAGAIN ) { /* snapshot is old, try again */
+      fprintf(stderr, "obtain pe failed, retry again");
       goto retry;
     }
     perror("semop failed");
@@ -502,13 +538,16 @@ spmd_fire_up(leader_struct_p leader)
       exit(EXIT_FAILURE);
     }
   }
-  
+#ifndef __NDEBUG
   printf("fire up\n");
+#endif
   for (i=0; i<leader->nr; ++i) {
     tsk = &leader->warp.tsks[i];
     tkill(tsk->tid, SIGCONT);
     //kill(tsk->tid, SIGCONT);
+#ifndef __NDEBUG
     printf("tkill tid = %d\n", tsk->tid);
+#endif
   }
 }
 
@@ -535,8 +574,10 @@ spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1)
   }
 
   t = ldr->nr++;
+#ifndef __NDEBUG
   printf("t = %2d, ldr->warp.nr=%2d ldr->warp.tsk[%d]= %p\n", 
 	 t, ldr->warp.nr, t, &(ldr->warp.tsks[t]));
+#endif
   spinlock_unlock(&(ldr->lck));
   
   ldr->warp.tsks[t].fn = ldr->warp.fn;
@@ -549,6 +590,7 @@ spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1)
 
   return t;
 }
+
 int __spmd_export
 spmd_available_thread()
 {
@@ -573,8 +615,12 @@ spmd_all_complete()
 
   for (i=0; i<the_pool.nr_leader; ++i) {
     leader_struct_p ldr = &(the_pool.leaders[i]);
-    if ( !spinlock_trylock(&(ldr->lck)) ) return 0;
+    if ( !spinlock_trylock(&(ldr->lck)) ) {
+      printf("ldr%d locked\n", i);
+      return 0;
+    }
     else if ( ldr->oc ) {
+      printf("ldr%d occupied\n", i);
       spinlock_unlock(&(ldr->lck));
       return 0;
     }

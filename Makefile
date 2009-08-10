@@ -74,20 +74,30 @@ test: $(TEST_SET)
 
 $(TEST_SET):%:%.cc $(AUX_OBJS)
 	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $(AUX_OBJS)  $<
+libSPMD.a: warp.o aux.o
+	ar cr libSPMD.a warp.o aux.o
+warp.o: libSPMD/warp.c
+	cc -c libSPMD/warp.c -O2 -g -Wall -D__NDEBUG
+aux.o: libSPMD/aux.c
+	cc -c libSPMD/aux.c -O2 -g -Wall -D__NDEBUG
+
 tpbench.o : libSPMD/tpbench.cc
 	g++ -O2 -c -o tpbench.o libSPMD/tpbench.cc -std=c++0x -I /usr/local/include/boost-1_39/
-tpbench: tpbench.o profiler.o toolkits.o mtsupport.o imgsupport.o
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -I /usr/local/include/boost-1_39/
+tpbench: tpbench.o profiler.o toolkits.o mtsupport.o imgsupport.o libSPMD.a vina_tmp
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -I /usr/local/include/boost-1_39/ libSPMD.a
 
 
 ###################################################
 #               Miscellaneous                     #
 ###################################################
 LAST=`date +%y_%m_`$$((`date +%d`-1))
-.PHONY: clean dist distclean lines all test_threadlib
+.PHONY: clean dist distclean lines all test_threadlib vina_tmp
+
+vina_tmp:
+	mkdir /tmp/tmp
 
 clean: 
-	-rm -f *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms
+	-rm -rf *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms /tmp/tmp/
 distclean:
 	-rm -f *~ ._*
 dist: 
