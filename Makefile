@@ -97,7 +97,7 @@ vina_tmp:
 	mkdir /tmp/tmp
 
 clean: 
-	-rm -rf *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms /tmp/tmp/
+	-rm -rf *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms /tmp/tmp/ libSPMD.a
 distclean:
 	-rm -f *~ ._*
 dist: 
