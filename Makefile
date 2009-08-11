@@ -16,7 +16,7 @@ TEST_INFO = -DMM_TEST_TYPE=float -DMM_TEST_GRANULARITY=256 -DMM_TEST_SIZE_N=1024
 
 ifeq ($(SYSTEM), Linux)
 ISSUE= $(shell cat /etc/issue)
-ifeq ($(word 1, $(ISSUE)), Red)
+ifeq ($(word 1, $(ISSUE)), Ubuntu)
 THREAD_LIB = boost_thread-gcc44-mt#for jw system
 MTSUPPORT+= -L /root/Desktop/boost_1_39_0/stage/lib
 BOOST_PATH=/usr/local/include/boost-1_39/
@@ -86,6 +86,11 @@ tpbench.o : libSPMD/tpbench.cc
 tpbench: tpbench.o profiler.o toolkits.o mtsupport.o imgsupport.o libSPMD.a vina_tmp
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -I /usr/local/include/boost-1_39/ libSPMD.a
 
+tpbench2.o : libSPMD/tpbench2.cc
+	g++ -O2 -c -o tpbench2.o libSPMD/tpbench2.cc -std=c++0x -I /usr/local/include/boost-1_39/
+tpbench2: tpbench2.o profiler.o toolkits.o mtsupport.o imgsupport.o
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -I /usr/local/include/boost-1_39/ -lpthread
+
 
 ###################################################
 #               Miscellaneous                     #
@@ -97,7 +102,7 @@ vina_tmp:
 	mkdir /tmp/tmp
 
 clean: 
-	-rm -rf *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms /tmp/tmp/ libSPMD.a
+	-rm -rf *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms /tmp/tmp/ libSPMD.a tpbench2
 distclean:
 	-rm -f *~ ._*
 dist: 

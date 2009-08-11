@@ -1,6 +1,7 @@
 syntax: glob
 
 tpbench
+tpbench2
 mat_mul
 lang_pipe
 dot_prod
