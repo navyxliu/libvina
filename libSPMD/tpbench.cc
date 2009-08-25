@@ -25,6 +25,30 @@ using namespace vina;
 #define MASK_TP 2
 #define MASK_WP 4
 
+// T-distribution, two-tail alpha is 0.05
+float T_alpha_5[] = {2.228, /*start at N=10*/
+		     2.201,
+		     2.179,
+		     2.160,
+		     2.145,
+		     2.131, /* N=15 */
+		     2.120,
+		     2.110,
+		     2.101,
+		     2.093,
+		     2.086, /* N=20 */
+		     2.080,
+		     2.074,
+		     2.069,
+		     2.064,
+		     2.060, /* N=25 */
+		     2.056,
+		     2.052,
+		     2.048,
+		     2.045,
+		     2.042, /*N=30*/
+};
+
 //globals
 int nr_thread;
 int nr_group;
@@ -39,16 +63,9 @@ mt::thread_pool * thr_pool;
 void worker(mt::barrier_t barrier,
 	    int delay /*us*/)
 {
-<<<<<<< local
   if ( delay >= 0 ) 
-=======
-  if ( likely(delay >= 0) ) 
->>>>>>> other
     burn_usecs(delay);
-<<<<<<< local
  
-=======
->>>>>>> other
   else if ( enf_yield )
     sched_yield();
 
@@ -134,25 +151,9 @@ void print_result(unsigned long t,/*in micro sec, us*/
   
   printf("Total time is %ul us\n", t);
 
-<<<<<<< local
   printf("group overhead Expect is %8.2lf us\n", exp);
   printf("group overhead Variance is %8.2lf\n", var);
   printf("group overhead Standard Error is %8.2lf\n", sqrt(var));
-=======
-  if ( wkr_delay >= 0 ) 
-    printf("Worker delay is %d usec using CK-Burning\n", wkr_delay);
-  
-  printf("Total time is %u ms\n", t);
-  if ( wkr_delay >= 0 ) 
-    grp = (float)t / nr_group - (float)wkr_delay;
-  else {
-    grp = (float)t / nr_group;
-  }
-printf("para 1 is %lf\n", (float)t / nr_group);
-printf("para 2 is %lf\n", (float)wkr_delay);
-  printf("One group overhead is %8.2lf ms\n", grp);
-  printf("amortized thread cost %8.2lf ms\n", grp/nr_thread);
->>>>>>> other
   printf("\n");
 }
 
@@ -162,18 +163,30 @@ void test_function_of(void(*f)(),
   Profiler &prof = Profiler::getInstance();
   auto temp0 = prof.eventRegister(s);
   vina::Timer tmr;
-  int skip = 3;
-  float v[nr_group];
-  double exp, var;
 
+  int skip = 3;        /* warmup iterations. for tp case, it's a little tricky.
+			  we used the size of pool to eliminate the affact of
+			  pool initialization */
+  int NR;              /* the total number of experiment */
+  int n;               /* the size of sample */
+  float v[nr_group];   
+  float t;             /* t value for alpha 0.05 */
+  double exp, var;     /* Expect and Variance for Sample */
+  double null;         /* null hypothese */
+  double se;           /* Standard Error */
   // skip warm-up
   if ( f == group_with_tp ) {
     skip = pol_size;
   }
-  //work load
+  NR = (nr_group - skip);
+ do_sampling:
+  // work load
+  n = (nr_group - skip);
+  printf("do_sampling\n");
   for(int i=0; i<nr_group; i++) {
     if ( (rand()%10) >= cont_level ) 
       sleep(1);
+
     tmr.start();
     if ( likely(i >= skip) ) prof.eventStart(temp0);
     f();
@@ -183,16 +196,31 @@ void test_function_of(void(*f)(),
     printf("test #%d: %.0f\n", i, v[i]);
     //fprintf(stderr, "test #%d: %s\n", i , tmr.elapsedToStr());
   }
-  exp = prof.getEvent(temp0)->elapsed() / (nr_group - skip);
+  null = prof.getEvent(temp0)->elapsed() / NR;
+  exp = 0.0;
+  for (int i=skip; i<nr_group; ++i) exp += (v[i]);
+  exp = exp / n;
   var = 0.0;
   for (int i=skip; i<nr_group; ++i) var += (v[i] - exp) * (v[i] - exp);
-  var /= (nr_group - skip);
-  print_result(prof.getEvent(temp0)->elapsed(), exp, var, s);
+  var = var / ( n - 1 );
+  t = T_alpha_5[n - 11];
+  se = t * sqrt(var/n);
+  printf("null=%.2lf, NR=%d, exp=%.2lf sd =%.2lf, CI (%lf-%lf) p-value 0.05\n",
+	 null, NR, exp, sqrt(var/n), (exp-se), (exp + se));
+
+  if ( null < (exp - se)
+       || null > (exp + se) )  {
+    printf("refuse test\n");
+    // have to repeat time
+    NR += n;
+    goto do_sampling;
+  }
+  print_result(prof.getEvent(temp0)->elapsed(), null, var, s);
 }
 
 void usage(char * n)
 {
-   fprintf(stderr, "Usage: %s [-t num_of_thread] [-i iteration] [-d delay(us)] [-y yeild] [-m mask]i [-c content-level(0~10)]\n",
+   fprintf(stderr, "Usage: %s [-t num_of_thread] [-i iteration(10-30)] [-d delay(us)] [-y yeild] [-m mask]i [-c content-level(0~10)]\n",
 	      n); 
 }
 
@@ -213,6 +241,10 @@ main(int argc, char *argv[])
       break;
     case 'i':
       nr_group  = atoi(optarg);
+      if ( nr_group < 11 || nr_group > 31 ) {
+	usage(argv[0]);
+	exit(EXIT_FAILURE);
+      }
       break;
     case 'd':
       wkr_delay = atoi(optarg);
@@ -247,22 +279,10 @@ main(int argc, char *argv[])
   pol_size = nr_thread >= 16 ? nr_thread * 1.6
     : nr_thread * 1.2;
   
-<<<<<<< local
   if ( msk_bench & MASK_TP ) {
     thr_pool = new mt::thread_pool(pol_size);
     test_function_of(group_with_tp, "threadpool");
   }
-=======
-  thr_pool = new mt::thread_pool(pol_size);
-
-  // init ck_burning
-  assert( initialize_ck_burning()
-    && "failed to initialize ck burning");
-
-  // start test
-  test_function_of(group_with_tp, "threadpool");
-  test_function_of(group_without_tp, "mt::thread");
->>>>>>> other
 
   if ( msk_bench & MASK_MT ) 
     test_function_of(group_without_tp, "mt::thread");
