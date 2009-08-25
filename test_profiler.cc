@@ -82,5 +82,18 @@ int main()
   sleep(1);
   prof.eventEnd(timer2);
 
+  auto ts = prof.eventRegister("accumulated timer");
+  unsigned long sum = 0;
+  unsigned long e;
+
+  for (int i=0; i<10; ++i)  {
+    prof.eventStart(ts);
+    sleep(1);
+    prof.eventEnd(ts);
+    e = prof.getEvent(ts)->elapsed();
+    printf("#%d: %u\n", i, e);
+    sum += e;
+  }
+  printf("ts get %u\n", sum);
   prof.dump();
 }
