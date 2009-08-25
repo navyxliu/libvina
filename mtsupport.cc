@@ -1,7 +1,8 @@
 #include "mtsupport.hpp"
 namespace vina {
   namespace mt{
-    barrier_t null_barrier(new boost::barrier(1));
+    barrier_t trivial_barrier(new boost::barrier(1));
+    barrier_t null_barrier;
 
     class  signal::impl{
       bool ready_;

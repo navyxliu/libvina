@@ -176,7 +176,7 @@ namespace vina {
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1, 
 		     typename Instance::Result& result, 
-		     mt::barrier_t __unused__ = mt::null_barrier /*__attribute__((unused))*/ )
+		     mt::barrier_t dummy = mt::null_barrier /*__attribute__((unused))*/ )
     {
       
 #ifndef __NDEBUG
@@ -231,7 +231,7 @@ namespace vina {
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1,
 		     typename Instance::Result& result,
-		     mt::barrier_t barrier = mt::null_barrier)
+		     mt::barrier_t dummy = mt::null_barrier)
     {
       auto compF = Instance::computation();
 #ifndef __NDEBUG
@@ -256,7 +256,7 @@ namespace vina {
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1,
 		     typename Instance::Result& result,
-		     mt::barrier_t barrier = mt::null_barrier)
+		     mt::barrier_t barrier = mt::trivial_barrier)
     {
       auto compF = Instance::computationMT();
       mt::thread_t leaf(compF, arg0, arg1, 
@@ -375,7 +375,7 @@ struct mapreduce {
   static void doit(const typename Instance::Arg0& arg0, 
 		   const typename Instance::Arg1& arg1, 
 		   typename Instance::Result& result,
-		   mt::barrier_t barrier = mt::null_barrier)
+		   mt::barrier_t barrier = mt::trivial_barrier)
   {
     if (_IsMT && lookahead == 1) { // leaf
 	mt::barrier_t barrier(new boost::barrier(_K+1));
@@ -421,7 +421,7 @@ struct mapreduce {
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1,
 		     typename Instance::Result& result,
-		     mt::barrier_t barrier = mt::null_barrier)
+		     mt::barrier_t dummy = mt::null_barrier)
     {
       auto compF = Instance::computation();
       compF(arg0, arg1, boost::ref(result));
@@ -440,7 +440,7 @@ struct mapreduce {
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1,
 		     typename Instance::Result& result,
-		     mt::barrier_t barrier = mt::null_barrier)
+		     mt::barrier_t barrier = mt::trivial_barrier)
     {
       auto compF = Instance::computationMT();
       mt::thread_t leaf(compF, arg0, arg1, 
@@ -623,7 +623,7 @@ struct mapreduce {
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1,
 		     typename Instance::Result& result,
-		     mt::barrier_t barrier = mt::null_barrier)
+		     mt::barrier_t barrier = mt::trivial_barrier)
     {
       auto compF = Instance::computationMT();
       mt::thread_t leaf(compF, arg0, arg1, __aux::ref(result, result_arithm()),
