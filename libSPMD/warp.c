@@ -1,6 +1,7 @@
 // This file is not supposed to be distributed.
 #include "warp.h"
 #include "x86/spmd.h"
+#include <time.h>
 
 /*globals*/
 static struct spmd_thread_pool the_pool;
@@ -27,9 +28,6 @@ extern  void set_normal(int pid);
 
 void children_handler(int signum)
 {
-#ifndef __NDEBUG
-  printf("sigcont is caught\n");
-#endif
 }
 
 int __task 
@@ -50,6 +48,19 @@ default_task_entry(void * arg)
     fprintf(stderr, "@task [%d:%d] start working, task ptr = %p fn = %p\n", 
 	    getpid(), gettid(), task, task->fn);
 #endif
+
+#ifdef __TIMELOG
+    struct timespec myts;
+    char log[80];
+    //unsigned long long stamp;
+
+    sprintf(log, "timelog-%d.log", gettid());
+    FILE * fh = fopen(log, "w");
+    clock_gettime(CLOCK_REALTIME, &myts);
+    fprintf(fh, "start execution %d\n", myts.tv_nsec);
+    fflush(fh);
+#endif //end of __TIMELOG 
+
     task->fn(task->args[0], task->args[1], task->args[2]);
 #ifndef __NDEBUG
     printf("task [%d:%d] gonna release pe: %d\n",
@@ -74,6 +85,11 @@ default_task_entry(void * arg)
 #ifndef __NDEBUG
     fprintf(stderr, "@task [%d:%d] complete working, task ptr = %p fn = %p\n", 
 	    getpid(), gettid(), task, task->fn);    
+#endif
+#ifdef __TIMELOG
+    clock_gettime(CLOCK_REALTIME, &myts);
+    fprintf(fh, "notified leader %d\n", myts.tv_nsec);
+    fclose(fh);
 #endif
   }
 #ifndef __NDEBUG
@@ -442,7 +458,8 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
     nanosleep(&spec, NULL);
     goto pick_leader;
   }
-  
+
+  //fprintf(stderr, "ldr address %p, &ldr->warp = %p offset = %d \n", ldr, &(ldr->warp), offset); 
   ldr->oc = 1;
   warp = &(ldr->warp);
   spinlock_unlock(&(ldr->lck));
@@ -484,10 +501,12 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
     return -1;
   }
 
-  for (i=0; i<nr; ++i)
+  for (i=0; i<nr; ++i) {
+    //fprintf(stderr, "selected pe#%2d %d\n", i, buf[i].sem_num);
     ldr->warp.tsks[i].oc = buf[i].sem_num;
-
-  warp_id = (ldr - the_pool.leaders) / sizeof(leader_struct_p);
+  }
+  //warp_id = (ldr - the_pool.leaders) / sizeof(leader_struct_p);
+  warp_id = (ldr - the_pool.leaders);
   return warp_id;
 }  
 
@@ -524,25 +543,47 @@ spmd_runtime_dump()
 static void
 spmd_fire_up(leader_struct_p leader)
 {
-  int i, eno;
+  int i, eno, last;
   task_struct_p tsk;
-
+  cpu_set_t mask;
   for(i=0; i<leader->nr; ++i) {
-    cpu_set_t mask;
     tsk  = &leader->warp.tsks[i];
     CPU_ZERO(&mask);
     CPU_SET(tsk->oc, &mask);
+    last = tsk->oc;
     if ( -1 == (eno=sched_setaffinity(tsk->tid, sizeof(cpu_set_t), &mask)) ) {
       perror("sched_setaffinity failed");
       //FIXME: unload rt task for gentle quit
       exit(EXIT_FAILURE);
     }
   }
+/*
+  CPU_ZERO(&mask);
+  CPU_SET(2, &mask);
+  eno = sched_setaffinity(0, sizeof(cpu_set_t), &mask);
+  if ( -1 == eno ) {
+    perror("bind myself failed\n");
+    exit(EXIT_FAILURE);
+  }
+  else {
+    //printf("bind main thread on %d\n", last);
+  }
+*/
 #ifndef __NDEBUG
   printf("fire up\n");
 #endif
   for (i=0; i<leader->nr; ++i) {
     tsk = &leader->warp.tsks[i];
+#ifdef __TIMELOG
+    char log[80];
+    struct timespec myts;
+    FILE * fh;
+    sprintf(log, "timelog-%d.log", tsk->tid);
+    fh = fopen(log, "w");
+    clock_gettime(CLOCK_REALTIME, &myts);
+    fprintf(fh, "send signal %d\n", myts.tv_nsec);
+    fclose(fh);    
+#endif
     tkill(tsk->tid, SIGCONT);
     //kill(tsk->tid, SIGCONT);
 #ifndef __NDEBUG
@@ -557,6 +598,7 @@ spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1)
   leader_struct_p ldr;
   int t;
 
+  //printf("warp_id = %d\n", warp_id);
   if ( !( 0 <= warp_id && warp_id < the_pool.nr_leader ) ) 
     return -1; /*ILL warp_id */
  
@@ -589,6 +631,11 @@ spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1)
     spmd_fire_up(ldr);
 
   return t;
+}
+int __spmd_export
+spmd_get_taskid()
+{
+  return gettid();
 }
 
 int __spmd_export

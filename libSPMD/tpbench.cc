@@ -196,7 +196,7 @@ void test_function_of(void(*f)(),
     printf("test #%d: %.0f\n", i, v[i]);
     //fprintf(stderr, "test #%d: %s\n", i , tmr.elapsedToStr());
   }
-  null = prof.getEvent(temp0)->elapsed() / NR;
+  null = 0.6 * tmr.elapsed() + 0.4 * prof.getEvent(temp0)->elapsed() / NR;
   exp = 0.0;
   for (int i=skip; i<nr_group; ++i) exp += (v[i]);
   exp = exp / n;
@@ -205,8 +205,8 @@ void test_function_of(void(*f)(),
   var = var / ( n - 1 );
   t = T_alpha_5[n - 11];
   se = t * sqrt(var/n);
-  printf("null=%.2lf, NR=%d, exp=%.2lf sd =%.2lf, CI (%lf-%lf) p-value 0.05\n",
-	 null, NR, exp, sqrt(var/n), (exp-se), (exp + se));
+  printf("null=%.2lf, NR=%d, exp=%.2lf sd =%.2lf, se = %.2lf, CI (%lf-%lf) p-value 0.05\n",
+	 null, NR, exp, sqrt(var/n), se, (exp-se), (exp + se));
 
   if ( null < (exp - se)
        || null > (exp + se) )  {
@@ -269,13 +269,15 @@ main(int argc, char *argv[])
   // init ck_burning
   assert( initialize_ck_burning()
     && "failed to initialize ck burning");
+  fprintf(stderr, "preset wkr_delay = %d\n", wkr_delay);
 
   Profiler &prof = Profiler::getInstance();
+  if ( wkr_delay >= 0 ) {
   auto chker = prof.eventRegister("ck-burning checker");
   prof.eventStart(chker);
   burn_usecs(wkr_delay);  
   prof.eventEnd(chker);
-
+  }
   pol_size = nr_thread >= 16 ? nr_thread * 1.6
     : nr_thread * 1.2;
   
@@ -289,6 +291,7 @@ main(int argc, char *argv[])
 
   if ( msk_bench & MASK_WP ) {
     avl_pe = spmd_initialize();
+    printf("avl_pe is %4d\n", avl_pe);
     assert( avl_pe != -1 && "failed to initialize libspmd runtime");
     sleep(1);
 
@@ -298,9 +301,9 @@ main(int argc, char *argv[])
   }
   if ( msk_bench ) 
     Profiler::getInstance().dump();
-
+  if ( wkr_delay >= 0 ) {
   auto std = prof.eventRegister("seq");
-
+  
   for (int i=0; i<nr_thread; ++i){
     prof.eventStart(std);
     burn_usecs(wkr_delay);  
@@ -309,6 +312,6 @@ main(int argc, char *argv[])
   }
 
   printf("*run in sequence %d\n", prof.getEvent(std)->elapsed());
-
+  }
   return 0;
 }

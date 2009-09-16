@@ -144,6 +144,10 @@ struct p_simple{
   const static bool value = size_x <= MM_TEST_GRANULARITY;
 };
 
+template <class T, int SIZE_X, int SIZE_Y, int SIZE_Z>
+struct p_lt_cache_ll : boost::mpl::bool_<((SIZE_A * SIZE_B + SIZE_A * SIZE_C + SIZE_B * SIZE_C) 
+* sizeof(T) <= CACHE_LL_SIZE>
+{};
 int main()
 {  
 
