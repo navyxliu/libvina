@@ -5,8 +5,9 @@
 #include <tr1/functional>
 #include <boost/mpl/bool.hpp>
 
-//#include <omp.h>
+#include <omp.h>
 using namespace vina;
+#define ITERS 1
 
 #ifdef __NDEBUG 
 #define CHECK_RESULT(dummy)
@@ -14,11 +15,11 @@ using namespace vina;
 
 #ifndef CHECK_RESULT
 #define CHECK_RESULT(V_) for(int i=0; i<VEC_TEST_SIZE_N; ++i){		\
-      if ( V_[i] != STD_result[i] ) {					\
-	printf("result= %d WA, correct is %d\n",			\
-	       V_[i], STD_result[i]);					\
-	exit(1);							\
-      }  }
+    if ( fabs(V_[i] - STD_result[i]) > 1e-3 ) {				\
+      printf("result= %f WA, correct is %f\n",				\
+	     V_[i], STD_result[i]);					\
+      exit(1);								\
+    }  }
 #endif
 
 
@@ -52,8 +53,8 @@ struct saxpy{
   doit(const T& alpha, const Arg1& lhs, 
        Result& rhs)
   {
-    printf("_pred=%d, SubTask::_pred=%d\n", 
-	   _pred, SubTask::_pred);
+//  printf("_pred=%d, SubTask::_pred=%d\n", 
+//	   _pred, SubTask::_pred);
 
     Map::doit(alpha, lhs, rhs);
   }
@@ -112,7 +113,7 @@ See Makefile TEST_INFO to set parameters\n",
   for (int i=0; i<VEC_TEST_SIZE_N; ++i)
     x[i] = x_v[i] = gen();
 
-  double Comp = VEC_TEST_SIZE_N;
+  double Comp = VEC_TEST_SIZE_N * 2;
   Profiler & prof = Profiler::getInstance();
 
   auto temp0 = prof.eventRegister("STD");
@@ -120,7 +121,7 @@ See Makefile TEST_INFO to set parameters\n",
   auto temp2 = prof.eventRegister("MT");
   auto temp3 = prof.eventRegister("OPENMP");
 #ifndef __NDEBUG
-  /*
+  /*  
   for (int i=0; i<VEC_TEST_SIZE_N; ++i)
     printf("%4d", x[i]);
   printf("\n");
@@ -130,48 +131,53 @@ See Makefile TEST_INFO to set parameters\n",
   */
   STD_result.zero();
   prof.eventStart(temp0);
-  vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
-  /*
-  worker w;
-  for(int i=0; i<VEC_TEST_K; ++i)
-  w();
-  */
+  for(int i=0; i<ITERS; ++i)vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
   prof.eventEnd(temp0);  
 
-  //printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
-  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
+  printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
+  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()/ITERS));
 #endif 
   
+/*    
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE,  TestVector, vecMAddWrapper, p_simple, VEC_TEST_K>
     TF;
   prof.eventStart(temp1);
-  TF::doit(7, x, result);
+  for (int i=0; i<ITERS; ++i) {
+	  TF::doit(7, x, result);
+  }
   prof.eventEnd(temp1);
   CHECK_RESULT(y);
-  printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed()));
-
-
+  printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed() / ITERS));
+ */ 
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE, TestVector, vecMAddWrapper, p_simple, VEC_TEST_K, true>
     TF_MT;
+  
   prof.eventStart(temp2);
-  TF_MT::doit(7, x, result);
+  for (int i=0; i<ITERS; ++i) {
+    TF_MT::doit(7, x, result);
+    //printf("iter#%2d: elasped %d\n", i, prof.getEvent(temp3)->elapsed());  
+  }
   prof.eventEnd(temp2);
   CHECK_RESULT(y);
-  printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed()));
+  printf("elapsed=%d\n", prof.getEvent(temp2)->elapsed());  
+  printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed() / ITERS));
 
-  /*  
-  worker w0;
+    
   prof.eventStart(temp3);
-
+  for (int i=0; i<ITERS; ++i) {
+  float * x_ptr = x.data();
+  float * result_ptr = result.data(); 
   #pragma omp parallel for 
   for(int i=0; i<VEC_TEST_K; ++i)
     {
-      w0();
+      //result[i] = 7 * x[i];    
+      *(result_ptr++) = 7.0 * *x_ptr++;
     }
+  }
   prof.eventEnd(temp3);
-  printf("OMP gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
-  */
+  printf("OMP gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()/ ITERS));
+   
   prof.dump();
 }

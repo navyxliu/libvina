@@ -1,0 +1,58 @@
+#! /bin/bash
+
+if [ $# -lt 2 ] ; then
+	echo "$0 prog times" 
+	exit 1
+fi
+
+date
+
+cp params /tmp/params.backup
+make clean
+
+if [ "$3" = "verify" ]; then
+	sed -in 's/-D__NDEBUG/#-D__NDEBUG/g' params
+
+	if make -s $1 
+	then 
+	#echo "have problem on building $1"
+	#exit 
+	make clean; make -s $1
+	fi
+	
+	./$1 > log
+	if (( $? != 0 )); then 
+		echo "wrong answer"
+		cat log
+		exit
+	else
+		echo -n "TEST passed. "
+
+		sed -in 's/#-D__NDEBUG/-D__NDEBUG/g' params
+	fi
+else 
+    echo "" > log
+fi
+
+echo "Start experiment"
+
+if make -s $1 && [ "$3" = "verify" ]; then
+	make clean; make -s $1
+fi
+
+opcontrol --vmlinux=/home/xliu/linux-2.6.31/vmlinux --image=/home/xliu/libvina/$1 -c=10 --event LLC_REFS:400000 --event LLC_MISSES:400000
+opcontrol --reset
+opcontrol --start
+
+for ((i=1; i<=$2; ++i)); do
+	./$1  1>/tmp/$1.tmp
+	echo $i	`cat /tmp/$1.tmp|grep gflop`
+	cat /tmp/$1.tmp >> log
+done
+opcontrol --stop
+opcontrol --save=$1-`date +%m%d-%H-%M-%S`
+
+cp /tmp/params.backup params
+date
+echo done.
+

@@ -77,9 +77,9 @@ struct matmul_parallel
        const Arg1& arg1,
        Result& result){
 
-    printf("_pred=%d SubTask::_pred=%d\n", _pred, SubTask::_pred);
-    printf("SubTask::RESULT::WRITER_SIZE_X=%d\n", 
-	   view_trait2<typename SubTask::Result>::WRITER_SIZE_X);
+    //printf("_pred=%d SubTask::_pred=%d\n", _pred, SubTask::_pred);
+    //printf("SubTask::RESULT::WRITER_SIZE_X=%d\n", 
+//	   view_trait2<typename SubTask::Result>::WRITER_SIZE_X);
 
     Map::doit(arg0, arg1, result);
   };
@@ -144,10 +144,6 @@ struct p_simple{
   const static bool value = size_x <= MM_TEST_GRANULARITY;
 };
 
-template <class T, int SIZE_X, int SIZE_Y, int SIZE_Z>
-struct p_lt_cache_ll : boost::mpl::bool_<((SIZE_A * SIZE_B + SIZE_A * SIZE_C + SIZE_B * SIZE_C) 
-* sizeof(T) <= CACHE_LL_SIZE>
-{};
 int main()
 {  
 
@@ -189,7 +185,7 @@ int main()
   STD_result.zero();
   auto result = z.subWView();
   auto result_v = z_v.subWView();
-
+  
 #ifndef __NDEBUG 
   prof.eventStart(temp0);
   
@@ -198,10 +194,9 @@ int main()
 
   prof.eventEnd(temp0);  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
 #endif 
-  
+ /* 
   typedef matmul_parallel<Writer, TestMatrix, TestMatrix, 
     matMAddWrapper, matAddWrapper2, p_simple, MM_TEST_K, false> TF; // fransformer :~)
-
   prof.eventStart(temp1);
   TF::doit(x, y, result);
   prof.eventEnd(temp1);
@@ -226,8 +221,9 @@ int main()
   prof.eventEnd(temp3);
   CHECK_RESULT(z);
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
-
+*/
   z_v.zero();
+
   typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
     matMulWrapper, matAddWrapper2, p_simple, MM_TEST_K> TF_PARALLEL_SSE;
  

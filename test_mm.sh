@@ -13,7 +13,7 @@ else
     exit
 fi
 
-sed -in 's/#-D__NDEBUG/-D__NDEBUG/g' test_parameter
+#sed -in 's/#-D__NDEBUG/-D__NDEBUG/g' test_parameter
 
 echo testing...
 for g in 64 128 256 512; do 

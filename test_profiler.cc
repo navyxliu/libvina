@@ -65,11 +65,11 @@ int main()
   sleep(3);
   prof.eventEnd(timer1);
 
-  printf("timer0 elapsed %f\n", (float)prof.getEvent(timer1)->elapsed());
+  printf("timer1 elapsed %f\n", (float)prof.getEvent(timer1)->elapsed());
   prof.eventStart(timer3);
   sleep(10);
   prof.eventEnd(timer3);
-  printf("timer1 elapsed %f\n", (float)prof.getEvent(timer3)->elapsed());
+  printf("timer3 elapsed %f\n", (float)prof.getEvent(timer3)->elapsed());
   
   prof.eventStart(timer0);
   prof.eventStart(timer1);
