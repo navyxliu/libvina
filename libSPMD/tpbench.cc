@@ -75,7 +75,7 @@ void worker(mt::barrier_t barrier,
 void worker2(void * ret, void * arg0, void * arg1)
 {
   int delay = (*((int *)(arg0)));
-  //fprintf(stderr, "work2 delay = %d\n", delay);
+  fprintf(stderr, "work2 delay = %d\n", delay);
   if ( delay >= 0 ) 
     burn_usecs(delay);  
 }

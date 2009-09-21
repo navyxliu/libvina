@@ -557,7 +557,7 @@ spmd_fire_up(leader_struct_p leader)
       exit(EXIT_FAILURE);
     }
   }
-/*
+/* change myself to that last RT cpu, pervent suspending the signal sending*/
   CPU_ZERO(&mask);
   CPU_SET(2, &mask);
   eno = sched_setaffinity(0, sizeof(cpu_set_t), &mask);
@@ -568,10 +568,11 @@ spmd_fire_up(leader_struct_p leader)
   else {
     //printf("bind main thread on %d\n", last);
   }
-*/
+
 #ifndef __NDEBUG
   printf("fire up\n");
 #endif
+
   for (i=0; i<leader->nr; ++i) {
     tsk = &leader->warp.tsks[i];
 #ifdef __TIMELOG

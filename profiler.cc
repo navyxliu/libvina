@@ -117,7 +117,7 @@ namespace vina {
 #ifdef __NDEBUG
     // it if an error to re-register the event with same name,
     // however, breakdown need this to cumulate thread-time
-    throw profiler_exception();	  
+    //throw profiler_exception();	  
 #else
     else {
       return _table[name];
@@ -151,7 +151,7 @@ namespace vina {
 	printf("#%2d ", i);
 	evt->dump();
 
-	if( dynamic_cast<TimerEvent*>(evt) )
+	if ( dynamic_cast<TimerEvent*>(evt) )
 	  printf(" %2.1f%%\n", (evt->sum_*1.0f)/_elapsed*100.0);
 	else 
 	  printf("      \n");

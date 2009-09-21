@@ -1,7 +1,7 @@
 all: tpbench hackbench libSPMD.a
 CFLAGS=-O2 -g -Wall -D__NDEBUG
 tpbench: tpbench.o libSPMD.a
-	g++ -o $@ ../profiler.o ../toolkits.o ../mtsupport.o $< -lboost_thread $(CFLAGS) libSPMD.a
+	g++ -o $@ ../profiler.o ../toolkits.o ../mtsupport.o $< -L/usr/lib64 -lboost_thread-mt $(CFLAGS) libSPMD.a
 tpbench.o:%.o:%.cc 
 	g++ -o $@ -c $< -std=c++0x $(CFLAGS)
 hackbench: hackbench.c 

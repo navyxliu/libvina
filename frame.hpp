@@ -28,22 +28,15 @@ namespace vina {
     Profiler::getInstance().eventRegister("#frame mem cost");
   static event_id __frm_thread_cost =
     Profiler::getInstance().eventRegister("#frame thread cost");
+  static event_id __frm_thread_creation_cnt = 
+    Profiler::getInstance().eventRegister("#thread creation counters", HIT_COUNTER_EVT);
+  static event_id __frm_threadpool_enqueue_cnt = 
+    Profiler::getInstance().eventRegister("#thread pool enqueue counters", HIT_COUNTER_EVT);
 
-#define SLEEPER_DELAY 3 /*sec*/
+  static mt::thread_pool pool(TEST_NR_CPU + 4);
 
-  struct sleeper{
-    void operator()() {
-      sleep(SLEEPER_DELAY);
-    }
-  };
-  struct worker {
-    void operator()()
-    {
-      float c = 0.0;
-      for (int i=0; i<VEC_TEST_GRANULARITY; ++i)
-	c+=3.14 * 0.85;
-    }
-  };
+#define PROF_HIT(EVT) (Profiler::getInstance().eventHit(EVT))
+
   namespace __aux{
     template <class IN, int size, bool>
     struct subview{
@@ -179,9 +172,9 @@ namespace vina {
 		     mt::barrier_t dummy = mt::null_barrier /*__attribute__((unused))*/ )
     {
       
+	    mt::barrier_t barrier(new boost::barrier(_K+1));
 #ifndef __NDEBUG
 	event_id timers[_K];
-	mt::barrier_t barrier(new boost::barrier(_K+1));
 	  
 	if ( _IsMT && lookahead == 1){
 	  for(int i=0; i<_K; ++i)
@@ -207,19 +200,26 @@ namespace vina {
 	  if ( _IsMT && lookahead == 1) {// leaf node
 #ifndef __NDEBUG
 	    auto compF = Instance::SubTask::computationMT_t();
+#ifndef __USEPOOL
 	    mt::thread_t leaf(compF, subArg0, subArg1, subResult, barrier ,timers[k]);
-	    std::cout << "thread:" << leaf.get_id() <<"\n";
 	    leaf.detach();
+	    //std::cout << "thread:" << leaf.get_id() <<"\n";
+	    PROF_HIT(__frm_thread_creation_cnt);
 #else
-	    _Tail::doit(subArg0, subArg1, subResult);
+            pool.run(boost::bind(compF, subArg0, subArg1, subResult, barrier, timers[k]));
+            PROF_HIT(__frm_threadpool_enqueue_cnt);
+#endif
+#else
+	    _Tail::doit(subArg0, subArg1, subResult, barrier);
 #endif
 	  }
 	  else
 	    _Tail::doit(subArg0, subArg1, subResult);
-	}
+	}//end for
+	
+	if ( _IsMT && lookahead == 1 )	
+	    barrier->wait();
 #ifndef __NDEBUG
-	if ( _IsMT && lookahead == 1)
-	  barrier->wait();
 	Profiler::getInstance().eventEnd(__frm_kernel_par);
 #endif
       }
@@ -259,14 +259,16 @@ namespace vina {
 		     mt::barrier_t barrier = mt::trivial_barrier)
     {
       auto compF = Instance::computationMT();
-      mt::thread_t leaf(compF, arg0, arg1, 
-			__aux::ref(result, result_arithm()), 
-			barrier);
-
+      // mt::thread_t leaf(compF, arg0, arg1, 
+      //		__aux::ref(result, result_arithm()), 
+      //		barrier);
+      //printf("enqueue task\n");
+      pool.run(bind(compF, arg0, arg1, __aux::ref(result, result_arithm()), 
+		    barrier));
 #ifndef __NDEBUG 
-      std::cout << "thread:" << leaf.get_id() <<"\n";
+      //std::cout << "thread:" << leaf.get_id() <<"\n";
 #endif
-      leaf.detach();
+      //leaf.detach();
     }
   };
 
@@ -471,13 +473,14 @@ struct mapreduce {
 #endif    
     const static int lookahead = 1 + _Tail::lookahead;
     
+
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1, 
 		     typename Instance::Result& result, 
 		     mt::barrier_t dummy = mt::null_barrier)
     {
-      mt::thread_pool pool(_K);
 
+    mt::thread_pool pool(_K);
       for(int i=0; i<_K; ++i) for(int j=0; j<_K; ++j) {
 	  if (_IsMT && lookahead == 1) { // leaf
 	    typedef typename view_trait2<typename Instance::SubTask::Result>

@@ -80,12 +80,12 @@ namespace vina {
 
   template<>
   class Counter<HIT_COUNTER_EVT> {
-    unsigned hit_;
+    unsigned long long hit_;
   public:
     Counter() : hit_(0) {}
     void start() { hit_ = 0; }
     void stop() {}
-    unsigned elapsed() { return hit_; }
+    unsigned long long elapsed() const{ return hit_; }
     void hit() { ++hit_; }
   };
   template<>
@@ -207,7 +207,12 @@ namespace vina {
       // if not, skip harmlessly
     }
     void dump() const {
-      printf("%18s %4d           %10s", name_.c_str(), counter_, 
+      if ( auto h = dynamic_cast<const Counter<HIT_COUNTER_EVT>*>(this) ) {
+	printf("%18s %4d           %10s", name_.c_str(), h->elapsed(),
+	     extra_.c_str());
+      }
+      else 
+	printf("%18s %4d           %10s", name_.c_str(), counter_, 
 	     extra_.c_str());
     }
   };

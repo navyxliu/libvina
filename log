@@ -1,0 +1,401 @@
+
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126791
+MT gflop=1.261919
+OMP gflop=9.274825
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126791usec            88.0%
+# 9                   OPENMP    1    17251usec            12.0%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=127217
+MT gflop=1.257694
+OMP gflop=4.286671
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   127217usec            77.3%
+# 9                   OPENMP    1    37325usec            22.7%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126418
+MT gflop=1.265643
+OMP gflop=10.438413
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126418usec            89.2%
+# 9                   OPENMP    1    15328usec            10.8%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=127304
+MT gflop=1.256834
+OMP gflop=7.479781
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   127304usec            85.6%
+# 9                   OPENMP    1    21391usec            14.4%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126558
+MT gflop=1.264242
+OMP gflop=6.167842
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126558usec            83.0%
+# 9                   OPENMP    1    25941usec            17.0%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=127025
+MT gflop=1.259595
+OMP gflop=7.780209
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   127025usec            86.1%
+# 9                   OPENMP    1    20565usec            13.9%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126346
+MT gflop=1.266364
+OMP gflop=0.904077
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126346usec            41.7%
+# 9                   OPENMP    1   176976usec            58.3%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126482
+MT gflop=1.265002
+OMP gflop=0.946544
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126482usec            42.8%
+# 9                   OPENMP    1   169036usec            57.2%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126355
+MT gflop=1.266274
+OMP gflop=1.638169
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126355usec            56.4%
+# 9                   OPENMP    1    97670usec            43.6%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126713
+MT gflop=1.262696
+OMP gflop=6.694841
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126713usec            84.1%
+# 9                   OPENMP    1    23899usec            15.9%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=128777
+MT gflop=1.242458
+OMP gflop=7.029568
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   128777usec            85.0%
+# 9                   OPENMP    1    22761usec            15.0%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=127444
+MT gflop=1.255453
+OMP gflop=1.069862
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   127444usec            46.0%
+# 9                   OPENMP    1   149552usec            54.0%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126430
+MT gflop=1.265522
+OMP gflop=4.859529
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126430usec            79.3%
+# 9                   OPENMP    1    32925usec            20.7%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126594
+MT gflop=1.263883
+OMP gflop=1.274961
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126594usec            50.2%
+# 9                   OPENMP    1   125494usec            49.8%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126367
+MT gflop=1.266153
+OMP gflop=0.870497
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126367usec            40.7%
+# 9                   OPENMP    1   183803usec            59.3%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=127607
+MT gflop=1.253850
+OMP gflop=7.587253
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   127607usec            85.8%
+# 9                   OPENMP    1    21088usec            14.2%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=127399
+MT gflop=1.255897
+OMP gflop=5.625286
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   127399usec            81.7%
+# 9                   OPENMP    1    28443usec            18.3%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126763
+MT gflop=1.262198
+OMP gflop=0.888864
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126763usec            41.3%
+# 9                   OPENMP    1   180005usec            58.7%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126352
+MT gflop=1.266304
+OMP gflop=0.933211
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126352usec            42.4%
+# 9                   OPENMP    1   171451usec            57.6%
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=40000000
+VEC_TEST_K=2
+See Makefile TEST_INFO to set parameters
+elapsed=126417
+MT gflop=1.265653
+OMP gflop=0.878276
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6                      STD    0        0usec            0.0%
+# 7                       ST    0        0usec            0.0%
+# 8                       MT    1   126417usec            41.0%
+# 9                   OPENMP    1   182175usec            59.0%
