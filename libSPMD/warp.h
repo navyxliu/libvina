@@ -39,11 +39,11 @@ extern "C" {
    *  argc    -- the number of variable-length arguments
    *  variable arguments store in task evironment
    *return:
-   *  -1 when failed, otherwise,
+     sleep(1);*  -1 when failed, otherwise,
    *  task_id
    */
   //  extern int spmd_create_thread(int warp_id, int argc, ...);
-  extern int spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1);
+  extern int spmd_create_thread(int warp_id, void * self, void * ret, void * arg0, void * arg1);
   /*check out avaialable threads in runtime.
    *return the maximal number of available PEs. libSPMD RT can not guarantee
    *that spawn threads continuously in returned number is non-blocking. it depends on
