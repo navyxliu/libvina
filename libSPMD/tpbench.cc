@@ -63,21 +63,16 @@ mt::thread_pool * thr_pool;
 void worker(mt::barrier_t barrier,
 	    int delay /*us*/)
 {
-<<<<<<< /home/xliu/libvina/libSPMD/tpbench.cc
   if ( delay >= 0 ) 
     burn_usecs(delay);
  
-=======
-  if ( likely(delay >= 0) ) 
-    burn_usecs(delay);
->>>>>>> /tmp/tpbench.cc~other.GdRDWs
   else if ( enf_yield )
     sched_yield();
 
   if ( barrier != mt::null_barrier ) 
     barrier->wait();
 }
-void worker2(void * ret, void * arg0, void * arg1)
+void worker2(void * self, void * ret, void * arg0, void * arg1)
 {
   int delay = (*((int *)(arg0)));
   fprintf(stderr, "work2 delay = %d\n", delay);
@@ -132,7 +127,7 @@ void group_with_warp()
     int id = spmd_create_warp(nr, (void *)worker2, 0, NULL);
     assert ( id != -1 && "create warp failed");
     for (int j=0; j<nr; ++j, cnt++)
-      assert ( -1 != spmd_create_thread(id, NULL, &(wkr_delay), NULL)
+      assert ( -1 != spmd_create_thread(id, NULL, NULL, &(wkr_delay), NULL)
 	       && "spmd_create thread failed");
     
   }
@@ -152,30 +147,13 @@ void print_result(unsigned long t,/*in micro sec, us*/
   printf("Poll size is: %d\n", pol_size);
   printf("content level: %d\n", cont_level);
   if ( wkr_delay >= 0 ) 
-<<<<<<< /home/xliu/libvina/libSPMD/tpbench.cc
     printf("Worker delay is %d us using CK-Burning\n", wkr_delay);
-=======
-    printf("Worker delay is %d usec using CK-Burning\n", wkr_delay);
->>>>>>> /tmp/tpbench.cc~other.GdRDWs
   
-<<<<<<< /home/xliu/libvina/libSPMD/tpbench.cc
   printf("Total time is %ul us\n", t);
 
   printf("group overhead Expect is %8.2lf us\n", exp);
   printf("group overhead Variance is %8.2lf\n", var);
   printf("group overhead Standard Error is %8.2lf\n", sqrt(var));
-=======
-  printf("Total time is %u ms\n", t);
-  if ( wkr_delay >= 0 ) 
-    grp = (float)t / nr_group - (float)wkr_delay;
-  else {
-    grp = (float)t / nr_group;
-  }
-printf("para 1 is %lf\n", (float)t / nr_group);
-printf("para 2 is %lf\n", (float)wkr_delay);
-  printf("One group overhead is %8.2lf ms\n", grp);
-  printf("amortized thread cost %8.2lf ms\n", grp/nr_thread);
->>>>>>> /tmp/tpbench.cc~other.GdRDWs
   printf("\n");
 }
 
@@ -303,22 +281,10 @@ main(int argc, char *argv[])
   pol_size = nr_thread >= 16 ? nr_thread * 1.6
     : nr_thread * 1.2;
   
-<<<<<<< /home/xliu/libvina/libSPMD/tpbench.cc
   if ( msk_bench & MASK_TP ) {
     thr_pool = new mt::thread_pool(pol_size);
     test_function_of(group_with_tp, "threadpool");
   }
-=======
-  thr_pool = new mt::thread_pool(pol_size);
-
-  // init ck_burning
-  assert( initialize_ck_burning()
-    && "failed to initialize ck burning");
-
-  // start test
-  test_function_of(group_with_tp, "threadpool");
-  test_function_of(group_without_tp, "mt::thread");
->>>>>>> /tmp/tpbench.cc~other.GdRDWs
 
   if ( msk_bench & MASK_MT ) 
     test_function_of(group_without_tp, "mt::thread");
