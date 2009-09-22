@@ -15,7 +15,7 @@ include params
 
 ifeq ($(SYSTEM), Linux)
 ISSUE= $(shell cat /etc/issue)
-ifeq ($(word 1, $(ISSUE)), Ubuntu)
+ifeq ($(word 1, $(ISSUE)), Red)
 THREAD_LIB = boost_thread-gcc44-mt#for jw system
 MTSUPPORT+= -L /root/Desktop/boost_1_39_0/stage/lib
 BOOST_PATH=/usr/local/include/boost-1_39/
@@ -55,7 +55,7 @@ saxpy: saxpy.o $(AUX_OBJS)
 conv2d: conv2d.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 $(OBJS):%.o:%.cc frame.hpp Makefile
-	$(CXX) -o $@ -c $< $(CFLAGS)
+	$(CXX) -O2 -o $@ -c $< $(CFLAGS)
 
 
 
@@ -74,6 +74,7 @@ test: $(TEST_SET)
 
 $(TEST_SET):%:%.cc $(AUX_OBJS)
 	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $(AUX_OBJS)  $<
+<<<<<<< /home/xliu/libvina/Makefile
 libSPMD.a: warp.o aux.o
 	ar cr libSPMD.a warp.o aux.o
 warp.o: libSPMD/warp.c
@@ -90,6 +91,12 @@ tpbench2.o : libSPMD/tpbench2.cc
 	g++ -O2 -c -o tpbench2.o libSPMD/tpbench2.cc -std=c++0x -I /usr/local/include/boost-1_39/
 tpbench2: tpbench2.o profiler.o toolkits.o mtsupport.o imgsupport.o
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -I /usr/local/include/boost-1_39/ -lpthread
+=======
+tpbench.o : libSPMD/tpbench.cc
+	g++ -O2 -c -o tpbench.o libSPMD/tpbench.cc -std=c++0x -I /usr/local/include/boost-1_39/
+tpbench: tpbench.o profiler.o toolkits.o mtsupport.o imgsupport.o
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -I /usr/local/include/boost-1_39/
+>>>>>>> /tmp/Makefile~other.qESbtQ
 
 
 ###################################################
@@ -102,7 +109,11 @@ vina_tmp:
 	mkdir /tmp/tmp
 
 clean: 
+<<<<<<< /home/xliu/libvina/Makefile
 	-rm -rf *.o mat_mul lang_pipe saxpy dot_prod conv2d $(TEST_SET) test_threadlib tpbench vina.loops_per_ms /tmp/tmp/ libSPMD.a tpbench2
+=======
+	-rm -f *.o mat_mul lang_pipe saxpy dot_prod conv2d tpbench tpbench.o $(TEST_SET)
+>>>>>>> /tmp/Makefile~other.qESbtQ
 distclean:
 	-rm -f *~ ._*
 dist: 

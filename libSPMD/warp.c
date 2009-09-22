@@ -42,8 +42,15 @@ default_task_entry(void * arg)
   struct sembuf buf;
   set_fifo(gettid(), sched_get_priority_max(SCHED_FIFO));
 
+  sigset_t mask, oldmask;
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCONT); 
+  sigprocmask(SIG_BLOCK, &mask, &oldmask);
+
   while(1) {
-    pause();
+    // open for SIGCONT
+    sigsuspend(&oldmask); 
+
 #ifndef __NDEBUG
     fprintf(stderr, "@task [%d:%d] start working, task ptr = %p fn = %p\n", 
 	    getpid(), gettid(), task, task->fn);
@@ -61,7 +68,7 @@ default_task_entry(void * arg)
     fflush(fh);
 #endif //end of __TIMELOG 
 
-    task->fn(task->args[0], task->args[1], task->args[2]);
+    task->fn(task->args[0], task->args[1], task->args[2], task->args[3]);
 #ifndef __NDEBUG
     printf("task [%d:%d] gonna release pe: %d\n",
 	   getpid(), gettid(), task->oc);
@@ -558,6 +565,9 @@ spmd_fire_up(leader_struct_p leader)
     }
   }
 /* change myself to that last RT cpu, pervent suspending the signal sending*/
+//FIXME: add the following code will induce significant perf retreat.
+//I can not understand.
+#if 0
   CPU_ZERO(&mask);
   CPU_SET(2, &mask);
   eno = sched_setaffinity(0, sizeof(cpu_set_t), &mask);
@@ -568,6 +578,7 @@ spmd_fire_up(leader_struct_p leader)
   else {
     //printf("bind main thread on %d\n", last);
   }
+#endif
 
 #ifndef __NDEBUG
   printf("fire up\n");
@@ -594,7 +605,7 @@ spmd_fire_up(leader_struct_p leader)
 }
 
 int __spmd_export
-spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1)
+spmd_create_thread(int warp_id, void * self, void * ret, void * arg0, void * arg1)
 {
   leader_struct_p ldr;
   int t;
@@ -617,16 +628,17 @@ spmd_create_thread(int warp_id, void * ret, void * arg0, void * arg1)
   }
 
   t = ldr->nr++;
-#ifndef __NDEBUG
-  printf("t = %2d, ldr->warp.nr=%2d ldr->warp.tsk[%d]= %p\n", 
-	 t, ldr->warp.nr, t, &(ldr->warp.tsks[t]));
+#if 0
+  printf("t = %2d, ldr->warp.nr=%2d ldr->warp.tsk[%d]= %p tid = %d ldr->warp.fn = %p\n", 
+	 t, ldr->warp.nr, t, &(ldr->warp.tsks[t]), ldr->warp.tsks[t].tid, ldr->warp.fn);
 #endif
   spinlock_unlock(&(ldr->lck));
   
   ldr->warp.tsks[t].fn = ldr->warp.fn;
-  ldr->warp.tsks[t].args[0] = ret;
-  ldr->warp.tsks[t].args[1] = arg0;
-  ldr->warp.tsks[t].args[2] = arg1;
+  ldr->warp.tsks[t].args[0] = self;
+  ldr->warp.tsks[t].args[1] = ret;
+  ldr->warp.tsks[t].args[2] = arg0;
+  ldr->warp.tsks[t].args[3] = arg1;
   
   if ( t == ldr->warp.nr - 1 )
     spmd_fire_up(ldr);
@@ -668,7 +680,7 @@ spmd_all_complete()
       return 0;
     }
     else if ( ldr->oc ) {
-      printf("ldr%d occupied\n", i);
+      //printf("ldr%d occupied\n", i);
       spinlock_unlock(&(ldr->lck));
       return 0;
     }
@@ -678,7 +690,7 @@ spmd_all_complete()
   return 1;
 }
 
-#ifndef __NDEBUG
+#if 0
 void dummy_fn(void * ret, void * arg0, void * arg1)
 {
   printf("dummy_fn%2d\n", gettid());

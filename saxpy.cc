@@ -5,7 +5,7 @@
 #include <tr1/functional>
 #include <boost/mpl/bool.hpp>
 
-#include <omp.h>
+//#include <omp.h>
 using namespace vina;
 #define ITERS 1
 
@@ -59,12 +59,12 @@ struct saxpy{
     Map::doit(alpha, lhs, rhs);
   }
   
-  typedef std::tr1::function<void (const T&, const Arg1&, Result&)> 
+  typedef std::tr1::function<void (void*, void*, void*)> 
   _Comp;
   static _Comp
   computation()
   {
-    return &(Func<Result, Arg1>::doit);
+    return &(Func<Result, Arg1>::doit_ptr);
   }
   typedef std::tr1::function<void (const T&, const Arg1&, Result&, mt::barrier_t)>
   _CompMT;
@@ -104,6 +104,7 @@ See Makefile TEST_INFO to set parameters\n",
   typedef view_trait<TestVector>::writer_type Writer;
   typedef view_trait<TestVector_v>::writer_type Writer_v;
 
+
   static TestVector x, y, STD_result;
   static TestVector_v  x_v, y_v;
   Writer result = y.subWView();
@@ -115,6 +116,7 @@ See Makefile TEST_INFO to set parameters\n",
 
   double Comp = VEC_TEST_SIZE_N * 2;
   Profiler & prof = Profiler::getInstance();
+  
 
   auto temp0 = prof.eventRegister("STD");
   auto temp1 = prof.eventRegister("ST");
@@ -153,18 +155,27 @@ See Makefile TEST_INFO to set parameters\n",
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE, TestVector, vecMAddWrapper, p_simple, VEC_TEST_K, true>
     TF_MT;
-  
+
+  int nr_pe = spmd_initialize();
+  assert( nr_pe != -1 && "failed to initialize libSPMD runtime");
+  printf("startup libspmd runtime: %d pe is detected\n", nr_pe);
+
+
   prof.eventStart(temp2);
   for (int i=0; i<ITERS; ++i) {
     TF_MT::doit(7, x, result);
     //printf("iter#%2d: elasped %d\n", i, prof.getEvent(temp3)->elapsed());  
   }
+  while ( !spmd_all_complete() );
   prof.eventEnd(temp2);
   CHECK_RESULT(y);
+
   printf("elapsed=%d\n", prof.getEvent(temp2)->elapsed());  
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed() / ITERS));
 
-    
+  spmd_cleanup();
+
+#if 0  
   prof.eventStart(temp3);
   for (int i=0; i<ITERS; ++i) {
   float * x_ptr = x.data();
@@ -178,6 +189,6 @@ See Makefile TEST_INFO to set parameters\n",
   }
   prof.eventEnd(temp3);
   printf("OMP gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()/ ITERS));
-   
+#endif 
   prof.dump();
 }

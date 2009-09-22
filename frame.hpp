@@ -16,6 +16,7 @@
 #include <boost/mpl/identity.hpp>
 #include <sstream>
 #include "matrix2.hpp"
+#include "libSPMD/warp.h"
 
 using namespace boost;
 
@@ -32,40 +33,63 @@ namespace vina {
     Profiler::getInstance().eventRegister("#thread creation counters", HIT_COUNTER_EVT);
   static event_id __frm_threadpool_enqueue_cnt = 
     Profiler::getInstance().eventRegister("#thread pool enqueue counters", HIT_COUNTER_EVT);
+  static event_id __frm_libspmd_thread_cnt = 
+    Profiler::getInstance().eventRegister("#libspmd thread creation", HIT_COUNTER_EVT);
 
   static mt::thread_pool pool(TEST_NR_CPU + 4);
 
 #define PROF_HIT(EVT) (Profiler::getInstance().eventHit(EVT))
 
   namespace __aux{
+    template<class F>
+    void wrapper_func_nullary(F * _self)
+    {
+  	_self->operator()();
+    } 
+    template <class F>
+    void wrapper_func_unary(F * _self, void * arg)
+    {
+        _self->operator() (arg);
+    }
+    template <class F>
+    void wrapper_func_binary(F * _self, void * ret, void * arg)
+    {
+         _self->operator() (ret, arg);
+    }
+    template <class F>
+    void wrapper_func_ternary(F * _self, void * ret, void * arg0, void *arg1)
+    {
+	//printf("ternary is called _self = %p\n", _self);
+    	_self->operator() (ret, arg0, arg1);
+    }
     template <class IN, int size, bool>
     struct subview{
-      static ReadView<typename view_trait<IN>::value_type, size>
+      static ReadView<typename view_trait<IN>::value_type, size> *
       sub_reader(const IN& in, int nth)
       {
-	return in.template subRView<size>
-	  (nth * size);
+	return new ReadView<typename view_trait<IN>::value_type, size>(in.template subRView<size>
+	  (nth * size));
       }
-      static WriteView<typename view_trait<IN>::value_type, size>
+      static WriteView<typename view_trait<IN>::value_type, size> * 
       sub_writer(IN& in, int nth)
       {
-	return in.template subWView<size>
-	  (nth * size);
+	return new WriteView<typename view_trait<IN>::value_type, size>( in.template subWView<size>
+	  (nth * size));
       }
     };
     //specialization for scalar or same dimention 
     template <class IN, int size>
     struct subview<IN, size, true>
     {
-      static const IN&
+      static IN * 
       sub_reader(const IN& in, int nth __attribute__((unused)) )
       {
-	return in;
+	return new IN(in);
       }
-      static const IN&
+      static IN * 
       sub_writer(const IN& in, int nth __attribute__((unused)) )
       {
-	return in;
+	return new IN(in);
       }
     };
     template <class IN, int sz_x, int sz_y, bool>
@@ -171,11 +195,13 @@ namespace vina {
 		     typename Instance::Result& result, 
 		     mt::barrier_t dummy = mt::null_barrier /*__attribute__((unused))*/ )
     {
-      
-	    mt::barrier_t barrier(new boost::barrier(_K+1));
+     
+	 
 #ifndef __NDEBUG
 	event_id timers[_K];
-	  
+#ifndef __USE_LIBSPMD	  
+      	mt::barrier_t barrier(new boost::barrier(_K+1));
+#endif
 	if ( _IsMT && lookahead == 1){
 	  for(int i=0; i<_K; ++i)
 	    {
@@ -185,6 +211,17 @@ namespace vina {
 	    }
 	  Profiler::getInstance().eventStart(__frm_kernel_par);
 	}
+#endif
+
+#ifdef __USE_LIBSPMD
+	auto compF = Instance::SubTask::computation();
+	typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
+	func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
+	//printf("func_t task %p\n", task); 
+         
+	int wid = spmd_create_warp(_K, (void *)task, 0, NULL);
+	assert( wid != -1 && "spmd creation faied");
+	//printf("create warp id %d\n", wid);
 #endif
 	for (int k=0; k < _K; ++k) {
 	  auto subArg0   = __aux::subview<typename Instance::Arg0, 
@@ -199,26 +236,46 @@ namespace vina {
 
 	  if ( _IsMT && lookahead == 1) {// leaf node
 #ifndef __NDEBUG
-	    auto compF = Instance::SubTask::computationMT_t();
-#ifndef __USEPOOL
+#ifdef __USE_LIBSPMD
+
+            auto compF = Instance::SubTask::computation();
+	    //printf("compF subArg0=%p, subArg1=%p, subResult=%p\n", subArg0, subArg1, subResult);
+	    
+	    int tid =  spmd_create_thread(wid, &compF, subArg0, subArg1, subResult);
+	    if ( -1 == tid ) {
+		fprintf(stderr, "failed to create thread\n");
+	    }
+	
+	    PROF_HIT(__frm_libspmd_thread_cnt);
+#elif defined( __USEPOOL)
+            auto compF = Instance::SubTask::computationMT_t();
+            pool.run(boost::bind(compF, *subArg0, *subArg1, *subResult, barrier, timers[k]));
+            PROF_HIT(__frm_threadpool_enqueue_cnt);
+#else
+            auto compF = Instance::SubTask::computationMT_t();
 	    mt::thread_t leaf(compF, subArg0, subArg1, subResult, barrier ,timers[k]);
 	    leaf.detach();
 	    //std::cout << "thread:" << leaf.get_id() <<"\n";
 	    PROF_HIT(__frm_thread_creation_cnt);
-#else
-            pool.run(boost::bind(compF, subArg0, subArg1, subResult, barrier, timers[k]));
-            PROF_HIT(__frm_threadpool_enqueue_cnt);
 #endif
+
 #else
-	    _Tail::doit(subArg0, subArg1, subResult, barrier);
+#ifdef __USE_LIBSPMD
+	    auto comF = Instance::SubTask::computation();
+	    spmd_create_thread(wid, &compF, subArg0, subArg1, subResult); 
+#else
+	    _Tail::doit(*subArg0, *subArg1, *subResult, barrier);
+#endif
 #endif
 	  }
 	  else
-	    _Tail::doit(subArg0, subArg1, subResult);
+	    _Tail::doit(*subArg0, *subArg1, *subResult);
 	}//end for
-	
+
+#ifndef __USE_LIBSPMD	
 	if ( _IsMT && lookahead == 1 )	
 	    barrier->wait();
+#endif
 #ifndef __NDEBUG
 	Profiler::getInstance().eventEnd(__frm_kernel_par);
 #endif
@@ -263,8 +320,10 @@ namespace vina {
       //		__aux::ref(result, result_arithm()), 
       //		barrier);
       //printf("enqueue task\n");
+
       pool.run(bind(compF, arg0, arg1, __aux::ref(result, result_arithm()), 
-		    barrier));
+	    barrier));
+
 #ifndef __NDEBUG 
       //std::cout << "thread:" << leaf.get_id() <<"\n";
 #endif

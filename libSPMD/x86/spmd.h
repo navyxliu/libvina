@@ -43,7 +43,7 @@ typedef void (*hook_handler_t)(void);
 typedef void (*task_entry_t)(void);
 
 #ifdef SPMD_FIXED_PARAMETER 
-typedef void (*task_func_t)(void * ret, void * arg0, void * arg1);
+typedef void (*task_func_t)(void * self, void * ret, void * arg0, void * arg1);
 #else
 typedef void* task_func_t;
 #endif
@@ -55,7 +55,7 @@ typedef struct task_struct {
   unsigned short   oc;      /* sem num in sem_pe, indicated occupied */
   int              sem_pe;  /* sem set for PEs */
   int              sem_ldr; /* sem set for leader */
-  void *           args[3];   
+  void *           args[4];   
 }* task_struct_p;
 
 typedef struct warp_struct {

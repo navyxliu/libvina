@@ -58,10 +58,17 @@ namespace vina {
       typedef void (*fn_binary)(void * ret, void *arg);
       typedef void (*fn_ternary)(void * ret, void * arg0, void * arg1);
       template <class F>  
-      static fn_nullary to_nullary(F f)
+      static fn_nullary * to_nullary(F f)
       {
-	return *(f.template target<fn_nullary>());
+	return f.template target<fn_nullary>();
       }
+
+      template <class U>
+      static fn_unary * to_unary(U f)
+      {
+	return f.template target<fn_unary>();
+      }
+
       template <class F>
       static fn_ternary to_ternary(F f)
       {
