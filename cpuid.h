@@ -27,6 +27,7 @@
 					     >> 4)
 //opcode: 0x0fa2
 #define CPUID(EAX, EBX, ECX, EDX)   ({			\
+   __asm__ volatile("cpuid" 				\
 : "=a"(EAX), "=b"(EBX), "=c"(ECX), "=d"(EDX) 		\
     : "0" (EAX)						\
     );})
