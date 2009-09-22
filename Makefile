@@ -55,7 +55,7 @@ saxpy: saxpy.o $(AUX_OBJS)
 conv2d: conv2d.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 $(OBJS):%.o:%.cc frame.hpp Makefile
-	$(CXX) -O2 -o $@ -c $< $(CFLAGS)
+	$(CXX) -o $@ -c $< $(CFLAGS)
 
 
 
