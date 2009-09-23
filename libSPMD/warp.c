@@ -58,21 +58,30 @@ default_task_entry(void * arg)
 
 #ifdef __TIMELOG
     struct timespec myts;
-    char log[80];
-    //unsigned long long stamp;
+    struct timeval fntv_start, fntv_end;
+    long execspan;
+    char log[30];
 
     sprintf(log, "timelog-%d.log", gettid());
     FILE * fh = fopen(log, "w");
     clock_gettime(CLOCK_REALTIME, &myts);
-    fprintf(fh, "start execution %d\n", myts.tv_nsec);
-    fflush(fh);
-#endif //end of __TIMELOG 
+    fprintf(fh, "task start timestamp %d: %ld\n", myts.tv_sec, myts.tv_nsec);
+    gettimeofday(&fntv_start, NULL); 
+#endif 
 
+    /* usually, the first paramter is pointer of function object */
     task->fn(task->args[0], task->args[1], task->args[2], task->args[3]);
+
+#ifdef __TIMELOG
+    gettimeofday(&fntv_end, NULL);
+    fprintf(fh, "task execution span %ld usec\n", (execspan = (fntv_end.tv_sec  - fntv_start.tv_sec) * 1000000 + (fntv_end.tv_usec - fntv_start.tv_usec)));
+#endif
+
 #ifndef __NDEBUG
     printf("task [%d:%d] gonna release pe: %d\n",
 	   getpid(), gettid(), task->oc);
 #endif
+
     /*release physical pe */
     buf.sem_num = task->oc;
     buf.sem_op = 1;
@@ -94,8 +103,11 @@ default_task_entry(void * arg)
 	    getpid(), gettid(), task, task->fn);    
 #endif
 #ifdef __TIMELOG
+    long elapsed = myts.tv_sec;
+    long elapsed_nsec = myts.tv_nsec;
     clock_gettime(CLOCK_REALTIME, &myts);
-    fprintf(fh, "notified leader %d\n", myts.tv_nsec);
+    elapsed = ((myts.tv_sec - elapsed) * 10000000000 + (myts.tv_nsec - elapsed_nsec)) / 1000;
+    fprintf(fh, "task close timestamp %d:%ld\ntask active time is %ld, effectivity is %.2f\%\n", myts.tv_sec, myts.tv_nsec, elapsed, (100.0 * execspan) / elapsed );
     fclose(fh);
 #endif
   }
@@ -288,6 +300,9 @@ spmd_initialize()
 
   /*also works for systems with non-exponential cores
    */
+
+  printf("probe result is %d\n", nr_pe);
+
   for(i=nr_pe, nr_thr=0, nr_slot=0; i>0; 
       i = i>>1, nr_slot++) { 
     nr_thr += nr_pe + i; 
