@@ -121,6 +121,7 @@ void __leader
 default_leader_entry(leader_struct_p leader)
 {
   while (1) {
+    //reset task counter
     leader->nr = 0;
 #ifndef __NDEBUG
     printf("#leader %d, leader->sem = %d, sem number = %d\n", 
@@ -462,16 +463,19 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
   for (i=0; i < the_pool.nr_pe / nr; ++i, cand++) {
     if ( spinlock_trylock(&(cand->lck)) ) { /* don't contend hot lock */
       if ( cand->oc == 0 )
+	printf("ldr oc is 0, okay to obtain this leader");
 	ldr = cand;
 	break;
       }
-      else 
+      else  {
+        printf("ldr oc is 1, find another leader");
 	spinlock_unlock(&(cand->lck));
+      }
   }
 
   if ( ldr == NULL ) {
     //sleep(1); /*gentlely re-try*/
-    //printf("content leader, sleep(1)\n");
+    printf("content leader, sleep(1)\n");
     struct timespec spec = {
       .tv_sec = 0,
       .tv_nsec = 2000 /*2 usec*/
@@ -481,7 +485,7 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
     goto pick_leader;
   }
 
-  //fprintf(stderr, "ldr address %p, &ldr->warp = %p offset = %d \n", ldr, &(ldr->warp), offset); 
+  fprintf(stderr, "ldr address %p, &ldr->warp = %p offset = %d \n", ldr, &(ldr->warp), offset); 
   ldr->oc = 1;
   warp = &(ldr->warp);
   spinlock_unlock(&(ldr->lck));
