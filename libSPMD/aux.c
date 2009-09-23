@@ -1,4 +1,5 @@
 #include "x86/spmd.h"
+#include <string.h>
 
 static int
 read_line_of(FILE * f, int n/*lines*/)
@@ -10,14 +11,35 @@ read_line_of(FILE * f, int n/*lines*/)
   return ch != EOF;
 }
 
+static int 
+count_keyword_in_line(FILE * f, const char * key)
+{
+  char * line = NULL;	 
+  size_t len;
+  ssize_t read;
+  int cnt = 0; 
+ 
+  line = NULL;
+  while ((read = getline(&line, &len, f)) != -1 ) {  
+    if ( NULL != strstr(line, key) ) {
+	cnt ++;
+    }
+  }
+  
+  if ( line ) 
+    free(line);
+
+  return cnt;
+}
+
 int 
 probe_nr_processor()
 {
   FILE * cpuinfo;
   char buffer[80];
   int idx = 0;
-  int cores;
-
+  int cores, cores_smp;
+  /*one-way processor*/
   cpuinfo = fopen("/proc/cpuinfo", "r");
   if ( cpuinfo == NULL || !read_line_of(cpuinfo, 11/*skip front 11 lines*/)) {
     perror("open /proc/cpuinfo");
@@ -32,7 +54,12 @@ probe_nr_processor()
   assert( 1 == sscanf(buffer+idx, "%d", &cores)
 	  && "wrong line of cpuinfo");
 
-  return cores;
+  /* startover, multi-processor machine might contains more processors, e.g.
+     2-way processor, has two quadcores processors, which is 2 * 4 cores */
+  rewind(cpuinfo);
+  cores_smp =  count_keyword_in_line(cpuinfo, "processor"); 
+	
+  return cores_smp > cores ? cores_smp : cores;
 }
 
 void
