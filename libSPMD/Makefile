@@ -1,5 +1,5 @@
 all: tpbench hackbench libSPMD.a
-CFLAGS=-O2 -g -Wall -D__NDEBUG
+CFLAGS=-O2 -g -Wall -D__NDEBUG -D__TIMELOG
 tpbench: tpbench.o libSPMD.a
 	g++ -o $@ ../profiler.o ../toolkits.o ../mtsupport.o $< -L/usr/lib64 -lboost_thread-mt $(CFLAGS) libSPMD.a
 tpbench.o:%.o:%.cc 

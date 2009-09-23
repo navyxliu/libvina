@@ -232,7 +232,7 @@ namespace vina {
 	  
 	  auto subResult = __aux::subview<typename Instance::Result,
 	    ret_dim::value, ret_arithm::value>::sub_writer(result, k);
-
+	  printf("dim%d\n",  ret_dim::value);
 
 	  if ( _IsMT && lookahead == 1) {// leaf node
 #ifndef __NDEBUG
