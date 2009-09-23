@@ -25,6 +25,11 @@ using namespace vina;
 #define MASK_TP 2
 #define MASK_WP 4
 
+#ifdef __TIMELOG
+  pthread_mutex_t dbg_lock = PTHREAD_MUTEX_INITIALIZER;
+  static int dbg_task_counter;
+#endif 
+
 // T-distribution, two-tail alpha is 0.05
 float T_alpha_5[] = {2.228, /*start at N=10*/
 		     2.201,
@@ -75,9 +80,19 @@ void worker(mt::barrier_t barrier,
 void worker2(void * self, void * ret, void * arg0, void * arg1)
 {
   int delay = (*((int *)(arg0)));
-  fprintf(stderr, "work2 delay = %d\n", delay);
+  //fprintf(stderr, "work2 delay = %d\n", delay);
+#ifdef __TIMELOG
+   pthread_mutex_lock(&dbg_lock);
+   dbg_task_counter ++;
+   pthread_mutex_unlock(&dbg_lock);  
+#endif
+
   if ( delay >= 0 ) 
     burn_usecs(delay);  
+}
+void reduce()
+{
+  printf("i am a reduce\n");
 }
 
 void group_without_tp()
@@ -119,16 +134,24 @@ void group_with_warp()
       nr = nr_thread;
     }
   }
-  /*
+  
   fprintf(stderr, "libspmd nr = %d, avl_pe= %d, inner_loop=%d\n", 
 	  nr, avl_pe, inner_loop);
-  */
+  
   for (int i=0; i<inner_loop; ++i) {
-    int id = spmd_create_warp(nr, (void *)worker2, 0, NULL);
+    int id = spmd_create_warp(nr, (void *)worker2, 0, (void *)reduce);
     assert ( id != -1 && "create warp failed");
     for (int j=0; j<nr; ++j, cnt++)
       assert ( -1 != spmd_create_thread(id, NULL, NULL, &(wkr_delay), NULL)
 	       && "spmd_create thread failed");
+#ifdef __TIMELOG
+/*
+    while ( !spmd_all_complete() );
+    pthread_mutex_lock(&dbg_lock);
+    printf("dbg_task_counter = %d\n", dbg_task_counter);
+    pthread_mutex_unlock(&dbg_lock);
+*/
+#endif
     
   }
   assert( cnt == nr_thread  && "failed of counter in libspmd");
