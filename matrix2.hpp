@@ -595,6 +595,10 @@ namespace vina {
     const static int SIZE_B = view_trait2<Arg0>::READER_SIZE_Y;
     const static int SIZE_C = view_trait2<Result>::WRITER_SIZE_Y;
 
+    static void doit_ptr(void * arg0, void * arg1, void * result)
+    {
+      doit(*((Arg0*)arg0), *((Arg1*)arg1), *((Result*)result));
+    }
     static void doit(const Arg0& arg0, const Arg1& arg1, 
 		     Result& result)
     {
@@ -626,7 +630,11 @@ namespace vina {
     const static int SIZE_A = view_trait2<Result>::WRITER_SIZE_X;
     const static int SIZE_B = view_trait2<Arg0>::READER_SIZE_Y;
     const static int SIZE_C = view_trait2<Result>::WRITER_SIZE_Y;
-
+    /*unsafe interface, only used by libspmd callback*/
+    static void doit_ptr(void * arg0, void * arg1, void * result)
+    {
+       doit(*((Arg0*)arg0), *((Arg1*)arg1), *((Result *)result));
+    }
     static void doit(const Arg0& arg0, const Arg1& arg1,
 		     Result& result)
     {
