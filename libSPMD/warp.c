@@ -461,31 +461,34 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
   cand = the_pool.leaders + offset;
   //  printf("warp offset=%d\n", offset);
   for (i=0; i < the_pool.nr_pe / nr; ++i, cand++) {
-    if ( spinlock_trylock(&(cand->lck)) ) { /* don't contend hot lock */
-      if ( cand->oc == 0 )
-	printf("ldr oc is 0, okay to obtain this leader");
+    if ( spinlock_trylock(&(cand->lck)) )  /* don't contend hot lock */
+      if ( cand->oc == 0 ) {
+	//fprintf(stderr, "ldr oc is 0, okay to obtain this leader\n");
 	ldr = cand;
 	break;
       }
       else  {
-        printf("ldr oc is 1, find another leader");
+        //fprintf(stderr, "ldr oc is 1, find another leader\n");
 	spinlock_unlock(&(cand->lck));
       }
+    else {
+	//fprintf(stderr, "can not lock on %p\n", cand);
+    }
   }
 
   if ( ldr == NULL ) {
     //sleep(1); /*gentlely re-try*/
-    printf("content leader, sleep(1)\n");
+    //printf("content leader, sleep(1)\n");
     struct timespec spec = {
       .tv_sec = 0,
       .tv_nsec = 2000 /*2 usec*/
     };
-    fprintf(stderr, "pick leader no choice, nanosleep 2 us\n");
-    nanosleep(&spec, NULL);
+    //fprintf(stderr, "pick leader no choice, nanosleep 2 us\n");
+    //nanosleep(&spec, NULL);
     goto pick_leader;
   }
 
-  fprintf(stderr, "ldr address %p, &ldr->warp = %p offset = %d \n", ldr, &(ldr->warp), offset); 
+  //fprintf(stderr, "ldr address %p, &ldr->warp = %p offset = %d \n", ldr, &(ldr->warp), offset); 
   ldr->oc = 1;
   warp = &(ldr->warp);
   spinlock_unlock(&(ldr->lck));
@@ -664,6 +667,7 @@ spmd_create_thread(int warp_id, void * self, void * ret, void * arg0, void * arg
 
   return t;
 }
+
 int __spmd_export
 spmd_get_taskid()
 {
@@ -731,7 +735,7 @@ main()
   warpid = spmd_create_warp(2, dummy_fn, 0, NULL);
   if ( warpid == -1 ) {
     fprintf(stderr, "spmd_create_warp failed\n");
-    exit(1);
+    exit(1);n
   }
   else
     printf("created warpid = %2d\n", warpid);

@@ -77,20 +77,20 @@ struct matmul_parallel
        const Arg1& arg1,
        Result& result){
 
-    //printf("_pred=%d SubTask::_pred=%d\n", _pred, SubTask::_pred);
-    //printf("SubTask::RESULT::WRITER_SIZE_X=%d\n", 
-//	   view_trait2<typename SubTask::Result>::WRITER_SIZE_X);
+    printf("_pred=%d SubTask::_pred=%d\n", _pred, SubTask::_pred);
+    printf("SubTask::RESULT::WRITER_SIZE_X=%d\n", 
+    view_trait2<typename SubTask::Result>::WRITER_SIZE_X);
 
     Map::doit(arg0, arg1, result);
   };
 
   //leaf node concret function
-  typedef std::tr1::function<void (const Arg0&, const Arg1&, Result&)>
+  typedef std::tr1::function<void (void *, void *, void *)>
   _Comp;
 
   static _Comp
   computation() {
-    return  &(Func<Result, Arg0, Arg1>::doit);
+    return  &(Func<Result, Arg0, Arg1>::doit_ptr);
   }
 
 #ifndef __NDEBUG
@@ -135,6 +135,18 @@ struct matmul_parallel
   (i * (SubWView::VIEW_SIZE_X), j * (SubWView::VIEW_SIZE_Y));
     
     Redu<SubWView, SubRView2>::doit(r, RHS);
+  }
+  
+/* reduce function for libspmd*/
+  static void
+  reduce_ptr(void** subs) {
+    auto reduF = reduction(); 
+
+    for (int s=1; s < K; s<<=1) for (int k=0; k < K; k+=(s<<1)) {
+      auto in0 = (SubWView*)subs[k];
+      auto in1 = (SubRView2*)subs[k+s];
+      reduF(*in0, /*<--*/*in1);     
+    }
   }
 };
 
@@ -222,6 +234,7 @@ int main()
   CHECK_RESULT(z);
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
 */
+  spmd_initialize();
   z_v.zero();
 
   typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
@@ -229,6 +242,8 @@ int main()
  
   prof.eventStart(temp4);
   TF_PARALLEL_SSE::doit(x_v, y_v, result_v);
+  //printf("gonna wait for all completence\n");
+  while (!spmd_all_complete());
   prof.eventEnd(temp4);
   CHECK_RESULT(z_v);
   printf("MT SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp4)->elapsed()));

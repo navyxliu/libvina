@@ -80,10 +80,11 @@ void worker(mt::barrier_t barrier,
 void worker2(void * self, void * ret, void * arg0, void * arg1)
 {
   int delay = (*((int *)(arg0)));
-  //fprintf(stderr, "work2 delay = %d\n", delay);
+
 #ifdef __TIMELOG
    pthread_mutex_lock(&dbg_lock);
    dbg_task_counter ++;
+   fprintf(stderr, "work2 delay = %d\n", delay);
    pthread_mutex_unlock(&dbg_lock);  
 #endif
 

@@ -1,7 +1,7 @@
 #This file is not supposed to be distributed.
 
-SYSTEM := $(shell uname -s)
 PWD    := $(shell pwd)
+SYSTEM := $(shell uname -s)
 
 #compiler conf.
 CXX = g++
@@ -25,7 +25,7 @@ MTSUPPORT+= -L /usr/lib64
 BOOST_PATH=/usr/include
 endif
 #general linux features
-CFLAGS += -DLINUX -D__USEPOOL #-DPMC_SUPPORT 
+CFLAGS += -DLINUX #-D__USEPOOL #-DPMC_SUPPORT 
 LDFLAGS += -lrt
 else ifeq ($(SYSTEM), Darwin)
 BOOST_PATH = /opt/local/include
@@ -43,7 +43,7 @@ OBJS += $(AUX_OBJS)
 all: mat_mul lang_pipe dot_prod conv2d saxpy
 
 mat_mul: mat_mul.o $(AUX_OBJS) 
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -lSPMD -L ./libSPMD
 
 lang_pipe: test_pipe.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
@@ -51,7 +51,7 @@ lang_pipe: test_pipe.o $(AUX_OBJS)
 dot_prod: dot_prod.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)	
 saxpy: saxpy.o $(AUX_OBJS)
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -lSPMD -L /home/xliu/libvina/libSPMD
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) -lSPMD -L ./libSPMD
 conv2d: conv2d.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 $(OBJS):%.o:%.cc frame.hpp Makefile

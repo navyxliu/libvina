@@ -37,7 +37,7 @@ struct vecArithImpl{
   static void madd(const T& alpha, const RView& X, 
 		   Result& result)
   {
-    printf("Scalar DIM_N = %d\n", DIM_N);
+    //printf("Scalar DIM_N = %d\n", DIM_N);
     for(int i=0; i<DIM_N; ++i)
       result[i] += alpha * X[i];
   }
@@ -148,7 +148,7 @@ struct vecArithImpl<vFloat, DIM_N>
 		   Result& result)
   {  
 
-    printf("SSE DIM_N = %d\n", DIM_N);
+    //printf("SSE DIM_N = %d\n", DIM_N);
     const float * x = X.data();
     float * y       = result.data();
     float __const_alpha[4] = {alpha, alpha, alpha, alpha};

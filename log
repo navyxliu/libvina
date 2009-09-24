@@ -1,28 +1,241 @@
-SAXPY Program in Blas
-VEC_TEST_SIZE_N=80000000
-VEC_TEST_GRANULARITY=20000000
-VEC_TEST_K=4
-See Makefile TEST_INFO to set parameters
-elapsed=228299
-STD gflop=0.700835
+
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.040932
 probe result is 4
-startup libspmd runtime: 4 pe is detected
-elapsed=126715
-MT gflop=1.262676
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.425089
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    1      770usec            0.2%
+# 1        #frame kernel par    0        0usec            0.0%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
 # 4 #thread creation counters    0                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation    4                           
-# 7                      STD    1   228299usec            64.3%
-# 8                       ST    0        0usec            0.0%
-# 9                       MT    1   126715usec            35.7%
-#10                   OPENMP    0        0usec            0.0%
-#11            thread0 timer    0        0usec            0.0%
-#12            thread1 timer    0        0usec            0.0%
-#13            thread2 timer    0        0usec            0.0%
-#14            thread3 timer    0        0usec            0.0%
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   819756usec            91.2%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    78935usec            8.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.039827
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.373870
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   842514usec            90.4%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    89749usec            9.6%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.043249
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.468238
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   775841usec            91.5%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    71661usec            8.5%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.039586
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.451273
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   847644usec            91.9%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    74355usec            8.1%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.043575
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.510598
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   770037usec            92.1%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    65716usec            7.9%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.042134
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.566434
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   796372usec            93.1%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    59238usec            6.9%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.043285
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.511750
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   775196usec            92.2%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    65568usec            7.8%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.043238
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.388020
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   776040usec            90.0%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    86476usec            10.0%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.042994
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.378112
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   780437usec            89.8%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    88742usec            10.2%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N= 256
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.040000
+probe result is 4
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=64
+MT SSE gflop=0.507025
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1   838855usec            92.7%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1    66179usec            7.3%
