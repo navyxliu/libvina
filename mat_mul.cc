@@ -6,6 +6,7 @@
 
 #include <tr1/functional>
 using namespace vina;
+#include <pthread.h>
 
 #ifdef __NDEBUG
 #define CHECK_RESULT(X) 
@@ -22,6 +23,7 @@ using namespace vina;
 	}								\
       }									
 #endif
+pthread_mutex_t mylock = PTHREAD_MUTEX_INITIALIZER;
 
 template <class RESULT, class ARG0, class ARG1,
 	  template <typename, typename, typename> class Func,
@@ -123,7 +125,8 @@ struct matmul_parallel
   _ReduMT;
 
   static _ReduMT
-  reductionMT() {
+  reductionMT() 
+  {
     return &(Redu<SubWView, SubRView2>::doitMT);
   }
 
@@ -139,17 +142,47 @@ struct matmul_parallel
   
 /* reduce function for libspmd*/
   static void
-  reduce_ptr(void** subs) {
+  reduce_ptr() {
     auto reduF = reduction(); 
-
+    auto _subs = (SubWView **)localstorage(true);
+     
+    printf("in reduce_ptr subs[0] = %p\n", _subs[0]);
     for (int s=1; s < K; s<<=1) for (int k=0; k < K; k+=(s<<1)) {
-      auto in0 = (SubWView*)subs[k];
-      auto in1 = (SubRView2*)subs[k+s];
+      auto in0 = _subs[k];
+      auto in1 = (SubRView2*)_subs[k+s];
       reduF(*in0, /*<--*/*in1);     
     }
   }
-};
+ /* data for reduction */
+ /*ydf gave me the idea to implement template static variable by function static var
+  * the benefit of this approach is that programmer can  avoid the intialization expresson  outside of template class. 
+  * our template parameters are  painfully long. 
+  * 2009/07, xliu
+  */
+ inline static void * 
+ localstorage (bool ld/*load or store*/, void * value = NULL )
+ {
+ /* in MM case, calls of this function are serialized . therefore this funciton lacks of lock-protection.
+  */
+   static void * ls[K*K];
+   static int i;
+   static int j;
+   void * ret;
+   pthread_mutex_lock(&mylock);
+   {
+   printf("ld = %d, i = %d, j = %d\n", (int)ld, i, j);
+   if ( ld ? j >= i : i >= K*K ) {
+     fprintf(stderr, "IN DANGER! you are wrongly using this function.");
+     _exit(-1);
+   }
 
+   if ( !ld ) ret = ls[i++] = value;
+   else ret = ls[j++];
+   }
+   pthread_mutex_unlock(&mylock);
+   return ret;
+ } 
+};
 
 template <class T, int size_x, int size_y>
 struct p_simple{
