@@ -597,6 +597,8 @@ namespace vina {
 
     static void doit_ptr(void * arg0, void * arg1, void * result)
     {
+      //printf("doit_ptr arg0 = %p, arg1 = %p, result = %p\n", arg0, arg1, result);
+
       doit(*((Arg0*)arg0), *((Arg1*)arg1), *((Result*)result));
     }
     static void doit(const Arg0& arg0, const Arg1& arg1, 

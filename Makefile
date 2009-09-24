@@ -9,7 +9,7 @@ CFLAGS = -g -I $(BOOST_PATH) -std=c++0x $(TEST_INFO) $(OPT) -fopenmp
 MTSUPPORT = -l$(THREAD_LIB) -lgomp
 GLSUPPORT = -lGL -lGLU -lglut
 LDFLAGS = -lm $(MTSUPPORT) -lpng
-OPT= #-O3# -msse
+OPT= -O3 -msse
 
 include params 
 

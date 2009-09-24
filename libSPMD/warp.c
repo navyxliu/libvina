@@ -1,4 +1,10 @@
 // This file is not supposed to be distributed.
+// History
+// Sep. 12, fix a bug about pointer calculation
+// Sep. 22, 
+//          add file-based execution breakdown and __TIMELOG macro
+//          add SMP machine support for probe_cpu function
+// Sep. 23, replace pause with sigsuspended syscall to solve mysterious hang.
 #include "warp.h"
 #include "x86/spmd.h"
 #include <time.h>

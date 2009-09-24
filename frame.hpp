@@ -1,4 +1,9 @@
 //This file is not supposed to be distributed.
+//History
+//July. 20, create file 
+//Aug. 13, introduce thread pool
+//Sep. 22, introduce libspmd
+//
 #ifndef VINA_FRAMEWORK
 #define VINA_FRAMEWORK
 #include "vector.hpp"
@@ -68,7 +73,7 @@ namespace vina {
     template <class F>
     void wrapper_func_ternary(F * _self, void * ret, void * arg0, void *arg1)
     {
-	//printf("ternary is called _self = %p\n", _self);
+	//printf("ternary is called _self = %p, (%p, %p, %p)\n", _self, ret, arg0, arg1);
     	_self->operator() (ret, arg0, arg1);
     }
 
@@ -569,6 +574,8 @@ struct mapreduce {
             subResults[0] = new SubWViewTemp(result.template subWView<Instance::SubWView::VIEW_SIZE_X,
                    Instance::SubWView::VIEW_SIZE_Y>(i * (Instance::SubWView::VIEW_SIZE_X), 
                                                     j * (Instance::SubWView::VIEW_SIZE_Y)));    
+            printf("subResults[0] = %p\n", subResults[0]);
+            assert ( subResults == Instance::localstorage(false, subResults) && "wrong local storage");
 #if !defined(__NDEBUG) && !defined(__USE_LIBSPMD)
               event_id timers[_K];
 	      for (int _i=0; _i<_K; ++_i) {
@@ -587,13 +594,14 @@ struct mapreduce {
         auto compF = Instance::SubTask::computation();
 	typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
 	func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
-       
+      /* 
 	auto reduF = boost::bind(Instance::reduce_ptr, (void **)subResults);
 	typedef void (* func2_t)(decltype(reduF) *);
 	func2_t redu = &__aux::wrapper_func_nullary<decltype(reduF)>;
-
-	wid = spmd_create_warp(_K, (void *)task, 0, (void *)redu);
+*/
+	wid = spmd_create_warp(_K, (void *)task, 0, (void *)&Instance::reduce_ptr);
 	assert( wid != -1 && "spmd creation faied");
+	printf("warp %d is created\n", wid);
 #endif
 	for (int k=0; k<_K; ++k) {
 	    auto subArg0   = __aux::subview2<typename Instance::Arg0, Instance::SubRView0::VIEW_SIZE_X, 
@@ -603,12 +611,15 @@ struct mapreduce {
 
 #if defined(__USE_LIBSPMD)
             auto Comp = Instance::SubTask::computation();
-            int tid = spmd_create_thread(wid, &Comp, subArg0, subArg1, subResults[i]) ;
+            int tid = spmd_create_thread(wid, &Comp, subArg0, subArg1, subResults[k]) ;
 #ifndef __NDEBUG
             PROF_HIT(__frm_libspmd_thread_cnt);
             if ( -1 == tid ) {
                fprintf(stderr, "failed to create thread\n");
             }
+	    else {
+	       fprintf(stderr, "task %d is created\n", tid);
+	    }
 #endif
 #elif defined(__USE_POOL)
 #ifndef __NDEBUG
