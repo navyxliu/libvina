@@ -135,10 +135,11 @@ void group_with_warp()
       nr = nr_thread;
     }
   }
-  
+  /*
   fprintf(stderr, "libspmd nr = %d, avl_pe= %d, inner_loop=%d\n", 
 	  nr, avl_pe, inner_loop);
   
+  */
   for (int i=0; i<inner_loop; ++i) {
     int id = spmd_create_warp(nr, (void *)worker2, 0, (void *)reduce);
     assert ( id != -1 && "create warp failed");
@@ -155,7 +156,7 @@ void group_with_warp()
 #endif
     
   }
-  assert( cnt == nr_thread  && "failed of counter in libspmd");
+  //assert( cnt == nr_thread  && "failed of counter in libspmd");
 }
 
 void print_result(unsigned long t,/*in micro sec, us*/ 
@@ -220,6 +221,7 @@ void test_function_of(void(*f)(),
     printf("test #%d: %.0f\n", i, v[i]);
     //fprintf(stderr, "test #%d: %s\n", i , tmr.elapsedToStr());
   }
+  sleep(1);
   null = 0.6 * tmr.elapsed() + 0.4 * prof.getEvent(temp0)->elapsed() / NR;
   exp = 0.0;
   for (int i=skip; i<nr_group; ++i) exp += (v[i]);
@@ -317,10 +319,11 @@ main(int argc, char *argv[])
     avl_pe = spmd_initialize();
     printf("avl_pe is %4d\n", avl_pe);
     assert( avl_pe != -1 && "failed to initialize libspmd runtime");
-    sleep(1);
+    //sleep(1);
 
     test_function_of(group_with_warp, "libspmd");
-    //sleep(5);
+    while ( !spmd_all_complete() ) ;
+    //sleep(1);
     spmd_cleanup();
   }
   if ( msk_bench ) 

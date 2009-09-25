@@ -143,6 +143,7 @@ struct matmul_parallel
 /* reduce function for libspmd*/
   static void
   reduce_ptr() {
+   pthread_mutex_lock(&mylock); {
     auto reduF = reduction(); 
     auto _subs = (SubWView **)localstorage(true);
      
@@ -152,6 +153,8 @@ struct matmul_parallel
       auto in1 = (SubRView2*)_subs[k+s];
       reduF(*in0, /*<--*/*in1);     
     }
+    }
+   pthread_mutex_unlock(&mylock);
   }
  /* data for reduction */
  /*ydf gave me the idea to implement template static variable by function static var
@@ -168,7 +171,6 @@ struct matmul_parallel
    static int i;
    static int j;
    void * ret;
-   pthread_mutex_lock(&mylock);
    {
    printf("ld = %d, i = %d, j = %d\n", (int)ld, i, j);
    if ( ld ? j >= i : i >= K*K ) {
@@ -179,7 +181,6 @@ struct matmul_parallel
    if ( !ld ) ret = ls[i++] = value;
    else ret = ls[j++];
    }
-   pthread_mutex_unlock(&mylock);
    return ret;
  } 
 };
@@ -275,7 +276,6 @@ int main()
  
   prof.eventStart(temp4);
   TF_PARALLEL_SSE::doit(x_v, y_v, result_v);
-  //printf("gonna wait for all completence\n");
   while (!spmd_all_complete());
   prof.eventEnd(temp4);
   CHECK_RESULT(z_v);
