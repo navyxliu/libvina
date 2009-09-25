@@ -239,7 +239,7 @@ namespace vina {
 	  typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
 	  func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
 	  //printf("func_t task %p\n", task); 
-	  wid = spmd_create_warp(_K, (void *)task, 0, 0);
+	  wid = spmd_create_warp(_K, (void *)task, 0, 0, 0);
 	  assert( wid != -1 && "spmd creation faied");
 	  //printf("create warp id %d\n", wid);
         }
@@ -567,16 +567,19 @@ struct mapreduce {
 #else 
 	    auto submats = new(mapreduce2::mem_pool::get()) SubResultType[_K];
 #endif
-	    SubWViewTemp *subResults[_K];
+	    typedef SubWViewTemp * SubWViewTempPtr_t;
+
+	    SubWViewTemp ** subResults = new SubWViewTempPtr_t[_K];
 
 	    for (int k=1; k<_K; ++k) 
 	      subResults[k] = new SubWViewTemp(submats[k].subWView());
 
-            subResults[0] = new SubWViewTemp(result.template subWView<Instance::SubWView::VIEW_SIZE_X,
-                   Instance::SubWView::VIEW_SIZE_Y>(i * (Instance::SubWView::VIEW_SIZE_X), 
-                                                    j * (Instance::SubWView::VIEW_SIZE_Y)));    
-            printf("subResults[0] = %p\n", subResults[0]);
-            assert ( subResults == Instance::localstorage(false, subResults) && "wrong local storage");
+            subResults[0] = new SubWViewTemp(result.template subWView
+	    	<Instance::SubWView::VIEW_SIZE_X,
+                 Instance::SubWView::VIEW_SIZE_Y>(i * (Instance::SubWView::VIEW_SIZE_X), 
+                                                  j * (Instance::SubWView::VIEW_SIZE_Y)));    
+            //printf("subResults[0] = %p\n", subResults[0]);
+            //assert ( subResults == Instance::localstorage(false, subResults) && "wrong local storage");
 #if !defined(__NDEBUG) && !defined(__USE_LIBSPMD)
               event_id timers[_K];
 	      for (int _i=0; _i<_K; ++_i) {
@@ -595,14 +598,10 @@ struct mapreduce {
         auto compF = Instance::SubTask::computation();
 	typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
 	func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
-      /* 
-	auto reduF = boost::bind(Instance::reduce_ptr, (void **)subResults);
-	typedef void (* func2_t)(decltype(reduF) *);
-	func2_t redu = &__aux::wrapper_func_nullary<decltype(reduF)>;
-*/
-	wid = spmd_create_warp(_K, (void *)task, 0, (void *)&Instance::reduce_ptr);
+	wid = spmd_create_warp (_K, (void *)task, 0, 
+	                        (void *)&Instance::reduce_ptr, (void *)subResults);
 	assert( wid != -1 && "spmd creation faied");
-	printf("warp %d is created\n", wid);
+	//printf("warp %d is created\n", wid);
 #endif
 	for (int k=0; k<_K; ++k) {
 	    auto subArg0   = __aux::subview2<typename Instance::Arg0, Instance::SubRView0::VIEW_SIZE_X, 
@@ -702,7 +701,7 @@ struct mapreduce {
 		     typename Instance::Result& result,
 		     mt::barrier_t dummy = mt::null_barrier)
     {
-      auto compF = Instance::computation();
+      auto compF = Instance::computationST();
 #ifndef __NDEBUG 
       Profiler::getInstance().eventStart(__frm_kernel_seq);
 #endif

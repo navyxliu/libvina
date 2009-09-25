@@ -95,6 +95,13 @@ struct matmul_parallel
     return  &(Func<Result, Arg0, Arg1>::doit_ptr);
   }
 
+  typedef std::tr1::function<void (const Arg0&, const Arg1&, Result&)>
+  _CompST;
+  static _CompST
+  computationST()
+  {
+    return &(Func<Result, Arg0, Arg1>::doit); 
+  }
 #ifndef __NDEBUG
   typedef std::tr1::function<void (const Arg0&, const Arg1&, Result&, mt::barrier_t, event_id)>
   _CompMT_t;
@@ -142,31 +149,32 @@ struct matmul_parallel
   
 /* reduce function for libspmd*/
   static void
-  reduce_ptr() {
-   pthread_mutex_lock(&mylock); {
+  reduce_ptr(void * arg) {
     auto reduF = reduction(); 
-    auto _subs = (SubWView **)localstorage(true);
+    auto _subs = (SubWView **)arg;
      
-    printf("in reduce_ptr subs[0] = %p\n", _subs[0]);
+    //printf("in reduce_ptr subs[0] = %p\n", _subs[0]);
     for (int s=1; s < K; s<<=1) for (int k=0; k < K; k+=(s<<1)) {
       auto in0 = _subs[k];
       auto in1 = (SubRView2*)_subs[k+s];
       reduF(*in0, /*<--*/*in1);     
     }
-    }
-   pthread_mutex_unlock(&mylock);
   }
- /* data for reduction */
- /*ydf gave me the idea to implement template static variable by function static var
-  * the benefit of this approach is that programmer can  avoid the intialization expresson  outside of template class. 
+ /* ydf gave me the idea to implement template static variable by function static var
+  * the benefit of this approach is that programmer can avoid the intialization expresson\
+  * outside of template class. 
   * our template parameters are  painfully long. 
   * 2009/07, xliu
   */
+ /* amazingly ugly. remove the reference of this function from my codebase. because this \
+  * trick is still useful in my template library, so leave corpse here. 
+  * 2009/09
+  */
+ #if 0 
  inline static void * 
  localstorage (bool ld/*load or store*/, void * value = NULL )
  {
- /* in MM case, calls of this function are serialized . therefore this funciton lacks of lock-protection.
-  */
+ /*NOT thread-safe!*/
    static void * ls[K*K];
    static int i;
    static int j;
@@ -183,6 +191,7 @@ struct matmul_parallel
    }
    return ret;
  } 
+ #endif
 };
 
 template <class T, int size_x, int size_y>
@@ -240,7 +249,7 @@ int main()
 
   prof.eventEnd(temp0);  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
 #endif 
- /* 
+/*  
   typedef matmul_parallel<Writer, TestMatrix, TestMatrix, 
     matMAddWrapper, matAddWrapper2, p_simple, MM_TEST_K, false> TF; // fransformer :~)
   prof.eventStart(temp1);
@@ -248,7 +257,8 @@ int main()
   prof.eventEnd(temp1);
   CHECK_RESULT(z);
   printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed()));
-
+*/
+/*
   typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
     matMAddWrapper, matAddWrapper2, p_simple, MM_TEST_K, false> TF_SSE;
 
@@ -257,7 +267,8 @@ int main()
   prof.eventEnd(temp2);
   printf("ST SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed()));
   CHECK_RESULT(z_v);
-
+  */
+/*
   z.zero();
   typedef matmul_parallel<Writer, TestMatrix, TestMatrix,
     matMulWrapper, matAddWrapper2, p_simple, MM_TEST_K> TF_PARALLEL;
@@ -268,6 +279,7 @@ int main()
   CHECK_RESULT(z);
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
 */
+
   spmd_initialize();
   z_v.zero();
 

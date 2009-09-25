@@ -91,9 +91,9 @@ void worker2(void * self, void * ret, void * arg0, void * arg1)
   if ( delay >= 0 ) 
     burn_usecs(delay);  
 }
-void reduce()
+void reduce(void * arg __attribute__((unused)) )
 {
-  printf("i am a reduce\n");
+  //printf("i am a reduce\n");
 }
 
 void group_without_tp()
@@ -141,14 +141,14 @@ void group_with_warp()
   
   */
   for (int i=0; i<inner_loop; ++i) {
-    int id = spmd_create_warp(nr, (void *)worker2, 0, (void *)reduce);
+    int id = spmd_create_warp(nr, (void *)worker2, 0, (void *)reduce, NULL);
     assert ( id != -1 && "create warp failed");
     for (int j=0; j<nr; ++j, cnt++)
       assert ( -1 != spmd_create_thread(id, NULL, NULL, &(wkr_delay), NULL)
 	       && "spmd_create thread failed");
+    while ( !spmd_all_complete() );
 #ifdef __TIMELOG
 /*
-    while ( !spmd_all_complete() );
     pthread_mutex_lock(&dbg_lock);
     printf("dbg_task_counter = %d\n", dbg_task_counter);
     pthread_mutex_unlock(&dbg_lock);
@@ -330,15 +330,16 @@ main(int argc, char *argv[])
     Profiler::getInstance().dump();
   if ( wkr_delay >= 0 ) {
   auto std = prof.eventRegister("seq");
-  
+
+#ifndef __NDEBUG 
   for (int i=0; i<nr_thread; ++i){
     prof.eventStart(std);
     burn_usecs(wkr_delay);  
     prof.eventEnd(std);
     sleep(1); //prohibit H/W opt.
   }
-
   printf("*run in sequence %d\n", prof.getEvent(std)->elapsed());
+#endif
   }
   return 0;
 }
