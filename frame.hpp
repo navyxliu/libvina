@@ -239,6 +239,7 @@ namespace vina {
 	  typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
 	  func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
 	  //printf("func_t task %p\n", task); 
+	  wid = spmd_create_warp(_K, (void *)task, 0, 0);
 	  assert( wid != -1 && "spmd creation faied");
 	  //printf("create warp id %d\n", wid);
         }

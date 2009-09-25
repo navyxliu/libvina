@@ -31,6 +31,8 @@ extern void wait_for_tg(int sem);
 extern  void set_fifo(int pid, int prio);
 extern  void set_normal(int pid);
 /*aux func end*/
+static void
+spmd_runtime_dump();
 
 void children_handler(int signum)
 {
@@ -352,7 +354,10 @@ spmd_initialize()
     (the_pool.nr_task * sizeof(thread_t));
   if ( the_pool.thr_tasks == NULL ) 
     goto err_happened1;
-
+  else  {
+    printf("the_pool.thr_tasks = %lp\n", 
+      the_pool.thr_tasks);
+  }
   the_pool.leaders = (struct leader_struct *)malloc
     (nr_leader * sizeof(struct leader_struct));
   if ( the_pool.leaders == NULL ) 
@@ -383,7 +388,7 @@ spmd_initialize()
     slot->wb_leaders = ldr;
     slot->wb_tasks = tsk;
     allocate_slot(j/*width*/, nr_pe/j/*size*/, slot, leaders);
-    ldr = ldr + j;
+    ldr = ldr + (nr_pe/j);
     tsk = tsk + nr_pe;
     leaders += (nr_pe/j);
  }
@@ -394,6 +399,8 @@ spmd_initialize()
    the_pool.leaders[i].oc = 0; 
    //the_pool.leaders[i].gid = *(ldr++);
  }
+
+ spmd_runtime_dump();
 
  return nr_pe;
  
@@ -436,7 +443,14 @@ spmd_cleanup()
       perror("semctl IPC RMID");
     }
   }
-  //  printf("spmd close all children\n");
+  printf("spmd close all children\n");
+
+  printf("the_pool.leaders = %p\nthe_pool.thr_tasks = %p,\
+  the_pool.thr_leaders = %p, the_pool.slots = %p\n", 
+  the_pool.leaders, 
+  the_pool.thr_tasks,
+  the_pool.thr_leaders,
+  the_pool.slots);
 
   free(the_pool.leaders);
   free(the_pool.thr_tasks);
@@ -487,10 +501,10 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
     //printf("content leader, sleep(1)\n");
     struct timespec spec = {
       .tv_sec = 0,
-      .tv_nsec = 2000 /*2 usec*/
+      .tv_nsec = 50000 /*50 usec*/
     };
-    //fprintf(stderr, "pick leader no choice, nanosleep 2 us\n");
-    //nanosleep(&spec, NULL);
+    //fprintf(stderr, "pick leader no choice, nanosleep 50 us\n");
+    nanosleep(&spec, NULL);
     goto pick_leader;
   }
 

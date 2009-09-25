@@ -53,13 +53,16 @@ probe_nr_processor()
   while ( ':' != buffer[idx++]);
   assert( 1 == sscanf(buffer+idx, "%d", &cores)
 	  && "wrong line of cpuinfo");
-
+#ifdef SMP_SUPPORT
   /* startover, multi-processor machine might contains more processors, e.g.
      2-way processor, has two quadcores processors, which is 2 * 4 cores */
   rewind(cpuinfo);
   cores_smp =  count_keyword_in_line(cpuinfo, "processor"); 
 	
   return cores_smp > cores ? cores_smp : cores;
+#else
+  return cores;
+#endif
 }
 
 void
