@@ -25,12 +25,13 @@ extern "C" {
    *            depend on impl.
    *  hook   -- hook function to be called when all task completed
    *            give  NULL to omit it.
+   *  hk_arg -- the arg for hook function. 
    *return:
    *  -1 when failed, otherwise,
    *  warp_id
    */
   extern int spmd_create_warp(int nr, void * fn, unsigned int stk_sz/*=0*/,
-			      void *hook/*=NULL*/);
+			      void *hook/*=NULL*/, void * hk_arg);
   /*next NR calls of specific warp is to mount task
    *in to native threads. when all tasks are ready,
    *runtime automatically fire the warp.

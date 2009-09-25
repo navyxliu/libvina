@@ -149,8 +149,9 @@ default_leader_entry(leader_struct_p leader)
     fprintf(stderr, "#wait returned, reduce...%d\n", leader->gid);
 #endif
 
+    void * arg = leader->warp.hk_arg;
     if ( NULL != leader->warp.hook ) 
-      (leader->warp.hook)();
+      (leader->warp.hook)(arg);
 
     spinlock_lock(&(leader->lck));
     leader->oc = 0;
@@ -354,10 +355,12 @@ spmd_initialize()
     (the_pool.nr_task * sizeof(thread_t));
   if ( the_pool.thr_tasks == NULL ) 
     goto err_happened1;
+#ifndef __NDEBUG
   else  {
     printf("the_pool.thr_tasks = %lp\n", 
       the_pool.thr_tasks);
   }
+#endif
   the_pool.leaders = (struct leader_struct *)malloc
     (nr_leader * sizeof(struct leader_struct));
   if ( the_pool.leaders == NULL ) 
@@ -444,7 +447,7 @@ spmd_cleanup()
     }
   }
   printf("spmd close all children\n");
-
+#if 0
   printf("the_pool.leaders = %p\nthe_pool.thr_tasks = %p,\
   the_pool.thr_leaders = %p, the_pool.slots = %p\n", 
   the_pool.leaders, 
@@ -456,14 +459,15 @@ spmd_cleanup()
   free(the_pool.thr_tasks);
   free(the_pool.thr_leaders);
   free(the_pool.slots);
-  
+#endif
   if ( -1 == semctl(the_pool.sem_pe, 0, IPC_RMID, dummy) ) {
     perror("semctl IPC RMID");
   }
 }
 
 int  __spmd_export
-spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
+spmd_create_warp(int nr, void * fn, unsigned int stk_sz, 
+                 void * hook, void * hk_arg)
 {
   int i, j, warp_id;
   leader_struct_p cand, ldr;
@@ -477,8 +481,7 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
     return -1; /*ILL nr */
 
   ldr = NULL;
- pick_leader:
-  cand = the_pool.leaders + offset;
+ pick_leader: cand = the_pool.leaders + offset;
   //  printf("warp offset=%d\n", offset);
   for (i=0; i < the_pool.nr_pe / nr; ++i, cand++) {
     if ( spinlock_trylock(&(cand->lck)) )  /* don't contend hot lock */
@@ -517,7 +520,7 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz, void * hook)
   warp->nr = nr;
   warp->fn = fn;
   warp->hook = hook;
-
+  warp->hk_arg = hk_arg;
   //FIXME: does not support customized stack size
   if ( stk_sz != 0 ) return -1;
 

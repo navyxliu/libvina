@@ -39,7 +39,7 @@ typedef pid_t             thread_t;
 typedef pid_t             leader_t;
 typedef pid_t             task_t;
 typedef pthread_mutex_t   spinlock_t;
-typedef void (*hook_handler_t)(void);
+typedef void (*hook_handler_t)(void *);
 typedef void (*task_entry_t)(void);
 
 #ifdef SPMD_FIXED_PARAMETER 
@@ -65,7 +65,8 @@ typedef struct warp_struct {
   task_func_t     fn;      /* task function */
   hook_handler_t  hook;    /* hook function, call after wait */
   task_struct_p   tsks;    
-
+  void *          hk_arg;  /* the argument for hook function */
+  
   struct tag_init_list {
     unsigned int stk_sz;   /* stack size per task */
     void **      stks;     /* stacks for children */
