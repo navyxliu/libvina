@@ -148,7 +148,7 @@ void wait_for_tg(int sem)
   
   if ( ret != 0 ) {
     perror("wait_for_tg failed");
-    /*exit(EXIT_FAILURE);*/
+    exit(EXIT_FAILURE);
   }
 }
 /**set schduler to rt fifo.
@@ -162,6 +162,9 @@ set_fifo(int pid, int prio)
   
   memset(&sp, 0, sizeof(sp));
   sp.sched_priority = prio;
+
+  //fprintf(stderr, "set fifo set %d to prio %d\n", pid, prio);
+
   if (sched_setscheduler(pid, SCHED_FIFO, &sp) == -1) {
     fprintf(stderr, "sched_setscheduler failed\n");
     perror("sched to SCHED_FIFO faied");

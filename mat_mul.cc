@@ -1,3 +1,9 @@
+// This file is not supposed to be distributed. 
+// History:
+// 09, Aug. create file and merge orginal demo here.
+// 09, Sep. 25: support libSPMD
+// 09, Sep. 28: Add standard routine using mkl.
+
 #include "trait.hpp"
 #include "frame.hpp"
 #include "matrix2.hpp"
@@ -7,6 +13,7 @@
 #include <tr1/functional>
 using namespace vina;
 #include <pthread.h>
+#include "mkl_cblas.h"
 
 #ifdef __NDEBUG
 #define CHECK_RESULT(X) 
@@ -153,12 +160,13 @@ struct matmul_parallel
     auto reduF = reduction(); 
     auto _subs = (SubWView **)arg;
      
-    //printf("in reduce_ptr subs[0] = %p\n", _subs[0]);
+    fprintf(stderr, "in reduce_ptr subs = %p subs[0] = %p\n", arg, _subs[0]);
     for (int s=1; s < K; s<<=1) for (int k=0; k < K; k+=(s<<1)) {
       auto in0 = _subs[k];
       auto in1 = (SubRView2*)_subs[k+s];
       reduF(*in0, /*<--*/*in1);     
     }
+   
   }
  /* ydf gave me the idea to implement template static variable by function static var
   * the benefit of this approach is that programmer can avoid the intialization expresson\
@@ -213,8 +221,11 @@ int main()
 
   typedef Matrix<MM_TEST_TYPE, MM_TEST_SIZE_N, MM_TEST_SIZE_N> TestMatrix;
   typedef Matrix<vector_type<MM_TEST_TYPE>, MM_TEST_SIZE_N, MM_TEST_SIZE_N> TestMatrix_v;
+  typedef Matrix<vector_type<MM_TEST_TYPE>, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K> matrix_ss_t; // small set;
+
   static TestMatrix x, y, z, STD_result;
   static TestMatrix_v x_v, y_v, z_v;
+  static matrix_ss_t x_ss, y_ss, z_ss;
 
   Profiler &prof = Profiler::getInstance();
   //local
@@ -223,6 +234,7 @@ int main()
   auto temp2 = prof.eventRegister("ST SSE");
   auto temp3 = prof.eventRegister("mulmat_parallel");
   auto temp4 = prof.eventRegister("mulmat_parallel SSE");
+  auto temp5 = prof.eventRegister("mulmat_smallset");
 
   NumRandGen<MM_TEST_TYPE> gen(2009);
   typedef TestMatrix::writer_type Writer;
@@ -232,23 +244,42 @@ int main()
     for (int j=0; j<TestMatrix::DIM_N; ++j) 
       x[i][j] = x_v[i][j] = gen(), y[i][j] = y_v[i][j] = gen();
 
+  for (int i=0; i<TestMatrix::DIM_M/MM_TEST_K; ++i)
+    for (int j=0; j<TestMatrix::DIM_N/MM_TEST_K; ++j)
+      x_ss[i][j] = gen(), y_ss[i][j] = gen();
+
+
   double Comp = MM_TEST_SIZE_N * MM_TEST_SIZE_N;
-  Comp = Comp *MM_TEST_SIZE_N * 2;
+  Comp = Comp * MM_TEST_SIZE_N * 2;
+  double Comp2 = MM_TEST_SIZE_N/MM_TEST_K * (MM_TEST_SIZE_N/MM_TEST_K);
+  Comp2 = Comp2 * (MM_TEST_SIZE_N / MM_TEST_K) * 2;
 
   z.zero();
   z_v.zero();
+  z_ss.zero();
+
   STD_result.zero();
   auto result = z.subWView();
   auto result_v = z_v.subWView();
+  auto result_ss = z_ss.subWView(); 
+  /*
+   * replace my trivial mm with mkl sgemm procedure
+   */
+  //multiply<MM_TEST_TYPE, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K>
+   // (x_ss, y_ss, z_ss);
+  float * std_x, * std_y, * std_z;
+  std_x = x.data();
+  std_y = y.data();
+  std_z = STD_result.data();
   
-#ifndef __NDEBUG 
   prof.eventStart(temp0);
-  
-  multiply<MM_TEST_TYPE, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N>
-    (x, y, STD_result);
+  {
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N,
+         1.0f/*alpha*/, std_x, MM_TEST_SIZE_N, std_y, MM_TEST_SIZE_N, 0.0f/*beta*/, std_z, MM_TEST_SIZE_N);
+  }
+  prof.eventEnd(temp0); 
+  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
 
-  prof.eventEnd(temp0);  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
-#endif 
 /*  
   typedef matmul_parallel<Writer, TestMatrix, TestMatrix, 
     matMAddWrapper, matAddWrapper2, p_simple, MM_TEST_K, false> TF; // fransformer :~)
@@ -267,7 +298,7 @@ int main()
   prof.eventEnd(temp2);
   printf("ST SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed()));
   CHECK_RESULT(z_v);
-  */
+*/ 
 /*
   z.zero();
   typedef matmul_parallel<Writer, TestMatrix, TestMatrix,
@@ -290,8 +321,8 @@ int main()
   TF_PARALLEL_SSE::doit(x_v, y_v, result_v);
   while (!spmd_all_complete());
   prof.eventEnd(temp4);
-  CHECK_RESULT(z_v);
+  //CHECK_RESULT(z_v);
   printf("MT SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp4)->elapsed()));
-
+  spmd_cleanup();
   prof.dump();
 }

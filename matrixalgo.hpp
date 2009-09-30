@@ -1,4 +1,6 @@
 // This file is not supposed to be distributed.
+// Sep.29, 2009: Add MKL impl.
+//
 #ifndef VINA_MATRIX2_HXX
 #pragma message "This is an internal header file, included by		\
                  other library headers. You should not attempt		\
@@ -8,6 +10,11 @@
 #include <emmintrin.h> // SEE2 instrisincs
 #define vSplat(v, i) ({_m128 a=v; a=_mm_shuffle_ps(a, a, \
 	_MM_SHUFFLE(i, i, i, i)); a;})
+
+#ifdef MKL
+#include <mkl_cblas.h>
+#endif
+
   //==============================================//
   //~~             ALGORITHMS                   ~~//
   //==============================================//
@@ -81,7 +88,7 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
     
     float * c = result.data();
     const size_t C_DIM_N = result.dimN();
-
+#ifndef MKL
     for(int i=0; i<SIZE_A; i+=4)
       {
 	for(int j=0; j<SIZE_B; j+=4)
@@ -143,6 +150,10 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
 	c += 4*C_DIM_N;
 	a += 4*A_DIM_N;
       }// for i
+#else
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, SIZE_A, SIZE_B, SIZE_C,
+         1.0f/*alpha*/, a, A_DIM_N, b, B_DIM_N, 0.0f/*beta*/, c, C_DIM_N); 
+#endif
   }
   static void madd(const RView0& X, const RView1& Y, 
 		   Result& result)
@@ -155,7 +166,7 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
     
     float * c = result.data();
     const size_t C_DIM_N = result.dimN();
-
+#ifndef MKL
     for(int i=0; i<SIZE_A; i+=4)
       {
 	for(int j=0; j<SIZE_B; j+=4)
@@ -217,6 +228,10 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
 	c += 4*C_DIM_N;
 	a += 4*A_DIM_N;
       }// for i    
+#else
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, SIZE_A, SIZE_B, SIZE_C,
+         1.0f/*alpha*/, a, A_DIM_N, b, B_DIM_N, 1.0f/*beta*/, c, C_DIM_N); 
+#endif
   }
 };
 

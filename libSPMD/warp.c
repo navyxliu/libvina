@@ -69,10 +69,11 @@ default_task_entry(void * arg)
     struct timeval fntv_start, fntv_end;
     long execspan;
     char log[30];
-
+    static int lt_iter = 0;
     sprintf(log, "timelog-%d.log", gettid());
-    FILE * fh = fopen(log, "w");
+    FILE * fh = fopen(log, "a");
     clock_gettime(CLOCK_REALTIME, &myts);
+    fprintf(fh, "task thread iteration #%2d\n=================\n", ++lt_iter);
     fprintf(fh, "task start timestamp %d: %ld\n", myts.tv_sec, myts.tv_nsec);
     gettimeofday(&fntv_start, NULL); 
 #endif 
@@ -114,8 +115,8 @@ default_task_entry(void * arg)
     long elapsed = myts.tv_sec;
     long elapsed_nsec = myts.tv_nsec;
     clock_gettime(CLOCK_REALTIME, &myts);
-    elapsed = ((myts.tv_sec - elapsed) * 10000000000 + (myts.tv_nsec - elapsed_nsec)) / 1000;
-    fprintf(fh, "task close timestamp %d:%ld\ntask active time is %ld, effectivity is %.2f\%\n", myts.tv_sec, myts.tv_nsec, elapsed, (100.0 * execspan) / elapsed );
+    elapsed = ((myts.tv_sec - elapsed) * 1000000000 + (myts.tv_nsec - elapsed_nsec)) / 1000;
+    fprintf(fh, "task close timestamp %d:%d\ntask active time is %d, effectivity is %.2f\%\n", myts.tv_sec, myts.tv_nsec, elapsed, (100.0 * execspan) / elapsed );
     fclose(fh);
 #endif
   }
@@ -128,9 +129,10 @@ default_task_entry(void * arg)
 void __leader
 default_leader_entry(leader_struct_p leader)
 {
+
+  leader->nr = 0;
+
   while (1) {
-    //reset task counter
-    leader->nr = 0;
 #ifndef __NDEBUG
     printf("#leader %d, leader->sem = %d, sem number = %d\n", 
 	   leader->gid, leader->sem, leader->warp.nr);
@@ -154,7 +156,9 @@ default_leader_entry(leader_struct_p leader)
       (leader->warp.hook)(arg);
 
     spinlock_lock(&(leader->lck));
+    //reset task counter
     leader->oc = 0;
+    leader->nr = 0;
     spinlock_unlock(&(leader->lck));
   }
 }
@@ -215,7 +219,7 @@ init_semphore(int nr)
   key = ftok(SPMD_SEM_KEY, 0xff);
   semid = semget(key, nr, 0666 | IPC_CREAT);
   if ( semid == -1 ) {
-    perror("semget failed");
+    perror("semget failed in init");
     return -1;
   }
 
@@ -367,7 +371,7 @@ spmd_initialize()
     goto err_happened2;
   
   for (i=0; i<nr_leader; ++i) {
-    key = ftok(SPMD_SEM_KEY, 'a' + i);
+    key = ftok(SPMD_SEM_KEY, i);
     
     if ( key == -1 ) {
       perror("ftok failed");
@@ -376,9 +380,7 @@ spmd_initialize()
     
     the_pool.leaders[i].sem = 
       semget(key, 1, 0666 | IPC_CREAT);
-#ifndef __NDEBUG
     printf("sem leader[%1d].sem = %d\n", i, the_pool.leaders[i].sem);
-#endif
   }
 
   thread_t * ldr = the_pool.thr_leaders;
@@ -425,7 +427,8 @@ spmd_cleanup()
   int dummy;
   
   while ( !spmd_all_complete() ) {
-    sleep(1);
+    //sleep(1);
+    fprintf(stderr, "not finished yet\n");
   }
   //  printf("spmd completed\n");
   for (i=0; i<the_pool.nr_leader; ++i) {
@@ -454,12 +457,12 @@ spmd_cleanup()
   the_pool.thr_tasks,
   the_pool.thr_leaders,
   the_pool.slots);
-
+#endif
   free(the_pool.leaders);
   free(the_pool.thr_tasks);
   free(the_pool.thr_leaders);
   free(the_pool.slots);
-#endif
+
   if ( -1 == semctl(the_pool.sem_pe, 0, IPC_RMID, dummy) ) {
     perror("semctl IPC RMID");
   }
@@ -636,9 +639,9 @@ spmd_fire_up(leader_struct_p leader)
     struct timespec myts;
     FILE * fh;
     sprintf(log, "timelog-%d.log", tsk->tid);
-    fh = fopen(log, "w");
+    fh = fopen(log, "a");
     clock_gettime(CLOCK_REALTIME, &myts);
-    fprintf(fh, "send signal %d\n", myts.tv_nsec);
+    fprintf(fh, "send signal: %d\ntimestamp %d:%d\n", SIGCONT, myts.tv_sec, myts.tv_nsec);
     fclose(fh);    
 #endif
     tkill(tsk->tid, SIGCONT);
