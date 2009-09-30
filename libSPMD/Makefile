@@ -1,7 +1,8 @@
 CC:=gcc
 CXX:=g++
 SYSTEM := $(shell uname -s)
-CFLAGS=-O2 -g -Wall -D__NDEBUG -DSMP_SUPPORT #-D__TIMELOG
+CFLAGS=-O2 -g -Wall -D__NDEBUG -DSMP_SUPPORT 
+CFLAGS+=-DSPMD_SEM_KEY="\"/home/xliu/\"" #-D__TIMELOG
 
 ifeq ($(SYSTEM), Linux)
 ISSUE= $(shell cat /etc/issue)

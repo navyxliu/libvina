@@ -1,241 +1,1036 @@
 
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.040932
+STD gflop=14.736663
 probe result is 4
+sem leader[0].sem = 270041089
+sem leader[1].sem = 270073858
+sem leader[2].sem = 270106627
+sem leader[3].sem = 270139396
+sem leader[4].sem = 270172165
+sem leader[5].sem = 270204934
+sem leader[6].sem = 270237703
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x91d1fe0
+width=4, size=1
+ldr0=307:(309,310,313,315,)
+slot 1: 0x91d2008
+width=2, size=2
+ldr0=308:(311,314,)
+ldr1=312:(316,319,)
+slot 2: 0x91d2030
+width=1, size=4
+ldr0=317:(318,)
+ldr1=320:(322,)
+ldr2=321:(0,)
+ldr3=323:(0,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.425089
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x91d2990 subResults[0] = 0x91d2a50
+subResult = 0x91d3760 subResults[0] = 0x91d3820
+subResult = 0x91d3af0 subResults[0] = 0x91d3bb0
+subResult = 0x91d1ab0 subResults[0] = 0x91d3940
+subResult = 0x91d3280 subResults[0] = 0x91d3ea0
+subResult = 0x91d4610 subResults[0] = 0x91d46d0
+subResult = 0x91d4050 subResults[0] = 0x91d4110
+subResult = 0x91d4c10 subResults[0] = 0x91d4cd0
+subResult = 0x91d47c0 subResults[0] = 0x91d4880
+subResult = 0x91d5210 subResults[0] = 0x91d52d0
+subResult = 0x91d4dc0 subResults[0] = 0x91d4e80
+subResult = 0x91d5810 subResults[0] = 0x91d58d0
+subResult = 0x91d53c0 subResults[0] = 0x91d5480
+subResult = 0x91d59f0 subResults[0] = 0x91d5ab0
+subResult = 0x91d5b70 subResults[0] = 0x91d5c30
+subResult = 0x91d6410 subResults[0] = 0x91d64d0
+MT SSE gflop=41.052631
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   368624usec            23.3%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   819756usec            91.2%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1165791usec            73.6%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    78935usec            8.8%
+#11      mulmat_parallel SSE    1   418484usec            26.4%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   328859usec            20.8%
+#14        mat thread1 timer   16   351475usec            22.2%
+#15        mat thread2 timer   16   353898usec            22.3%
+#16        mat thread3 timer   16   351992usec            22.2%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.039827
+STD gflop=14.741316
 probe result is 4
+sem leader[0].sem = 270303233
+sem leader[1].sem = 270336002
+sem leader[2].sem = 270368771
+sem leader[3].sem = 270401540
+sem leader[4].sem = 270434309
+sem leader[5].sem = 270467078
+sem leader[6].sem = 270499847
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x8216fe0
+width=4, size=1
+ldr0=395:(397,398,400,405,)
+slot 1: 0x8217008
+width=2, size=2
+ldr0=396:(399,401,)
+ldr1=402:(403,407,)
+slot 2: 0x8217030
+width=1, size=4
+ldr0=404:(406,)
+ldr1=408:(409,)
+ldr2=410:(411,)
+ldr3=412:(413,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.373870
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x8217990 subResults[0] = 0x8217a50
+subResult = 0x8218af0 subResults[0] = 0x8218bb0
+subResult = 0x8218260 subResults[0] = 0x8218490
+subResult = 0x8218760 subResults[0] = 0x8218820
+subResult = 0x8218f60 subResults[0] = 0x8219020
+subResult = 0x82193e0 subResults[0] = 0x82194a0
+subResult = 0x82191d0 subResults[0] = 0x8219290
+subResult = 0x8219bf0 subResults[0] = 0x8219cb0
+subResult = 0x82197a0 subResults[0] = 0x8219860
+subResult = 0x821a1f0 subResults[0] = 0x821a2b0
+subResult = 0x8219da0 subResults[0] = 0x8219e60
+subResult = 0x821a7f0 subResults[0] = 0x821a8b0
+subResult = 0x821a3a0 subResults[0] = 0x821a460
+subResult = 0x821abe0 subResults[0] = 0x821aca0
+subResult = 0x821a9a0 subResults[0] = 0x821aa60
+subResult = 0x821b3f0 subResults[0] = 0x821b4b0
+MT SSE gflop=41.891698
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   362909usec            23.0%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   842514usec            90.4%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1165423usec            74.0%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    89749usec            9.6%
+#11      mulmat_parallel SSE    1   410102usec            26.0%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326258usec            20.7%
+#14        mat thread1 timer   16   351350usec            22.3%
+#15        mat thread2 timer   16   352133usec            22.4%
+#16        mat thread3 timer   16   349451usec            22.2%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.043249
+STD gflop=14.747580
 probe result is 4
+sem leader[0].sem = 270565377
+sem leader[1].sem = 270598146
+sem leader[2].sem = 270630915
+sem leader[3].sem = 270663684
+sem leader[4].sem = 270696453
+sem leader[5].sem = 270729222
+sem leader[6].sem = 270761991
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x8ca4fe0
+width=4, size=1
+ldr0=483:(485,486,487,488,)
+slot 1: 0x8ca5008
+width=2, size=2
+ldr0=484:(489,491,)
+ldr1=490:(492,495,)
+slot 2: 0x8ca5030
+width=1, size=4
+ldr0=493:(494,)
+ldr1=496:(497,)
+ldr2=498:(499,)
+ldr3=500:(501,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.468238
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x8ca5990 subResults[0] = 0x8ca5a50
+subResult = 0x8ca6af0 subResults[0] = 0x8ca6bb0
+subResult = 0x8ca6260 subResults[0] = 0x8ca6490
+subResult = 0x8ca6760 subResults[0] = 0x8ca6820
+subResult = 0x8ca6f60 subResults[0] = 0x8ca7020
+subResult = 0x8ca75f0 subResults[0] = 0x8ca76b0
+subResult = 0x8ca71a0 subResults[0] = 0x8ca7260
+subResult = 0x8ca7bf0 subResults[0] = 0x8ca7cb0
+subResult = 0x8ca77a0 subResults[0] = 0x8ca7860
+subResult = 0x8ca7fe0 subResults[0] = 0x8ca80a0
+subResult = 0x8ca7da0 subResults[0] = 0x8ca7e60
+subResult = 0x8ca87f0 subResults[0] = 0x8ca88b0
+subResult = 0x8ca83a0 subResults[0] = 0x8ca8460
+subResult = 0x8ca89d0 subResults[0] = 0x8ca8a90
+subResult = 0x8ca8b50 subResults[0] = 0x8ca8c10
+subResult = 0x8ca93f0 subResults[0] = 0x8ca94b0
+MT SSE gflop=41.318322
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   367923usec            23.3%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   775841usec            91.5%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164928usec            73.7%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    71661usec            8.5%
+#11      mulmat_parallel SSE    1   415793usec            26.3%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326856usec            20.7%
+#14        mat thread1 timer   16   353240usec            22.3%
+#15        mat thread2 timer   16   353546usec            22.4%
+#16        mat thread3 timer   16   352507usec            22.3%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.039586
+STD gflop=14.746745
 probe result is 4
+sem leader[0].sem = 270827521
+sem leader[1].sem = 270860290
+sem leader[2].sem = 270893059
+sem leader[3].sem = 270925828
+sem leader[4].sem = 270958597
+sem leader[5].sem = 270991366
+sem leader[6].sem = 271024135
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x9216fe0
+width=4, size=1
+ldr0=571:(572,574,575,576,)
+slot 1: 0x9217008
+width=2, size=2
+ldr0=573:(579,581,)
+ldr1=577:(578,583,)
+slot 2: 0x9217030
+width=1, size=4
+ldr0=580:(582,)
+ldr1=584:(585,)
+ldr2=586:(0,)
+ldr3=587:(0,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.451273
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x9217990 subResults[0] = 0x9217a50
+subResult = 0x9218af0 subResults[0] = 0x9218bb0
+subResult = 0x9218260 subResults[0] = 0x9218490
+subResult = 0x9218ff0 subResults[0] = 0x92190b0
+subResult = 0x9218c70 subResults[0] = 0x9218d30
+subResult = 0x9217ab0 subResults[0] = 0x9219800
+subResult = 0x9218f00 subResults[0] = 0x9219230
+subResult = 0x9219a40 subResults[0] = 0x9219b00
+subResult = 0x92193e0 subResults[0] = 0x92194a0
+subResult = 0x9219e00 subResults[0] = 0x9219ec0
+subResult = 0x9219f80 subResults[0] = 0x921a040
+subResult = 0x921a820 subResults[0] = 0x921a8e0
+subResult = 0x921a3d0 subResults[0] = 0x921a490
+subResult = 0x921ae20 subResults[0] = 0x921aee0
+subResult = 0x921a9d0 subResults[0] = 0x921aa90
+subResult = 0x921b420 subResults[0] = 0x921b4e0
+MT SSE gflop=41.240165
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   367499usec            23.2%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   847644usec            91.9%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164994usec            73.7%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    74355usec            8.1%
+#11      mulmat_parallel SSE    1   416581usec            26.3%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   325319usec            20.6%
+#14        mat thread1 timer   16   352564usec            22.3%
+#15        mat thread2 timer   16   355515usec            22.5%
+#16        mat thread3 timer   16   353473usec            22.3%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.043575
+STD gflop=14.746909
 probe result is 4
+sem leader[0].sem = 271089665
+sem leader[1].sem = 271122434
+sem leader[2].sem = 271155203
+sem leader[3].sem = 271187972
+sem leader[4].sem = 271220741
+sem leader[5].sem = 271253510
+sem leader[6].sem = 271286279
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x8b4cfe0
+width=4, size=1
+ldr0=659:(661,662,665,668,)
+slot 1: 0x8b4d008
+width=2, size=2
+ldr0=660:(663,666,)
+ldr1=664:(667,671,)
+slot 2: 0x8b4d030
+width=1, size=4
+ldr0=669:(670,)
+ldr1=672:(673,)
+ldr2=674:(675,)
+ldr3=676:(0,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.510598
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x8b4d990 subResults[0] = 0x8b4da50
+subResult = 0x8b4eaf0 subResults[0] = 0x8b4ebb0
+subResult = 0x8b4e260 subResults[0] = 0x8b4e490
+subResult = 0x8b4eff0 subResults[0] = 0x8b4f0b0
+subResult = 0x8b4e730 subResults[0] = 0x8b4e7f0
+subResult = 0x8b4f5f0 subResults[0] = 0x8b4f6b0
+subResult = 0x8b4f380 subResults[0] = 0x8b4f440
+subResult = 0x8b4fbf0 subResults[0] = 0x8b4fcb0
+subResult = 0x8b4f7a0 subResults[0] = 0x8b4f860
+subResult = 0x8b4ffe0 subResults[0] = 0x8b500a0
+subResult = 0x8b4fda0 subResults[0] = 0x8b4fe60
+subResult = 0x8b507f0 subResults[0] = 0x8b508b0
+subResult = 0x8b503a0 subResults[0] = 0x8b50460
+subResult = 0x8b50df0 subResults[0] = 0x8b50eb0
+subResult = 0x8b509a0 subResults[0] = 0x8b50a60
+subResult = 0x8b513f0 subResults[0] = 0x8b514b0
+MT SSE gflop=41.444812
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   363549usec            23.0%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   770037usec            92.1%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164981usec            73.8%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    65716usec            7.9%
+#11      mulmat_parallel SSE    1   414524usec            26.2%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326125usec            20.6%
+#14        mat thread1 timer   16   349842usec            22.1%
+#15        mat thread2 timer   16   352129usec            22.3%
+#16        mat thread3 timer   16   347740usec            22.0%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.042134
+STD gflop=14.743113
 probe result is 4
+sem leader[0].sem = 271351809
+sem leader[1].sem = 271384578
+sem leader[2].sem = 271417347
+sem leader[3].sem = 271450116
+sem leader[4].sem = 271482885
+sem leader[5].sem = 271515654
+sem leader[6].sem = 271548423
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x7bf3fe0
+width=4, size=1
+ldr0=747:(749,750,753,756,)
+slot 1: 0x7bf4008
+width=2, size=2
+ldr0=748:(751,754,)
+ldr1=752:(755,757,)
+slot 2: 0x7bf4030
+width=1, size=4
+ldr0=758:(759,)
+ldr1=760:(761,)
+ldr2=762:(763,)
+ldr3=764:(0,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.566434
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x7bf4990 subResults[0] = 0x7bf4a50
+subResult = 0x7bf5af0 subResults[0] = 0x7bf5bb0
+subResult = 0x7bf5560 subResults[0] = 0x7bf5790
+subResult = 0x7bf5640 subResults[0] = 0x7bf66b0
+subResult = 0x7bf6800 subResults[0] = 0x7bf63b0
+subResult = 0x7bf4a80 subResults[0] = 0x7bf5ff0
+subResult = 0x7bf5ed0 subResults[0] = 0x7bf5160
+subResult = 0x7bf6c10 subResults[0] = 0x7bf6cd0
+subResult = 0x7bf6170 subResults[0] = 0x7bf6230
+subResult = 0x7bf7000 subResults[0] = 0x7bf70c0
+subResult = 0x7bf6dc0 subResults[0] = 0x7bf6e80
+subResult = 0x7bf7810 subResults[0] = 0x7bf78d0
+subResult = 0x7bf73c0 subResults[0] = 0x7bf7480
+subResult = 0x7bf7c00 subResults[0] = 0x7bf7cc0
+subResult = 0x7bf79c0 subResults[0] = 0x7bf7a80
+subResult = 0x7bf8410 subResults[0] = 0x7bf84d0
+MT SSE gflop=40.607052
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   376301usec            23.7%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   796372usec            93.1%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1165281usec            73.4%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    59238usec            6.9%
+#11      mulmat_parallel SSE    1   423076usec            26.6%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   332641usec            20.9%
+#14        mat thread1 timer   16   352411usec            22.2%
+#15        mat thread2 timer   16   351657usec            22.1%
+#16        mat thread3 timer   16   347370usec            21.9%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.043285
+STD gflop=14.741430
 probe result is 4
+sem leader[0].sem = 271613953
+sem leader[1].sem = 271646722
+sem leader[2].sem = 271679491
+sem leader[3].sem = 271712260
+sem leader[4].sem = 271745029
+sem leader[5].sem = 271777798
+sem leader[6].sem = 271810567
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x965ffe0
+width=4, size=1
+ldr0=835:(837,838,840,843,)
+slot 1: 0x9660008
+width=2, size=2
+ldr0=836:(839,841,)
+ldr1=842:(844,847,)
+slot 2: 0x9660030
+width=1, size=4
+ldr0=845:(846,)
+ldr1=848:(850,)
+ldr2=849:(851,)
+ldr3=852:(853,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.511750
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x9660990 subResults[0] = 0x9660a50
+subResult = 0x9661af0 subResults[0] = 0x9661bb0
+subResult = 0x9661260 subResults[0] = 0x9661490
+subResult = 0x9661760 subResults[0] = 0x9661820
+subResult = 0x9661610 subResults[0] = 0x96616d0
+subResult = 0x9661e10 subResults[0] = 0x9661ed0
+subResult = 0x96627a0 subResults[0] = 0x9662230
+subResult = 0x9662c20 subResults[0] = 0x9662ce0
+subResult = 0x96623e0 subResults[0] = 0x96624a0
+subResult = 0x9663220 subResults[0] = 0x96632e0
+subResult = 0x9662dd0 subResults[0] = 0x9662e90
+subResult = 0x9663820 subResults[0] = 0x96638e0
+subResult = 0x96633d0 subResults[0] = 0x9663490
+subResult = 0x9663a00 subResults[0] = 0x9663ac0
+subResult = 0x9663b80 subResults[0] = 0x9663c40
+subResult = 0x9664420 subResults[0] = 0x96644e0
+MT SSE gflop=37.268549
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   413282usec            25.4%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   775196usec            92.2%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1165414usec            71.7%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    65568usec            7.8%
+#11      mulmat_parallel SSE    1   460975usec            28.3%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   325369usec            20.0%
+#14        mat thread1 timer   16   349586usec            21.5%
+#15        mat thread2 timer   16   351099usec            21.6%
+#16        mat thread3 timer   16   347193usec            21.3%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.043238
+STD gflop=14.752152
 probe result is 4
+sem leader[0].sem = 271876097
+sem leader[1].sem = 271908866
+sem leader[2].sem = 271941635
+sem leader[3].sem = 271974404
+sem leader[4].sem = 272007173
+sem leader[5].sem = 272039942
+sem leader[6].sem = 272072711
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x8cc1fe0
+width=4, size=1
+ldr0=923:(925,926,928,934,)
+slot 1: 0x8cc2008
+width=2, size=2
+ldr0=924:(927,930,)
+ldr1=929:(931,935,)
+slot 2: 0x8cc2030
+width=1, size=4
+ldr0=932:(933,)
+ldr1=936:(937,)
+ldr2=938:(939,)
+ldr3=940:(0,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.388020
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x8cc2990 subResults[0] = 0x8cc2a50
+subResult = 0x8cc3790 subResults[0] = 0x8cc3850
+subResult = 0x8cc3260 subResults[0] = 0x8cc3940
+subResult = 0x8cc3fc0 subResults[0] = 0x8cc3e10
+subResult = 0x8cc42f0 subResults[0] = 0x8cc43b0
+subResult = 0x8cc3a90 subResults[0] = 0x8cc3b50
+subResult = 0x8cc48f0 subResults[0] = 0x8cc49b0
+subResult = 0x8cc44a0 subResults[0] = 0x8cc4560
+subResult = 0x8cc4ef0 subResults[0] = 0x8cc4fb0
+subResult = 0x8cc4aa0 subResults[0] = 0x8cc4b60
+subResult = 0x8cc54f0 subResults[0] = 0x8cc55b0
+subResult = 0x8cc50a0 subResults[0] = 0x8cc5160
+subResult = 0x8cc5af0 subResults[0] = 0x8cc5bb0
+subResult = 0x8cc56a0 subResults[0] = 0x8cc5760
+subResult = 0x8cc60f0 subResults[0] = 0x8cc61b0
+subResult = 0x8cc5ca0 subResults[0] = 0x8cc5d60
+MT SSE gflop=41.436515
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   364898usec            23.1%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   776040usec            90.0%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164567usec            73.7%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    86476usec            10.0%
+#11      mulmat_parallel SSE    1   414607usec            26.3%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326244usec            20.7%
+#14        mat thread1 timer   16   350734usec            22.2%
+#15        mat thread2 timer   16   352540usec            22.3%
+#16        mat thread3 timer   16   351713usec            22.3%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.042994
+STD gflop=14.743176
 probe result is 4
+sem leader[0].sem = 272138241
+sem leader[1].sem = 272171010
+sem leader[2].sem = 272203779
+sem leader[3].sem = 272236548
+sem leader[4].sem = 272269317
+sem leader[5].sem = 272302086
+sem leader[6].sem = 272334855
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x7f19fe0
+width=4, size=1
+ldr0=1012:(1014,1015,1017,1020,)
+slot 1: 0x7f1a008
+width=2, size=2
+ldr0=1013:(1016,1018,)
+ldr1=1019:(1021,1024,)
+slot 2: 0x7f1a030
+width=1, size=4
+ldr0=1022:(1023,)
+ldr1=1025:(1026,)
+ldr2=1027:(1028,)
+ldr3=1029:(0,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.378112
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x7f1a990 subResults[0] = 0x7f1aa50
+subResult = 0x7f1b760 subResults[0] = 0x7f1b820
+subResult = 0x7f1c3a0 subResults[0] = 0x7f1c460
+subResult = 0x7f1c080 subResults[0] = 0x7f1c140
+subResult = 0x7f1c6c0 subResults[0] = 0x7f1c780
+subResult = 0x7f1aa80 subResults[0] = 0x7f1b550
+subResult = 0x7f1c900 subResults[0] = 0x7f1c9c0
+subResult = 0x7f1b130 subResults[0] = 0x7f1b1f0
+subResult = 0x7f1b2b0 subResults[0] = 0x7f1b370
+subResult = 0x7f19ab0 subResults[0] = 0x7f1d3b0
+subResult = 0x7f1d020 subResults[0] = 0x7f1cab0
+subResult = 0x7f1ccf0 subResults[0] = 0x7f1cdb0
+subResult = 0x7f1d5e0 subResults[0] = 0x7f1d6a0
+subResult = 0x7f1ddf0 subResults[0] = 0x7f1deb0
+subResult = 0x7f1d9a0 subResults[0] = 0x7f1da60
+subResult = 0x7f1e3f0 subResults[0] = 0x7f1e4b0
+MT SSE gflop=39.459572
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   390314usec            24.4%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   780437usec            89.8%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1165276usec            72.8%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    88742usec            10.2%
+#11      mulmat_parallel SSE    1   435379usec            27.2%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326447usec            20.4%
+#14        mat thread1 timer   16   353805usec            22.1%
+#15        mat thread2 timer   16   360971usec            22.6%
+#16        mat thread3 timer   16   349541usec            21.8%
 Matrix Multiplication test program
-  MM_TEST_SIZE_N= 256
-  MM_TEST_GRANULARITY=  64
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
   MM_TEST_K=   4
   see Makefile TEST_INFO to set parameters
-STD gflop=0.040000
+STD gflop=14.752354
 probe result is 4
+sem leader[0].sem = 272400385
+sem leader[1].sem = 272433154
+sem leader[2].sem = 272465923
+sem leader[3].sem = 272498692
+sem leader[4].sem = 272531461
+sem leader[5].sem = 272564230
+sem leader[6].sem = 272596999
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x7c66fe0
+width=4, size=1
+ldr0=1110:(1112,1113,1116,1118,)
+slot 1: 0x7c67008
+width=2, size=2
+ldr0=1111:(1114,1117,)
+ldr1=1115:(1119,1122,)
+slot 2: 0x7c67030
+width=1, size=4
+ldr0=1120:(1121,)
+ldr1=1123:(1125,)
+ldr2=1124:(1126,)
+ldr3=1127:(0,)
 _pred=0 SubTask::_pred=1
-SubTask::RESULT::WRITER_SIZE_X=64
-MT SSE gflop=0.507025
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x7c67990 subResults[0] = 0x7c67a50
+subResult = 0x7c68490 subResults[0] = 0x7c68550
+subResult = 0x7c68260 subResults[0] = 0x7c68790
+subResult = 0x7c68910 subResults[0] = 0x7c689d0
+subResult = 0x7c693b0 subResults[0] = 0x7c69470
+subResult = 0x7c68ed0 subResults[0] = 0x7c68ff0
+subResult = 0x7c698f0 subResults[0] = 0x7c699b0
+subResult = 0x7c691d0 subResults[0] = 0x7c69290
+subResult = 0x7c69ef0 subResults[0] = 0x7c69fb0
+subResult = 0x7c69aa0 subResults[0] = 0x7c69b60
+subResult = 0x7c6a4f0 subResults[0] = 0x7c6a5b0
+subResult = 0x7c6a0a0 subResults[0] = 0x7c6a160
+subResult = 0x7c6aaf0 subResults[0] = 0x7c6abb0
+subResult = 0x7c6a6a0 subResults[0] = 0x7c6a760
+subResult = 0x7c6acd0 subResults[0] = 0x7c6ad90
+subResult = 0x7c6ae50 subResults[0] = 0x7c6af10
+MT SSE gflop=41.972244
+spmd close all children
 Profile info
 ======================================================================
 # 0        #frame kernel seq    0        0usec            0.0%
-# 1        #frame kernel par    0        0usec            0.0%
+# 1        #frame kernel par   16   367083usec            23.3%
 # 2          #frame mem cost    0        0usec            0.0%
 # 3       #frame thread cost    0        0usec            0.0%
-# 4 #thread creation counters    0                           
+# 4 #thread creation counters   64                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation   64                           
-# 7             STD multiply    1   838855usec            92.7%
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164551usec            74.0%
 # 8          Single-threaded    0        0usec            0.0%
 # 9                   ST SSE    0        0usec            0.0%
 #10          mulmat_parallel    0        0usec            0.0%
-#11      mulmat_parallel SSE    1    66179usec            7.3%
+#11      mulmat_parallel SSE    1   409315usec            26.0%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326848usec            20.8%
+#14        mat thread1 timer   16   354089usec            22.5%
+#15        mat thread2 timer   16   354880usec            22.5%
+#16        mat thread3 timer   16   356510usec            22.7%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=14.755142
+probe result is 4
+sem leader[0].sem = 272662529
+sem leader[1].sem = 272695298
+sem leader[2].sem = 272728067
+sem leader[3].sem = 272760836
+sem leader[4].sem = 272793605
+sem leader[5].sem = 272826374
+sem leader[6].sem = 272859143
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x7e0bfe0
+width=4, size=1
+ldr0=1199:(1201,1202,1203,1206,)
+slot 1: 0x7e0c008
+width=2, size=2
+ldr0=1200:(1205,1207,)
+ldr1=1204:(1208,1211,)
+slot 2: 0x7e0c030
+width=1, size=4
+ldr0=1209:(1210,)
+ldr1=1212:(1214,)
+ldr2=1213:(1215,)
+ldr3=1216:(0,)
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x7e0c990 subResults[0] = 0x7e0ca50
+subResult = 0x7e0daf0 subResults[0] = 0x7e0dbb0
+subResult = 0x7e0d260 subResults[0] = 0x7e0d490
+subResult = 0x7e0dff0 subResults[0] = 0x7e0e0b0
+subResult = 0x7e0d730 subResults[0] = 0x7e0d7f0
+subResult = 0x7e0e5f0 subResults[0] = 0x7e0e6b0
+subResult = 0x7e0e1a0 subResults[0] = 0x7e0e260
+subResult = 0x7e0e7d0 subResults[0] = 0x7e0e890
+subResult = 0x7e0e950 subResults[0] = 0x7e0ea10
+subResult = 0x7e0f1f0 subResults[0] = 0x7e0f2b0
+subResult = 0x7e0eda0 subResults[0] = 0x7e0ee60
+subResult = 0x7e0f3d0 subResults[0] = 0x7e0f490
+subResult = 0x7e0f550 subResults[0] = 0x7e0f610
+subResult = 0x7e0fdc0 subResults[0] = 0x7e0fe80
+subResult = 0x7e0f9a0 subResults[0] = 0x7e0fa60
+subResult = 0x7e103c0 subResults[0] = 0x7e10480
+MT SSE gflop=41.277322
+spmd close all children
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   365507usec            23.1%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters   64                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164331usec            73.7%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1   416206usec            26.3%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   325362usec            20.6%
+#14        mat thread1 timer   16   352736usec            22.3%
+#15        mat thread2 timer   16   352752usec            22.3%
+#16        mat thread3 timer   16   349786usec            22.1%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=14.748960
+probe result is 4
+sem leader[0].sem = 272924673
+sem leader[1].sem = 272957442
+sem leader[2].sem = 272990211
+sem leader[3].sem = 273022980
+sem leader[4].sem = 273055749
+sem leader[5].sem = 273088518
+sem leader[6].sem = 273121287
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x9475fe0
+width=4, size=1
+ldr0=1287:(1289,1290,1291,1298,)
+slot 1: 0x9476008
+width=2, size=2
+ldr0=1288:(1292,1294,)
+ldr1=1293:(1295,1299,)
+slot 2: 0x9476030
+width=1, size=4
+ldr0=1296:(1297,)
+ldr1=1300:(1302,)
+ldr2=1301:(1303,)
+ldr3=1304:(1305,)
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x9476990 subResults[0] = 0x9476a50
+subResult = 0x9477af0 subResults[0] = 0x9477bb0
+subResult = 0x9477260 subResults[0] = 0x9477790
+subResult = 0x9477ff0 subResults[0] = 0x94780b0
+subResult = 0x9477430 subResults[0] = 0x94774f0
+subResult = 0x94785f0 subResults[0] = 0x94786b0
+subResult = 0x94781a0 subResults[0] = 0x9478260
+subResult = 0x9478bf0 subResults[0] = 0x9478cb0
+subResult = 0x94787a0 subResults[0] = 0x9478860
+subResult = 0x94791f0 subResults[0] = 0x94792b0
+subResult = 0x9478da0 subResults[0] = 0x9478e60
+subResult = 0x94795e0 subResults[0] = 0x94796a0
+subResult = 0x94793a0 subResults[0] = 0x9479460
+subResult = 0x9479df0 subResults[0] = 0x9479eb0
+subResult = 0x94799a0 subResults[0] = 0x9479a60
+subResult = 0x947a3f0 subResults[0] = 0x947a4b0
+MT SSE gflop=41.533485
+spmd close all children
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   364210usec            23.1%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters   64                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164819usec            73.8%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1   413639usec            26.2%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   324791usec            20.6%
+#14        mat thread1 timer   16   351384usec            22.3%
+#15        mat thread2 timer   16   353825usec            22.4%
+#16        mat thread3 timer   16   345205usec            21.9%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=14.754141
+probe result is 4
+sem leader[0].sem = 273186817
+sem leader[1].sem = 273219586
+sem leader[2].sem = 273252355
+sem leader[3].sem = 273285124
+sem leader[4].sem = 273317893
+sem leader[5].sem = 273350662
+sem leader[6].sem = 273383431
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x92c6fe0
+width=4, size=1
+ldr0=1375:(1377,1378,1379,1382,)
+slot 1: 0x92c7008
+width=2, size=2
+ldr0=1376:(1380,1383,)
+ldr1=1381:(1384,1387,)
+slot 2: 0x92c7030
+width=1, size=4
+ldr0=1385:(1386,)
+ldr1=1388:(1390,)
+ldr2=1389:(1391,)
+ldr3=1392:(1393,)
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x92c7990 subResults[0] = 0x92c7a50
+subResult = 0x92c8af0 subResults[0] = 0x92c8bb0
+subResult = 0x92c8560 subResults[0] = 0x92c8790
+subResult = 0x92c8c70 subResults[0] = 0x92c8d30
+subResult = 0x92c9170 subResults[0] = 0x92c9230
+subResult = 0x92c81c0 subResults[0] = 0x92c8280
+subResult = 0x92c8f30 subResults[0] = 0x92c8ff0
+subResult = 0x92c9bf0 subResults[0] = 0x92c9cb0
+subResult = 0x92c9770 subResults[0] = 0x92c9830
+subResult = 0x92ca1f0 subResults[0] = 0x92ca2b0
+subResult = 0x92c9da0 subResults[0] = 0x92c9e60
+subResult = 0x92ca3d0 subResults[0] = 0x92ca490
+subResult = 0x92ca550 subResults[0] = 0x92ca610
+subResult = 0x92cadf0 subResults[0] = 0x92caeb0
+subResult = 0x92ca9a0 subResults[0] = 0x92caa60
+subResult = 0x92cb3f0 subResults[0] = 0x92cb4b0
+MT SSE gflop=41.344275
+spmd close all children
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   366041usec            23.2%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters   64                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164410usec            73.7%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1   415532usec            26.3%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   336227usec            21.3%
+#14        mat thread1 timer   16   349344usec            22.1%
+#15        mat thread2 timer   16   353385usec            22.4%
+#16        mat thread3 timer   16   347646usec            22.0%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=14.741101
+probe result is 4
+sem leader[0].sem = 273448961
+sem leader[1].sem = 273481730
+sem leader[2].sem = 273514499
+sem leader[3].sem = 273547268
+sem leader[4].sem = 273580037
+sem leader[5].sem = 273612806
+sem leader[6].sem = 273645575
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x833bfe0
+width=4, size=1
+ldr0=1463:(1465,1466,1469,1471,)
+slot 1: 0x833c008
+width=2, size=2
+ldr0=1464:(1467,1468,)
+ldr1=1470:(1473,1475,)
+slot 2: 0x833c030
+width=1, size=4
+ldr0=1472:(1474,)
+ldr1=1476:(1478,)
+ldr2=1477:(1479,)
+ldr3=1480:(1481,)
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x833c990 subResults[0] = 0x833ca50
+subResult = 0x833dac0 subResults[0] = 0x833db80
+subResult = 0x833d490 subResults[0] = 0x833d550
+subResult = 0x833d160 subResults[0] = 0x833d220
+subResult = 0x833d610 subResults[0] = 0x833d6d0
+subResult = 0x833e670 subResults[0] = 0x833e850
+subResult = 0x833e3d0 subResults[0] = 0x833e490
+subResult = 0x833ed90 subResults[0] = 0x833ee50
+subResult = 0x833eb80 subResults[0] = 0x833ec40
+subResult = 0x833e1f0 subResults[0] = 0x833e2b0
+subResult = 0x833f510 subResults[0] = 0x833f5d0
+subResult = 0x833f0c0 subResults[0] = 0x833f180
+subResult = 0x833fb10 subResults[0] = 0x833fbd0
+subResult = 0x833f6c0 subResults[0] = 0x833f780
+subResult = 0x8340110 subResults[0] = 0x83401d0
+subResult = 0x833fcc0 subResults[0] = 0x833fd80
+MT SSE gflop=41.207522
+spmd close all children
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   368674usec            23.3%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters   64                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1165440usec            73.7%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1   416911usec            26.3%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326873usec            20.7%
+#14        mat thread1 timer   16   354475usec            22.4%
+#15        mat thread2 timer   16   355615usec            22.5%
+#16        mat thread3 timer   16   354173usec            22.4%
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=14.752646
+probe result is 4
+sem leader[0].sem = 273711105
+sem leader[1].sem = 273743874
+sem leader[2].sem = 273776643
+sem leader[3].sem = 273809412
+sem leader[4].sem = 273842181
+sem leader[5].sem = 273874950
+sem leader[6].sem = 273907719
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x8cf6fe0
+width=4, size=1
+ldr0=1561:(1563,1564,1567,1573,)
+slot 1: 0x8cf7008
+width=2, size=2
+ldr0=1562:(1565,1569,)
+ldr1=1566:(1570,1574,)
+slot 2: 0x8cf7030
+width=1, size=4
+ldr0=1571:(1572,)
+ldr1=1576:(1577,)
+ldr2=1578:(1579,)
+ldr3=1580:(0,)
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=512
+subResult = 0x8cf7990 subResults[0] = 0x8cf7a50
+subResult = 0x8cf8790 subResults[0] = 0x8cf8850
+subResult = 0x8cf8260 subResults[0] = 0x8cf8490
+subResult = 0x8cf8ac0 subResults[0] = 0x8cf8b80
+subResult = 0x8cf8d80 subResults[0] = 0x8cf8e40
+subResult = 0x8cf95f0 subResults[0] = 0x8cf96b0
+subResult = 0x8cf91a0 subResults[0] = 0x8cf9260
+subResult = 0x8cf9bf0 subResults[0] = 0x8cf9cb0
+subResult = 0x8cf97a0 subResults[0] = 0x8cf9860
+subResult = 0x8cf9dd0 subResults[0] = 0x8cf9e90
+subResult = 0x8cf9f50 subResults[0] = 0x8cfa010
+subResult = 0x8cfa7f0 subResults[0] = 0x8cfa8b0
+subResult = 0x8cfa3a0 subResults[0] = 0x8cfa460
+subResult = 0x8cfa9d0 subResults[0] = 0x8cfaa90
+subResult = 0x8cfab50 subResults[0] = 0x8cfac10
+subResult = 0x8cfb3f0 subResults[0] = 0x8cfb4b0
+MT SSE gflop=41.637670
+spmd close all children
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par   16   363437usec            23.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters   64                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7             STD multiply    1  1164528usec            73.8%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1   412604usec            26.2%
+#12          mulmat_smallset    0        0usec            0.0%
+#13        mat thread0 timer   16   326012usec            20.7%
+#14        mat thread1 timer   16   349323usec            22.1%
+#15        mat thread2 timer   16   354634usec            22.5%
+#16        mat thread3 timer   16   349524usec            22.2%

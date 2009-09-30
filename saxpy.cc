@@ -7,7 +7,7 @@
 
 //#include <omp.h>
 using namespace vina;
-#define ITERS 1
+#define ITERS 100
 
 #ifdef __NDEBUG 
 #define CHECK_RESULT(dummy)
@@ -121,7 +121,7 @@ See Makefile TEST_INFO to set parameters\n",
   auto temp0 = prof.eventRegister("STD");
   auto temp1 = prof.eventRegister("ST");
   auto temp2 = prof.eventRegister("MT");
-  auto temp3 = prof.eventRegister("OPENMP");
+  //auto temp3 = prof.eventRegister("OPENMP");
 #ifndef __NDEBUG
   /*  
   for (int i=0; i<VEC_TEST_SIZE_N; ++i)
@@ -163,7 +163,7 @@ See Makefile TEST_INFO to set parameters\n",
 
   prof.eventStart(temp2);
   for (int i=0; i<ITERS; ++i) {
-    TF_MT::doit(7, x, result);
+    TF_MT::doit(7.0f, x, result);
     //printf("iter#%2d: elasped %d\n", i, prof.getEvent(temp3)->elapsed());  
   }
   while ( !spmd_all_complete() );

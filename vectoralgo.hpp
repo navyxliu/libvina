@@ -1,3 +1,6 @@
+// This file is not supposed to be distributed.
+// History:
+// Sep.29, 2009: add mkl
 #ifndef VINA_VECTOR_HXX
 #pragma message "This is an internal header file, included by		\
                  other library headers. You should not attempt		\
@@ -7,6 +10,10 @@
 #include <emmintrin.h> // SEE2 instrisincs
 #ifdef __SSE_4_1__
 #include <smmintrin.h> // SSE4
+#endif
+
+#ifdef MKL
+#include <mkl_cblas.h>
 #endif
   //==============================================//
   //~~             ALGORITHMS                   ~~//
@@ -38,8 +45,15 @@ struct vecArithImpl{
 		   Result& result)
   {
     //printf("Scalar DIM_N = %d\n", DIM_N);
+  #ifndef MKL
     for(int i=0; i<DIM_N; ++i)
       result[i] += alpha * X[i];
+  #else
+    const float * x = X.data();
+    float * y = result.data();
+    
+    cblas_saxpy(DIM_N, alpha, x, 1, y, 1);
+  #endif
   }
   static void dotprod(const RView& X, const RView& Y, 
 		      T& result)

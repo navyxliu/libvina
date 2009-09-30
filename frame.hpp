@@ -73,7 +73,7 @@ namespace vina {
     template <class F>
     void wrapper_func_ternary(F * _self, void * ret, void * arg0, void *arg1)
     {
-	//printf("ternary is called _self = %p, (%p, %p, %p)\n", _self, ret, arg0, arg1);
+	printf("ternary is called _self = %p, (%p, %p, %p)\n", _self, ret, arg0, arg1);
     	_self->operator() (ret, arg0, arg1);
     }
 
@@ -578,7 +578,7 @@ struct mapreduce {
 	    	<Instance::SubWView::VIEW_SIZE_X,
                  Instance::SubWView::VIEW_SIZE_Y>(i * (Instance::SubWView::VIEW_SIZE_X), 
                                                   j * (Instance::SubWView::VIEW_SIZE_Y)));    
-            //printf("subResults[0] = %p\n", subResults[0]);
+            printf("subResult = %p subResults[0] = %p\n", subResults, subResults[0]);
             //assert ( subResults == Instance::localstorage(false, subResults) && "wrong local storage");
 #if !defined(__NDEBUG) && !defined(__USE_LIBSPMD)
               event_id timers[_K];
@@ -598,8 +598,10 @@ struct mapreduce {
         auto compF = Instance::SubTask::computation();
 	typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
 	func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
+
 	wid = spmd_create_warp (_K, (void *)task, 0, 
 	                        (void *)&Instance::reduce_ptr, (void *)subResults);
+        /*wid = spmd_create_warp(_K, (void *)task, 0, NULL, NULL);*/
 	assert( wid != -1 && "spmd creation faied");
 	//printf("warp %d is created\n", wid);
 #endif
@@ -616,9 +618,6 @@ struct mapreduce {
             PROF_HIT(__frm_libspmd_thread_cnt);
             if ( -1 == tid ) {
                fprintf(stderr, "failed to create thread\n");
-            }
-	    else {
-	       fprintf(stderr, "task %d is created\n", tid);
 	    }
 #endif
 #elif defined(__USE_POOL)
