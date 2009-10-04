@@ -295,7 +295,7 @@ main(int argc, char *argv[])
   // init ck_burning
   assert( initialize_ck_burning()
     && "failed to initialize ck burning");
-  fprintf(stderr, "preset wkr_delay = %d\n", wkr_delay);
+  //fprintf(stderr, "preset wkr_delay = %d\n", wkr_delay);
 
   Profiler &prof = Profiler::getInstance();
   if ( wkr_delay >= 0 ) {

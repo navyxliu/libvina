@@ -28,6 +28,11 @@ MKLLIB=-L$(MKLPATH)/lib/em64t  \
 	$(MKLPATH)/lib/em64t/libmkl_sequential.a \
 	$(MKLPATH)/lib/em64t/libmkl_core.a -Wl,--end-group \
 	-liomp5 -lpthread
+MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
+	-Wl,--start-group $(MKLPATH)/lib/em64t/libmkl_intel_lp64.a\
+	$(MKLPATH)/lib/em64t/libmkl_intel_thread.a \
+	$(MKLPATH)/lib/em64t/libmkl_core.a -Wl,--end-group \
+	-liomp5 -lpthread
 
 #libSPMD lib
 SPMDPATH=./libSPMD
@@ -64,13 +69,15 @@ LDFLAGS+=$(MKLLIB)
 #endif
 
 AUX_OBJS = profiler.o toolkits.o mtsupport.o
-OBJS = mat_mul.o test_pipe.o dot_prod.o saxpy.o conv2d.o
+OBJS = mat_mul.o test_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o
 OBJS += $(AUX_OBJS)
 
 all: mat_mul lang_pipe dot_prod conv2d saxpy
 
 mat_mul: mat_mul.o $(AUX_OBJS) 
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
+mm_omp: mm_omp.o
+	$(CXX) -o $@ $< $(AUX_OBJS) $(MKLLIB_P) -lrt $(BOOSTLIB)
 
 lang_pipe: test_pipe.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)

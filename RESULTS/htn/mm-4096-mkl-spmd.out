@@ -1,0 +1,46 @@
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=1024
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+probe result is 8
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    8|      4|       15|     32|       47|
+slot 0: 0x1db02800
+width=8, size=1
+ldr0=2774:(2775,2777,2778,2780,2784,2786,2787,2789,)
+slot 1: 0x1db02828
+width=4, size=2
+ldr0=2776:(2779,2781,2782,2785,)
+ldr1=2783:(2788,2791,2793,2795,)
+slot 2: 0x1db02850
+width=2, size=4
+ldr0=2790:(2792,2794,)
+ldr1=2796:(2797,2799,)
+ldr2=2798:(2800,2801,)
+ldr3=2802:(2803,2805,)
+slot 3: 0x1db02878
+width=1, size=8
+ldr0=2804:(2806,)
+ldr1=2807:(2808,)
+ldr2=2809:(2810,)
+ldr3=2811:(2812,)
+ldr4=2813:(2814,)
+ldr5=2815:(2816,)
+ldr6=2817:(2818,)
+ldr7=2819:(2820,)
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=1024
+ldr1 locked
+ldr2 locked
+MT SSE gflop=80.177012
+spmd close all children
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    0        0usec            0.0%
+# 2                   ST SSE    0        0usec            0.0%
+# 3          mulmat_parallel    0        0usec            0.0%
+# 4      mulmat_parallel SSE    1  1714194usec            100.0%
+# 5          mulmat_smallset    0        0usec            0.0%

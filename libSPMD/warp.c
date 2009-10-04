@@ -35,8 +35,7 @@ static void
 spmd_runtime_dump();
 
 void children_handler(int signum)
-{
-}
+{}
 
 int __task 
 default_task_entry(void * arg)
@@ -68,13 +67,15 @@ default_task_entry(void * arg)
     struct timespec myts;
     struct timeval fntv_start, fntv_end;
     long execspan;
+    
     char log[30];
     static int lt_iter = 0;
     sprintf(log, "timelog-%d.log", gettid());
     FILE * fh = fopen(log, "a");
+
     clock_gettime(CLOCK_REALTIME, &myts);
-    fprintf(fh, "task thread iteration #%2d\n=================\n", ++lt_iter);
-    fprintf(fh, "task start timestamp %d: %ld\n", myts.tv_sec, myts.tv_nsec);
+    fprintf(task->log_fd, "task thread iteration #%2d\n=================\n", ++lt_iter);  
+    fprintf(task->log_fd, "task start timestamp %d: %ld\n", myts.tv_sec, myts.tv_nsec);
     gettimeofday(&fntv_start, NULL); 
 #endif 
 
@@ -83,7 +84,7 @@ default_task_entry(void * arg)
 
 #ifdef __TIMELOG
     gettimeofday(&fntv_end, NULL);
-    fprintf(fh, "task execution span %ld usec\n", (execspan = (fntv_end.tv_sec  - fntv_start.tv_sec) * 1000000 + (fntv_end.tv_usec - fntv_start.tv_usec)));
+    fprintf(task->log_fd, "task execution span %ld usec\n", (execspan = (fntv_end.tv_sec  - fntv_start.tv_sec) * 1000000 + (fntv_end.tv_usec - fntv_start.tv_usec)));
 #endif
 
 #ifndef __NDEBUG
@@ -107,17 +108,18 @@ default_task_entry(void * arg)
       perror("notify leader failed");
       exit(EXIT_FAILURE);
     }
+
 #ifndef __NDEBUG
     fprintf(stderr, "@task [%d:%d] complete working, task ptr = %p fn = %p\n", 
 	    getpid(), gettid(), task, task->fn);    
 #endif
+
 #ifdef __TIMELOG
     long elapsed = myts.tv_sec;
     long elapsed_nsec = myts.tv_nsec;
     clock_gettime(CLOCK_REALTIME, &myts);
     elapsed = ((myts.tv_sec - elapsed) * 1000000000 + (myts.tv_nsec - elapsed_nsec)) / 1000;
-    fprintf(fh, "task close timestamp %d:%d\ntask active time is %d, effectivity is %.2f\%\n", myts.tv_sec, myts.tv_nsec, elapsed, (100.0 * execspan) / elapsed );
-    fclose(fh);
+    fprintf(task->file_fd, "task close timestamp %d:%d\ntask active time is %d, effectivity is %.2f\%\n", myts.tv_sec, myts.tv_nsec, elapsed, (100.0 * execspan) / elapsed );
 #endif
   }
 #ifndef __NDEBUG
@@ -217,6 +219,10 @@ init_semphore(int nr)
   unsigned short array[nr];
 
   key = ftok(SPMD_SEM_KEY, 0xff);
+  if ( key == -1 ) {
+    perror("ftok failed in init");
+    return -1;
+  }
   semid = semget(key, nr, 0666 | IPC_CREAT);
   if ( semid == -1 ) {
     perror("semget failed in init");
@@ -300,22 +306,25 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
     }
   }/*for*/
 }
+
 //FIXME: I doubt it is desirable to make this function thread-safe.
 //this function should be called in primary thread/process, otherwise is error-prone.
 int __spmd_export
-spmd_initialize()
+spmd_initialize_n(int nr_pe)
 {
   int nr_thr, nr_slot, nr_leader=0;
-  int nr_pe = probe_nr_processor();
+  int nr_pe_ = probe_nr_processor();
   int i, j;	
   int semid;
   key_t key;
   //FIXME: lock protection or re-entrance
-
+  if ( 0 != (nr_pe % 2)  || nr_pe > nr_pe_ ) {
+    return -1;
+  }
   /*also works for systems with non-exponential cores
    */
 
-  printf("probe result is %d\n", nr_pe);
+  //printf("probe result is %d\n", nr_pe);
 
   for(i=nr_pe, nr_thr=0, nr_slot=0; i>0; 
       i = i>>1, nr_slot++) { 
@@ -380,7 +389,11 @@ spmd_initialize()
     
     the_pool.leaders[i].sem = 
       semget(key, 1, 0666 | IPC_CREAT);
-    printf("sem leader[%1d].sem = %d\n", i, the_pool.leaders[i].sem);
+    if ( the_pool.leaders[i].sem == -1 ) {
+     perror("semget fail");
+     goto err_happened3;
+    }
+   //printf("sem leader[%1d].sem = %d\n", i, the_pool.leaders[i].sem);
   }
 
   thread_t * ldr = the_pool.thr_leaders;
@@ -420,6 +433,11 @@ spmd_initialize()
   return -1;
 }
 
+int __spmd_export
+spmd_initialize()
+{ 
+   return spmd_initialize_n(probe_nr_processor());
+}
 void  __spmd_export
 spmd_cleanup()
 {

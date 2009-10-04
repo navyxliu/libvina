@@ -1,0 +1,53 @@
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=32000000
+VEC_TEST_GRANULARITY=8000000
+VEC_TEST_K=4
+See Makefile TEST_INFO to set parameters
+elapsed=91388
+STD gflop=0.700311
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    8|      4|       15|     32|       47|
+slot 0: 0x20c26fd0
+width=8, size=1
+ldr0=3205:(3206,3208,3209,3210,3211,3214,3215,3217,)
+slot 1: 0x20c26ff8
+width=4, size=2
+ldr0=3207:(3213,3216,3218,3220,)
+ldr1=3212:(3219,3222,3224,3228,)
+slot 2: 0x20c27020
+width=2, size=4
+ldr0=3221:(3223,3226,)
+ldr1=3225:(3227,3229,)
+ldr2=3230:(3231,3233,)
+ldr3=3232:(3235,3236,)
+slot 3: 0x20c27048
+width=1, size=8
+ldr0=3234:(3237,)
+ldr1=3238:(3239,)
+ldr2=3240:(3241,)
+ldr3=3242:(3243,)
+ldr4=3244:(3245,)
+ldr5=3246:(3247,)
+ldr6=3248:(3249,)
+ldr7=3250:(0,)
+startup libspmd runtime: 8 pe is detected
+elapsed=44943
+MT gflop=1.424026
+spmd close all children
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    1    44835usec            32.9%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    4                           
+# 6 #libspmd thread creation    0                           
+# 7                      STD    1    91388usec            67.0%
+# 8                       ST    0        0usec            0.0%
+# 9                       MT    1    44943usec            33.0%
+#10            thread0 timer    1    43818usec            32.1%
+#11            thread1 timer    1    44329usec            32.5%
+#12            thread2 timer    1    43887usec            32.2%
+#13            thread3 timer    1    44432usec            32.6%

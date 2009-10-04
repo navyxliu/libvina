@@ -1,39 +1,40 @@
 SAXPY Program in Blas
 VEC_TEST_SIZE_N=32000000
-VEC_TEST_GRANULARITY=4000000
-VEC_TEST_K=8
+VEC_TEST_GRANULARITY=16000000
+VEC_TEST_K=2
 See Makefile TEST_INFO to set parameters
-elapsed=91327
-STD gflop=0.700779
+elapsed=91319
+STD gflop=0.700840
 spmd thread pool:
 nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
     8|      4|       15|     32|       47|
-slot 0: 0x200f8d70
+slot 0: 0x20d29d70
 width=8, size=1
-ldr0=3814:(3815,3817,3818,3819,3821,3822,3825,3828,)
-slot 1: 0x200f8d98
+ldr0=2816:(2818,2819,2821,2823,2825,2827,2829,2830,)
+slot 1: 0x20d29d98
 width=4, size=2
-ldr0=3816:(3820,3823,3826,3827,)
-ldr1=3824:(3829,3831,3832,3835,)
-slot 2: 0x200f8dc0
+ldr0=2817:(2820,2822,2824,2826,)
+ldr1=2828:(2831,2833,2835,2838,)
+slot 2: 0x20d29dc0
 width=2, size=4
-ldr0=3830:(3833,3834,)
-ldr1=3836:(3837,3838,)
-ldr2=3839:(3840,3842,)
-ldr3=3841:(3843,3845,)
-slot 3: 0x200f8de8
+ldr0=2832:(2834,2836,)
+ldr1=2837:(2839,2841,)
+ldr2=2840:(2842,2844,)
+ldr3=2843:(2845,2847,)
+slot 3: 0x20d29de8
 width=1, size=8
-ldr0=3844:(3846,)
-ldr1=3847:(3848,)
-ldr2=3849:(3850,)
-ldr3=3851:(3852,)
-ldr4=3853:(3854,)
-ldr5=3855:(3856,)
-ldr6=3857:(3858,)
-ldr7=3859:(3860,)
+ldr0=2846:(2849,)
+ldr1=2848:(2850,)
+ldr2=2851:(2852,)
+ldr3=2853:(2855,)
+ldr4=2854:(2856,)
+ldr5=2857:(2858,)
+ldr6=2859:(2860,)
+ldr7=2861:(2862,)
 startup libspmd runtime: 8 pe is detected
-elapsed=46397
-MT gflop=1.379400
+ldr3 locked
+elapsed=52927
+MT gflop=1.209213
 spmd close all children
 Profile info
 ======================================================================
@@ -43,7 +44,7 @@ Profile info
 # 3       #frame thread cost    0        0usec            0.0%
 # 4 #thread creation counters    0                           
 # 5 #thread pool enqueue counters    0                           
-# 6 #libspmd thread creation    8                           
-# 7                      STD    1    91327usec            66.3%
+# 6 #libspmd thread creation    2                           
+# 7                      STD    1    91319usec            63.3%
 # 8                       ST    0        0usec            0.0%
-# 9                       MT    1    46397usec            33.7%
+# 9                       MT    1    52927usec            36.7%
