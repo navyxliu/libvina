@@ -1,0 +1,57 @@
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=32000000
+VEC_TEST_GRANULARITY=4000000
+VEC_TEST_K=8
+See Makefile TEST_INFO to set parameters
+elapsed=91621
+STD gflop=0.698530
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    8|      4|       15|     32|       47|
+slot 0: 0x20b11fd0
+width=8, size=1
+ldr0=3340:(3341,3342,3344,3345,3346,3347,3349,3352,)
+slot 1: 0x20b11ff8
+width=4, size=2
+ldr0=3343:(3348,3351,3353,3355,)
+ldr1=3350:(3354,3356,3358,3360,)
+slot 2: 0x20b12020
+width=2, size=4
+ldr0=3357:(3359,3361,)
+ldr1=3362:(3363,3365,)
+ldr2=3364:(3366,3367,)
+ldr3=3368:(3369,3371,)
+slot 3: 0x20b12048
+width=1, size=8
+ldr0=3370:(3372,)
+ldr1=3373:(3374,)
+ldr2=3375:(3376,)
+ldr3=3377:(3378,)
+ldr4=3379:(3380,)
+ldr5=3381:(3382,)
+ldr6=3383:(3384,)
+ldr7=3385:(0,)
+startup libspmd runtime: 8 pe is detected
+elapsed=47692
+MT gflop=1.341944
+spmd close all children
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    1    47568usec            34.1%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    8                           
+# 6 #libspmd thread creation    0                           
+# 7                      STD    1    91621usec            65.8%
+# 8                       ST    0        0usec            0.0%
+# 9                       MT    1    47692usec            34.2%
+#10            thread0 timer    1    14664usec            10.5%
+#11            thread1 timer    1    14236usec            10.2%
+#12            thread2 timer    1    20994usec            15.1%
+#13            thread3 timer    1    25186usec            18.1%
+#14            thread4 timer    1    27115usec            19.5%
+#15            thread5 timer    1    24884usec            17.9%
+#16            thread6 timer    1    21379usec            15.3%
+#17            thread7 timer    1    16183usec            11.6%

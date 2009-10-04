@@ -160,13 +160,17 @@ struct matmul_parallel
     auto reduF = reduction(); 
     auto _subs = (SubWView **)arg;
      
-   //fprintf(stderr, "in reduce_ptr subs = %p subs[0] = %p\n", arg, _subs[0]);
+    //fprintf(stderr, "in reduce_ptr subs = %p subs[0] = %p\n", arg, _subs[0]);
     for (int s=1; s < K; s<<=1) for (int k=0; k < K; k+=(s<<1)) {
       auto in0 = _subs[k];
       auto in1 = (SubRView2*)_subs[k+s];
       reduF(*in0, /*<--*/*in1);     
     }
-   
+    /*
+    typedef typename trait_result::container_type SubResultType;   
+    delete [] (SubResultType*)(_subs[K]->data()); 
+    delete [] (SubWView**)(_subs);
+    */
   }
  /* ydf gave me the idea to implement template static variable by function static var
   * the benefit of this approach is that programmer can avoid the intialization expresson\
@@ -221,20 +225,12 @@ int main()
 
   typedef Matrix<MM_TEST_TYPE, MM_TEST_SIZE_N, MM_TEST_SIZE_N> TestMatrix;
   typedef Matrix<vector_type<MM_TEST_TYPE>, MM_TEST_SIZE_N, MM_TEST_SIZE_N> TestMatrix_v;
-  typedef Matrix<vector_type<MM_TEST_TYPE>, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K> matrix_ss_t; // small set;
-
   static TestMatrix x, y, z, STD_result;
   static TestMatrix_v x_v, y_v, z_v;
-  static matrix_ss_t x_ss, y_ss, z_ss;
 
   Profiler &prof = Profiler::getInstance();
   //local
-  auto temp0 = prof.eventRegister("STD multiply");
-  auto temp1 = prof.eventRegister("Single-threaded");
-  auto temp2 = prof.eventRegister("ST SSE");
-  auto temp3 = prof.eventRegister("mulmat_parallel");
-  auto temp4 = prof.eventRegister("mulmat_parallel SSE");
-  auto temp5 = prof.eventRegister("mulmat_smallset");
+  auto temp0 = prof.eventRegister("OMP MM");
 
   NumRandGen<MM_TEST_TYPE> gen(2009);
   typedef TestMatrix::writer_type Writer;
@@ -244,86 +240,26 @@ int main()
     for (int j=0; j<TestMatrix::DIM_N; ++j) 
       x[i][j] = x_v[i][j] = gen(), y[i][j] = y_v[i][j] = gen();
 
-  for (int i=0; i<TestMatrix::DIM_M/MM_TEST_K; ++i)
-    for (int j=0; j<TestMatrix::DIM_N/MM_TEST_K; ++j)
-      x_ss[i][j] = gen(), y_ss[i][j] = gen();
 
 
   double Comp = MM_TEST_SIZE_N * MM_TEST_SIZE_N;
   Comp = Comp * MM_TEST_SIZE_N * 2;
-  double Comp2 = MM_TEST_SIZE_N/MM_TEST_K * (MM_TEST_SIZE_N/MM_TEST_K);
-  Comp2 = Comp2 * (MM_TEST_SIZE_N / MM_TEST_K) * 2;
 
   z.zero();
-  z_v.zero();
-  z_ss.zero();
 
   STD_result.zero();
   auto result = z.subWView();
   auto result_v = z_v.subWView();
-  auto result_ss = z_ss.subWView(); 
-  /*
-   * replace my trivial mm with mkl sgemm procedure
-   */
-  //multiply<MM_TEST_TYPE, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K>
-   // (x_ss, y_ss, z_ss);
   float * std_x, * std_y, * std_z;
   std_x = x.data();
   std_y = y.data();
   std_z = STD_result.data();
-#if 0  
   prof.eventStart(temp0);
   {
     cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N,
          1.0f/*alpha*/, std_x, MM_TEST_SIZE_N, std_y, MM_TEST_SIZE_N, 0.0f/*beta*/, std_z, MM_TEST_SIZE_N);
   }
   prof.eventEnd(temp0); 
-  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
-
-#endif
-/*  
-  typedef matmul_parallel<Writer, TestMatrix, TestMatrix, 
-    matMAddWrapper, matAddWrapper2, p_simple, MM_TEST_K, false> TF; // fransformer :~)
-  prof.eventStart(temp1);
-  TF::doit(x, y, result);
-  prof.eventEnd(temp1);
-  CHECK_RESULT(z);
-  printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed()));
-*/
-/*
-  typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
-    matMAddWrapper, matAddWrapper2, p_simple, MM_TEST_K, false> TF_SSE;
-
-  prof.eventStart(temp2);
-  TF_SSE::doit(x_v, y_v, result_v);
-  prof.eventEnd(temp2);
-  printf("ST SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed()));
-  CHECK_RESULT(z_v);
-*/ 
-/*
-  z.zero();
-  typedef matmul_parallel<Writer, TestMatrix, TestMatrix,
-    matMulWrapper, matAddWrapper2, p_simple, MM_TEST_K> TF_PARALLEL;
-  
-  prof.eventStart(temp3);
-  TF_PARALLEL::doit(x, y, result);
-  prof.eventEnd(temp3);
-  CHECK_RESULT(z);
-  printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
-*/
-
-  spmd_initialize();
-  z_v.zero();
-
-  typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
-    matMulWrapper, matAddWrapper2, p_simple, MM_TEST_K> TF_PARALLEL_SSE;
- 
-  prof.eventStart(temp4);
-  TF_PARALLEL_SSE::doit(x_v, y_v, result_v);
-  while (!spmd_all_complete());
-  prof.eventEnd(temp4);
-  //CHECK_RESULT(z_v);
-  printf("MT SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp4)->elapsed()));
-  spmd_cleanup();
+  printf("OMP gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
   prof.dump();
 }
