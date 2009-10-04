@@ -1,0 +1,15 @@
+SAXPY Program in Blas
+VEC_TEST_SIZE_N
+VEC_TEST_GRANULARITY=100000000
+VEC_TEST_K=50000000
+See Makefile TEST_INFO to set parameters
+STD gflop=0.560507
+ST gflop=0.562601
+thread:0x5fbef350
+thread:0x5fbef5f0
+MT gflop=2.071981
+Profile info
+======================================================================
+# 0                      STD    1   178410usec            44.1%
+# 1                       ST    1   177746usec            44.0%
+# 2                       MT    1    48263usec            11.9%

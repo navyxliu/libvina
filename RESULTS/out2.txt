@@ -1,0 +1,27 @@
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=1600
+  MM_TEST_GRANULARITY= 400
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.436918
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=400
+ST SSE gflop=6.371968
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=400
+MT SSE gflop=11.895013
+Profile info
+======================================================================
+# 0        #frame kernel seq   64  1285549usec            6.2%
+# 1        #frame kernel par   16   678412usec            3.3%
+# 2          #frame mem cost   32       53usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4             STD multiply    1 18749527usec            90.5%
+# 5          Single-threaded    0        0usec            0.0%
+# 6                   ST SSE    1  1285631usec            6.2%
+# 7          mulmat_parallel    0        0usec            0.0%
+# 8      mulmat_parallel SSE    1   688692usec            3.3%
+# 9        mat thread0 timer   16   438672usec            2.1%
+#10        mat thread1 timer   16   474804usec            2.3%
+#11        mat thread2 timer   16   417272usec            2.0%
+#12        mat thread3 timer   16   348176usec            1.7%

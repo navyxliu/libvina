@@ -1,0 +1,60 @@
+fork at parent callsite. perhaps there are too many manager threads.
+the thredhold is 100,000 elements
+the result is very oscillating. because kernel is too simple.
+Profile info
+================================================================================
+#       0     canonical plus    1    10410usec  39.1%
+#       1          view plus    1     6278usec  23.6%
+#       2     recursive plus    1     6772usec  25.4%
+[liu@biology3 distro]$ ./vec_add
+Profile info
+================================================================================
+#       0     canonical plus    1    10370usec  42.8%
+#       1          view plus    1     6326usec  26.1%
+#       2     recursive plus    1     4334usec  17.9%
+[liu@biology3 distro]$ ./vec_add
+Profile info
+================================================================================
+#       0     canonical plus    1    10361usec  43.5%
+#       1          view plus    1     6303usec  26.5%
+#       2     recursive plus    1     3902usec  16.4%
+[liu@biology3 distro]$ ./vec_add
+Profile info
+================================================================================
+#       0     canonical plus    1    10259usec  44.0%
+#       1          view plus    1     6282usec  27.0%
+#       2     recursive plus    1     3575usec  15.3%
+[liu@biology3 distro]$ 
+
+
+
+fork in-place, i.e. fork at leaf
+obviously, these groups of result are better than before.
+it seems that concrete calculation is too fast, there is no parallel computation at all. 
+the benifit comes from management cost. 
+
+[liu@biology3 distro]$ ./vec_add
+Profile info
+================================================================================
+#       0     canonical plus    1    10575usec  42.5%
+#       1          view plus    1     6306usec  25.4%
+#       2     recursive plus    1     4819usec  19.4%
+[liu@biology3 distro]$ ./vec_add
+Profile info
+================================================================================
+#       0     canonical plus    1    10682usec  45.4%
+#       1          view plus    1     6299usec  26.8%
+#       2     recursive plus    1     3355usec  14.3%
+[liu@biology3 distro]$ ./vec_add
+Profile info
+================================================================================
+#       0     canonical plus    1    10403usec  41.8%
+#       1          view plus    1     6292usec  25.3%
+#       2     recursive plus    1     5015usec  20.2%
+[liu@biology3 distro]$ ./vec_add
+Profile info
+================================================================================
+#       0     canonical plus    1    10485usec  44.4%
+#       1          view plus    1     6322usec  26.8%
+#       2     recursive plus    1     3630usec  15.4%
+

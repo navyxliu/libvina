@@ -1,0 +1,162 @@
+I can not compile -O2 flag with gcc 4.4.0 because the problem of 
+libstdc++, i thought there is not released version of that staff.
+
+sadly, the recursive version runs in sequence is slow 2 times than std version. 
+the predicator is set to fit L1 cache size. as follows:
+
+template <class T, int SIZE_A, int SIZE_B, int SIZE_C>
+struct p_lt_cache_l1 {
+  enum {CACHE_L1_SIZE = 4096*1024};
+  const static bool value = ((SIZE_A * SIZE_B + SIZE_A * SIZE_C + SIZE_B * SIZE_C) 
+			     * sizeof(T) ) <= CACHE_L1_SIZE;
+};
+
+
+integer MM
+Profile info
+================================================================================
+# 0       STD multiply    1  1017879usec  31.8% 
+# 1              block    1  2180923usec  68.2% 
+# 2     multi-threaded    0        0usec  0.0% 
+
+
+float MM
+Profile info
+================================================================================
+# 0       STD multiply    1  1070678usec  32.0% 
+# 1              block    1  2278247usec  68.0% 
+# 2     multi-threaded    0        0usec  0.0% 
+
+#update: June. 08.2009:
+I finally figure out how to compile it with -O2 flag. However,the result is really dispointing.
+-O2 version
+
+512X512 MM:
+
+Integer:
+Profile info
+================================================================================
+#10       STD multiply    1    29029usec            33.0%
+# 0              block    1    59050usec            67.0%
+# 0     multi-threaded    0        0usec            0.0%
+Float:
+Profile info
+================================================================================
+#10       STD multiply    1    25932usec            24.4%
+# 0              block    1    80467usec            75.6%
+# 0     multi-threaded    0        0usec            0.0%
+
+1024X1024 MM:
+Float:
+Profile info
+================================================================================
+# 0       STD multiply    1 13275008usec            47.6%
+# 1              block    1 14622727usec            52.4%
+# 2     multi-threaded    0        0usec            0.0%
+
+2048X2048
+Profile info
+================================================================================
+# 0       STD multiply    1 122711969usec            49.3%
+# 1              block    1 126009164usec            50.7%
+# 2     multi-threaded    0        0usec            0.0%
+
+
+1024X1024, with cache misses info
+Profile info
+Float
+================================================================================
+# 0   Algorithm kernel    8 16999107usec            30.4%   this is embeded in event 5, the cost of function calls and Division of Views are negligible.
+ 
+# 1 view llcache misses   707317131                           
+# 2 block llcache misses  184962861     <-------cache misses are dramatically decreased.                       
+# 3 STD llcache misses    591775626                           
+# 4       STD multiply    1 12605748usec            22.5% <- due to directly manipulate Matrix instead of Views, native multiplication is faster. The overhead of subscription is painful.
+# 5              block    1 16999136usec            30.4%  ---|
+# 6     multi-threaded    0        0usec            0.0%      |--> both using views, blocks are faster over 40%
+# 7      mul via views    1 26403502usec            47.1%  ---|
+
+2048X2048
+Profile info
+================================================================================
+# 0       STD multiply    1 127920460usec            26.4%
+# 1              block    1 143980112usec            29.7%
+# 2   Algorithm kernel   64 143979850usec            29.7%
+# 3     multi-threaded    0        0usec            0.0%
+# 4      mul via views    1 213372078usec            44.0%
+# 5 view llcache misses 2094419112                           
+# 6 block llcache misses 897118365                           
+# 7 STD llcache misses -266466070  <-------------oops, overflow
+
+updated: 2009, 06, 10
+
+1024X1024 with -O2
+little improvement of Viewsubscription, 
+the block version aleady overshadows STD version.
+Profile info
+================================================================================
+# 0       STD multiply    1 11100849usec            27.0%
+# 1              block    1 10408571usec            25.3%
+# 2   Algorithm kernel    8 10408564usec            25.3%
+# 3     multi-threaded    0        0usec            0.0%
+# 4      mul via views    1 19596458usec            47.7%
+# 5 view llcache misses  417393037                           
+# 6 block llcache misses  46470686                           
+# 7 STD llcache misses   376213071   
+
+2048X2048 with -O2
+Profile info
+================================================================================
+# 0       STD multiply    1 44123276usec            43.9%
+# 1              block    1 56284913usec            56.1%
+# 2   Algorithm kernel   64 56284854usec            56.1%
+# 3     multi-threaded    0        0usec            0.0%
+# 4      mul via views    0        0usec            0.0%
+# 5 view llcache misses    0                           
+# 6 block llcache misses 6863398                           
+# 7 STD llcache misses 169940128                       
+
+2048X2048 with -O3
+the cache misses of block version is signaficantly improved. however, the raw perf 
+is slower, why? what kind of H/W optimized for STD ?
+
+Profile info
+================================================================================
+# 0       STD multiply    1 41579430usec            43.5%
+# 1              block    1 53944372usec            56.5%
+# 2   Algorithm kernel   64 53944319usec            56.5%
+# 3     multi-threaded    0        0usec            0.0%
+# 4      mul via views    0        0usec            0.0%
+# 5 view llcache misses    0                           
+# 6 block llcache misses 3720396                           
+# 7 STD llcache misses 258683919                           
+
+1024X1024 
+int with -O2 
+Profile info
+================================================================================
+# 0       STD multiply    1 10967573usec            56.4%
+# 1              block    0        0usec            0.0%
+# 2   Algorithm kernel    0        0usec            0.0%
+# 3     multi-threaded    1  8492489usec            43.6%
+# 4      mul via views    0        0usec            0.0%
+# 5 view llcache misses    0                           
+# 6 block llcache misses    0                           
+# 7 STD llcache misses 4078681                           
+
+2048X2048 
+int with -O2
+the speedup is almost 2 times. so this is close to boundary of duo core processor.
+MT MM occupies two cores both 100% in run time. using MMX or SSE specialization, i think 
+we can obtain peak flop in Xeon platform.
+
+Profile info
+================================================================================
+# 0       STD multiply    1 121450298usec            65.3%
+# 1              block    0        0usec            0.0%
+# 2   Algorithm kernel    0        0usec            0.0%
+# 3     multi-threaded    1 64536207usec            34.7%
+# 4      mul via views    0        0usec            0.0%
+# 5 view llcache misses    0                           
+# 6 block llcache misses    0                           
+

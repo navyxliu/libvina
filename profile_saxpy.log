@@ -1,0 +1,30 @@
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=80000000
+VEC_TEST_GRANULARITY=20000000
+VEC_TEST_K=4
+See Makefile TEST_INFO to set parameters
+elapsed=228265
+STD gflop=0.700940
+probe result is 4
+startup libspmd runtime: 4 pe is detected
+ldr0 locked
+elapsed=129759
+MT gflop=1.233055
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    1      892usec            0.2%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    4                           
+# 7                      STD    1   228265usec            63.8%
+# 8                       ST    0        0usec            0.0%
+# 9                       MT    1   129759usec            36.2%
+#10                   OPENMP    0        0usec            0.0%
+#11            thread0 timer    0        0usec            0.0%
+#12            thread1 timer    0        0usec            0.0%
+#13            thread2 timer    0        0usec            0.0%
+#14            thread3 timer    0        0usec            0.0%
+

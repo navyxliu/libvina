@@ -1,0 +1,13 @@
+digraph G_map_class {
+  rankdir="LR"
+  node [shape=box]
+
+  lhs [label="F"];
+  map [shape=ellipse, label="transform class"];
+  rhs [label="F'"];
+
+  lhs -> map;
+
+  map -> rhs;
+
+}
