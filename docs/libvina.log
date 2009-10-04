@@ -1,0 +1,341 @@
+This is pdfeTeX, Version 3.141592-1.21a-2.2 (Web2C 7.5.4) (format=pdflatex 2009.6.14)  4 OCT 2009 23:00
+entering extended mode
+**libvina.tex
+(./libvina.tex
+LaTeX2e <2003/12/01>
+Babel <v3.8d> and hyphenation patterns for american, french, german, ngerman, b
+ahasa, basque, bulgarian, catalan, croatian, czech, danish, dutch, esperanto, e
+stonian, finnish, greek, icelandic, irish, italian, latin, magyar, norsk, polis
+h, portuges, romanian, russian, serbian, slovak, slovene, spanish, swedish, tur
+kish, ukrainian, nohyphenation, loaded.
+(./IEEEtran.cls
+Document Class: IEEEtran 2007/03/05 V1.7a by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+\@IEEEtrantmpdimenA=\dimen102
+\@IEEEtrantmpdimenB=\dimen103
+\@IEEEtrantmpcountA=\count79
+\@IEEEtrantmpcountB=\count80
+\@IEEEtrantmptoksA=\toks14
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 373.
+
+(/opt/local/share/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+\@IEEEnormalsizeunitybaselineskip=\dimen104
+-- This is a 10 point document.
+\CLASSINFOnormalsizebaselineskip=\dimen105
+\CLASSINFOnormalsizeunitybaselineskip=\dimen106
+\IEEEnormaljot=\dimen107
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+\IEEEilabelindentA=\dimen108
+\IEEEilabelindentB=\dimen109
+\IEEEilabelindent=\dimen110
+\IEEEelabelindent=\dimen111
+\IEEEdlabelindent=\dimen112
+\IEEElabelindent=\dimen113
+\IEEEiednormlabelsep=\dimen114
+\IEEEiedmathlabelsep=\dimen115
+\IEEEiedtopsep=\skip41
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@IEEEsubequation=\count85
+\abovecaptionskip=\skip42
+\belowcaptionskip=\skip43
+\c@figure=\count86
+\c@table=\count87
+\@IEEEeqnnumcols=\count88
+\@IEEEeqncolcnt=\count89
+\@IEEEtmpitemindent=\dimen116
+\c@IEEEbiography=\count90
+\@IEEEtranrubishbin=\box26
+) (/opt/local/share/texmf-dist/tex/latex/cite/cite.sty
+LaTeX Info: Redefining \cite on input line 149.
+LaTeX Info: Redefining \nocite on input line 214.
+Package: cite 2003/11/04  v 4.01
+)
+(/opt/local/share/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/opt/local/share/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+(/opt/local/share/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2001/07/07 v1.0n Standard LaTeX Graphics (DPC,SPQR)
+
+(/opt/local/share/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/opt/local/share/texmf-dist/tex/latex/graphics/graphics.cfg
+File: graphics.cfg 2005/02/03 v1.3 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 80.
+
+(/opt/local/share/texmf-dist/tex/latex/graphics/pdftex.def
+File: pdftex.def 2002/06/19 v0.03k graphics/color for pdftex
+\Gread@gobject=\count91
+))
+\Gin@req@height=\dimen117
+\Gin@req@width=\dimen118
+) (./libvina.aux)
+\openout1 = `libvina.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 351.
+LaTeX Font Info:    ... okay on input line 351.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 351.
+LaTeX Font Info:    ... okay on input line 351.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 351.
+LaTeX Font Info:    ... okay on input line 351.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 351.
+LaTeX Font Info:    ... okay on input line 351.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 351.
+LaTeX Font Info:    ... okay on input line 351.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 351.
+LaTeX Font Info:    ... okay on input line 351.
+
+(/opt/local/share/texmf-dist/tex/context/base/supp-pdf.tex
+(/opt/local/share/texmf-dist/tex/context/base/supp-mis.tex
+loading : Context Support Macros / Miscellaneous (2004.10.26)
+\protectiondepth=\count92
+\scratchcounter=\count93
+\scratchtoks=\toks16
+\scratchdimen=\dimen119
+\scratchskip=\skip44
+\scratchmuskip=\muskip10
+\scratchbox=\box27
+\scratchread=\read1
+\scratchwrite=\write3
+\zeropoint=\dimen120
+\onepoint=\dimen121
+\onebasepoint=\dimen122
+\minusone=\count94
+\thousandpoint=\dimen123
+\onerealpoint=\dimen124
+\emptytoks=\toks17
+\nextbox=\box28
+\nextdepth=\dimen125
+\everyline=\toks18
+\!!counta=\count95
+\!!countb=\count96
+\recursecounter=\count97
+)
+loading : Context Support Macros / PDF (2004.03.26)
+\nofMPsegments=\count98
+\nofMParguments=\count99
+\MPscratchCnt=\count100
+\MPscratchDim=\dimen126
+\MPnumerator=\count101
+\everyMPtoPDFconversion=\toks19
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 395.
+
+
+LaTeX Warning: Citation `13' on page 1 undefined on input line 422.
+
+
+LaTeX Warning: Citation `15' on page 1 undefined on input line 426.
+
+
+LaTeX Warning: Citation `1' on page 1 undefined on input line 426.
+
+
+LaTeX Warning: Citation `10' on page 1 undefined on input line 428.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 434.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 434.
+[1{/opt/local/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+]
+
+LaTeX Warning: Citation `8' on page 2 undefined on input line 440.
+
+
+LaTeX Warning: Citation `17' on page 2 undefined on input line 440.
+
+
+LaTeX Warning: Citation `4' on page 2 undefined on input line 452.
+
+
+LaTeX Warning: Citation `5' on page 2 undefined on input line 452.
+
+
+LaTeX Warning: Citation `12' on page 2 undefined on input line 464.
+
+
+LaTeX Warning: Citation `9' on page 2 undefined on input line 470.
+
+
+LaTeX Warning: Citation `16' on page 2 undefined on input line 470.
+
+[2] <map-class.pdf, id=23, 437.635pt x 116.435pt>
+File: map-class.pdf Graphic file (type pdf)
+ <use map-class.pdf>
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 489.
+
+
+(/opt/local/share/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+
+! LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.501 \caption
+              {List - 1 : predicate lt\_cache\_ll}
+? 
+<view_concept.png, id=24, 525.965pt x 471.7625pt>
+File: view_concept.png Graphic file (type png)
+ <use view_concept.png>
+[3 <./map-class.pdf> <./view_concept.png>]
+
+LaTeX Warning: Reference `lst-mappar2' on page 4 undefined on input line 521.
+
+
+Overfull \hbox (8.08875pt too wide) in paragraph at lines 533--533
+[]\OT1/pcr/m/n/10 typedef mappar<typename Instance::SubTask,[] 
+ []
+
+
+Overfull \hbox (8.08875pt too wide) in paragraph at lines 563--563
+[] \OT1/pcr/m/n/10 doit(const typename Instance::Arg0& arg0,[] 
+ []
+
+
+Overfull \hbox (8.08875pt too wide) in paragraph at lines 563--563
+[]   \OT1/pcr/m/n/10 auto compF = Instance::computationMT();[] 
+ []
+
+
+Overfull \hbox (2.08875pt too wide) in paragraph at lines 563--563
+[]     \OT1/pcr/m/n/10 __aux::ref(result, result_arithm()),[] 
+ []
+
+
+Overfull \hbox (2.08875pt too wide) in paragraph at lines 563--563
+[]     \OT1/pcr/m/n/10 __aux::ref(result, result_arithm()),[] 
+ []
+
+<test_matrix.png, id=44, 1120.185pt x 317.185pt>
+File: test_matrix.png Graphic file (type png)
+ <use test_matrix.png> [4 <./test_matrix.png>]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 603.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 603.
+
+Overfull \hbox (114.18343pt too wide) in paragraph at lines 603--616
+ [] 
+ []
+
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+
+Underfull \hbox (badness 10000) in paragraph at lines 662--663
+[]\OT1/ptm/m/n/9 Abrahams, D., Gur-tovoy, A.: C++ Tem-plate Meta-
+ []
+
+
+Underfull \hbox (badness 6775) in paragraph at lines 662--663
+\OT1/ptm/m/n/9 programming: Con-cepts, Tools, and Tech-niques from
+ []
+
+[5]
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no “ in font ptmr7t!
+
+Underfull \hbox (badness 1533) in paragraph at lines 668--669
+[]\OT1/ptm/m/n/9 Gurtovoy, A., Abra-hams, D.: The BOOST C++ Meta-
+ []
+
+
+** Conference Paper **
+Before submitting the final camera ready copy, remember to:
+
+ 1. Manually equalize the lengths of two columns on the last page
+ of your paper;
+
+ 2. Ensure that any PostScript and/or PDF output post-processing
+ uses only Type 1 fonts and that every step in the generation
+ process uses the appropriate paper size.
+
+[6
+
+] (./libvina.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 1742 strings out of 94500
+ 26170 string characters out of 1174973
+ 78353 words of memory out of 1000000
+ 4932 multiletter control sequences out of 10000+50000
+ 38724 words of font info for 74 fonts, out of 500000 for 2000
+ 583 hyphenation exceptions out of 1000
+ 26i,8n,21p,1347b,295s stack positions out of 1500i,500n,5000p,200000b,5000s
+PDF statistics:
+ 59 PDF objects out of 300000
+ 0 named destinations out of 131072
+ 16 words of extra memory for PDF output out of 65536
+</opt/local/share/texmf-dist/fonts/type1/bluesky/cm/cmsy10.pfb></opt/local/sh
+are/texmf-dist/fonts/type1/bluesky/cm/cmr10.pfb>{/opt/local/share/texmf-dist/fo
+nts/enc/dvips/psnfss/8r.enc}</opt/local/share/texmf-dist/fonts/type1/urw/courie
+r/ucrr8a.pfb></opt/local/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb></o
+pt/local/share/texmf-dist/fonts/type1/bluesky/cm/cmsy7.pfb></opt/local/share/te
+xmf-dist/fonts/type1/urw/times/utmbi8a.pfb></opt/local/share/texmf-dist/fonts/t
+ype1/urw/times/utmr8a.pfb></opt/local/share/texmf-dist/fonts/type1/urw/times/ut
+mb8a.pfb>
+Output written on libvina.pdf (6 pages, 188428 bytes).
