@@ -10,6 +10,8 @@ extern "C" {
    *-1 when failed
    */
   extern int spmd_initialize();
+  extern int spmd_initializ_n(int n);
+
   /*kill threads managed by spmd RT.
    *reclaim memory
    *no error is returned.

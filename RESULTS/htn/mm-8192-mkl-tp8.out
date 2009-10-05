@@ -1,0 +1,33 @@
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=8192
+  MM_TEST_GRANULARITY=1024
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+spmd thread pool:
+nr_pe|nr_slot|nr_leader|nr_task|nr_thread|
+    4|      3|        7|     12|       19|
+slot 0: 0x71925a60
+width=4, size=1
+ldr0=12525:(12526,12528,12529,12530,)
+slot 1: 0x71925a88
+width=2, size=2
+ldr0=12527:(12531,12533,)
+ldr1=12532:(12534,12536,)
+slot 2: 0x71925ab0
+width=1, size=4
+ldr0=12535:(12537,)
+ldr1=12538:(12539,)
+ldr2=12540:(12541,)
+ldr3=12542:(1936945952,)
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=1024
+MT SSE gflop=81.285589
+spmd close all children
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    0        0usec            0.0%
+# 2                   ST SSE    0        0usec            0.0%
+# 3          mulmat_parallel    0        0usec            0.0%
+# 4      mulmat_parallel SSE    1 13526526usec            100.0%
+# 5          mulmat_smallset    0        0usec            0.0%
