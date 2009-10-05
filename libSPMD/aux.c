@@ -6,6 +6,8 @@
 #include "x86/spmd.h"
 #include <string.h>
 
+extern struct spmd_thread_pool the_pool;
+
 static int
 read_line_of(FILE * f, int n/*lines*/)
 {
@@ -131,41 +133,87 @@ pid_t gettid(void)
 {
   return syscall(SYS_gettid);
 }
+
 int tkill(int tid, int sig)
 {
   return syscall(SYS_tkill, tid, sig);
 }
 
-void wait_for_tg(int sem, int reset)
+int thread_exit()
+{
+  // flush files to make sure errors are avaible 
+  int pid, tid, i, j;
+  int nr;
+
+  pid = getpid();
+  tid = gettid();
+  int is_leader = pid == tid;
+  leader_struct_p ldr;
+  for (i=0; i<the_pool.nr_leader; ++i) {
+    ldr = &(the_pool.leaders[i]);
+    if ( ldr->gid == pid ) {
+      fclose(ldr->warp.log_fd);
+      break;
+    }
+  }
+  if ( i == the_pool.nr_leader ) {
+    fprintf(stderr, "wrong call of thread_exit outside\
+    of libSPMD.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  for (nr=the_pool.nr_pe, j=0; j < i; 
+       j+=the_pool.nr_pe/nr, nr>>=1);
+
+  for (i=0; i<nr; ++i) {
+    task_struct_p tsk = &(ldr->warp.tsks[i]);
+    fclose(tsk->log_fd); 
+  }
+
+  if ( is_leader ) 
+    fprintf(stderr, "call thread_exit from leader %d\n", pid);
+  else 
+    fprintf(stderr, "call thread_exit from task [%d:%d]\n", pid, tid);
+
+  kill(getppid(), SIGKILL);	
+}
+
+void wait_for_tg(leader_struct_p leader)
 {
   int ret;
   struct sembuf buf[2] = {
     {.sem_num = 0,
-     .sem_op = 0,
+     .sem_op  = 0,
      .sem_flg = 0
     },
     {.sem_num = 0, 
-     .sem_op = reset,
-     .sem_flg = 0;
+     .sem_op = leader->warp.nr,
+     .sem_flg = 0
     }
   };
 		   
 
  /*
-  *sleep until all of his managed threads finished
+  *sleep until all of leader managed threads finished
   * Although leader's already masked SIGCONT,
-  * this operation still may be interrupted by other signals.
+  * this operation still may be interrupted.
   * to tolerate EINTR error,  we just retry semaphore op again.
   */
   do {
-    ret = semop(sem, buf, (sizeof(buf)/sizeof(buf[0])));
+    ret = semop(leader->sem, buf, (sizeof(buf)/sizeof(buf[0])));
+    fprintf(leader->warp.log_fd, "return from sempo ret = %d\n", ret);
   } while( ret == -1 && errno == EINTR );
   
   if ( ret != 0 ) {
-    perror("wait_for_tg failed");
-    exit(EXIT_FAILURE);
+    fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));
+    thread_exit();
   }
+#ifndef __NDEBUG
+  fprintf(stderr, "wait for tg sem=%d, reset=%d pid=%d\n", 
+  	sem, reset, getpid());
+#endif
 }
+
 /**set schduler to rt fifo.
    [prio] -- priority of rt schduler (0-99)
    99 is the highest priority
@@ -178,11 +226,8 @@ set_fifo(int pid, int prio)
   memset(&sp, 0, sizeof(sp));
   sp.sched_priority = prio;
 
-  //fprintf(stderr, "set fifo set %d to prio %d\n", pid, prio);
-
   if (sched_setscheduler(pid, SCHED_FIFO, &sp) == -1) {
     fprintf(stderr, "sched_setscheduler failed\n");
-    perror("sched to SCHED_FIFO faied");
   }
 }
 

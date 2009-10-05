@@ -132,8 +132,13 @@ See Makefile TEST_INFO to set parameters\n",
   printf("\n");
   */
   STD_result.zero();
+  float * data_x = x.data();
+  float * data_y = STD_result.data();
+
   prof.eventStart(temp0);
-  for(int i=0; i<ITERS; ++i)vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
+  for(int i=0; i<ITERS; ++i)
+  //vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
+  cblas_saxpy(VEC_TEST_SIZE_N, 7.0f, data_x, 1, data_y, 1);
   prof.eventEnd(temp0);  
 
   printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());

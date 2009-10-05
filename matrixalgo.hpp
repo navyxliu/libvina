@@ -166,6 +166,8 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
     
     float * c = result.data();
     const size_t C_DIM_N = result.dimN();
+
+   
 #ifndef MKL
     for(int i=0; i<SIZE_A; i+=4)
       {
@@ -229,8 +231,33 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
 	a += 4*A_DIM_N;
       }// for i    
 #else
+    float A[SIZE_A * SIZE_B];
+    float B[SIZE_B * SIZE_C];
+    float C[SIZE_A * SIZE_C];
+
+    float * p = A;
+    for (int i=0; i< SIZE_A; ++i) {
+       memcpy((void *)p, (void *)a, sizeof(float) * SIZE_B);
+       a += A_DIM_N;
+       p += SIZE_B;
+    }
+
+    p = B;
+    for (int i=0; i<SIZE_B; ++i) {
+       memcpy((void *)p, (void *)b, sizeof(float) * SIZE_C); 
+       b += B_DIM_N;
+       p += SIZE_C;
+    }
+
     cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, SIZE_A, SIZE_B, SIZE_C,
-         1.0f/*alpha*/, a, A_DIM_N, b, B_DIM_N, 1.0f/*beta*/, c, C_DIM_N); 
+         1.0f/*alpha*/, A, SIZE_B, B, SIZE_C, 1.0f/*beta*/, C, SIZE_C); 
+    
+    p = C;
+    for (int i=0; i<SIZE_A; ++i) {
+      memcpy((void *)c, (void *)p, SIZE_C);
+      c += C_DIM_N;
+      p += SIZE_C;
+    }
 #endif
   }
 };

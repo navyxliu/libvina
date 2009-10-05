@@ -93,7 +93,7 @@ void worker2(void * self, void * ret, void * arg0, void * arg1)
 }
 void reduce(void * arg __attribute__((unused)) )
 {
-  //printf("i am a reduce\n");
+  printf("i am a reduce\n");
 }
 
 void group_without_tp()
@@ -221,7 +221,7 @@ void test_function_of(void(*f)(),
     printf("test #%d: %.0f\n", i, v[i]);
     //fprintf(stderr, "test #%d: %s\n", i , tmr.elapsedToStr());
   }
-  sleep(1);
+  //sleep(1);
   null = 0.6 * tmr.elapsed() + 0.4 * prof.getEvent(temp0)->elapsed() / NR;
   exp = 0.0;
   for (int i=skip; i<nr_group; ++i) exp += (v[i]);
@@ -295,7 +295,7 @@ main(int argc, char *argv[])
   // init ck_burning
   assert( initialize_ck_burning()
     && "failed to initialize ck burning");
-  fprintf(stderr, "preset wkr_delay = %d\n", wkr_delay);
+  //fprintf(stderr, "preset wkr_delay = %d\n", wkr_delay);
 
   Profiler &prof = Profiler::getInstance();
   if ( wkr_delay >= 0 ) {
