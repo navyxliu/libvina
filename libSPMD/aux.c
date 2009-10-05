@@ -1,3 +1,8 @@
+//History
+// Oct. 5, modified wait_for_tg interface. add parameter to perform reset operation.
+//         reset value of the semaphore to the number of preset value of warp.
+//         Users still have chance to change this value less then @param reset value.
+
 #include "x86/spmd.h"
 #include <string.h>
 
@@ -131,19 +136,29 @@ int tkill(int tid, int sig)
   return syscall(SYS_tkill, tid, sig);
 }
 
-void wait_for_tg(int sem)
+void wait_for_tg(int sem, int reset)
 {
   int ret;
-  struct sembuf buf = {
-    .sem_num = 0,
-    .sem_op = 0,
-    .sem_flg = 0
+  struct sembuf buf[2] = {
+    {.sem_num = 0,
+     .sem_op = 0,
+     .sem_flg = 0
+    },
+    {.sem_num = 0, 
+     .sem_op = reset,
+     .sem_flg = 0;
+    }
   };
-  /*sleep until all of his managed threads 
-    finished
+		   
+
+ /*
+  *sleep until all of his managed threads finished
+  * Although leader's already masked SIGCONT,
+  * this operation still may be interrupted by other signals.
+  * to tolerate EINTR error,  we just retry semaphore op again.
   */
   do {
-    ret = semop(sem, &buf, 1);
+    ret = semop(sem, buf, (sizeof(buf)/sizeof(buf[0])));
   } while( ret == -1 && errno == EINTR );
   
   if ( ret != 0 ) {
