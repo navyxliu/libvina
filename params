@@ -15,11 +15,11 @@ TEST_INFO+=#-D__NDEBUG #-DVIZ_CALLSITE
 
 #THREAD MODEL
 #we has 3 types of multithread to execute libvina programs.
-#1) libSPMD: customized thread for libvina
+1) libSPMD: customized thread for libvina
 #TEST_INFO+=-D__USE_LIBSPMD
 #2) threadpool:
 TEST_INFO+=-D__USEPOOL
 #3) if we both comment out previous two defines, we use plain pthread.
 
 #computation model
-TEST_INFO+=#-DMKL
+TEST_INFO+=-DMKL

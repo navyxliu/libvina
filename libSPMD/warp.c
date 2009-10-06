@@ -62,7 +62,7 @@ default_task_entry(void * arg)
   task_struct_p task = (task_struct_p)arg;
   task->tid = gettid();
   set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
-#ifdef __TIMELOG
+
   char log[80];
   sprintf(log, "timelog-%d.tsk", task->tid);
   FILE * fh = fopen(log, "w");
@@ -71,7 +71,6 @@ default_task_entry(void * arg)
     thread_exit();
   }
   task->log_fd = fh;
-#endif
  
   struct sembuf buf;
 #if 0						
@@ -84,7 +83,7 @@ default_task_entry(void * arg)
   while(1) {
     // open for SIGCONT
     //sigsuspend(&oldmask); 
-    struct sembuf sb = {.sem = 1, .sem_op = -1, .sem_flg=0};
+    struct sembuf sb = {.sem_num = 1, .sem_op = -1, .sem_flg=0};
     semop(task->sem_ldr, &sb, 1); 
 #ifndef __NDEBUG
     fprintf(stderr, "@task [%d:%d] start working, task ptr = %p fn = %p\n", 
@@ -243,7 +242,6 @@ default_creator_entry(void *arg)
 
   ldr->gid = warp->gid = getpid();
 
-#ifdef __TIMELOG
       char log[80];
       sprintf(log, "timelog-%d.ldr", ldr->gid);
       FILE * fh = fopen(log, "w");
@@ -256,8 +254,6 @@ default_creator_entry(void *arg)
       ldr->warp.time_in_reduce = 0;
       ldr->warp.time_in_wait = 0;
       ldr->warp.counter = 0;
-#endif
- 
  
 #ifndef __NDEBUG
   fprintf(stderr, "leader created, getppid=%d, getpid=%d ldr=%p\n",
@@ -290,9 +286,10 @@ default_creator_entry(void *arg)
   }/*for*/
 
   // set handler of this thread group for SIGCONT.
-#if 0 
-  signal(SIGCONT, children_handler);
   signal(SIGINT, kill_handler);
+  #if 0
+  signal(SIGCONT, children_handler);
+  
 #endif
   unsigned short array[2] = {nr, 0};
 
@@ -758,7 +755,7 @@ spmd_fire_up(leader_struct_p leader)
   struct timespec ts;
   clock_gettime(CLOCK_REALTIME, &ts);
   fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n",
-  	ts->tv_sec, ts->tv_nsec);
+  	ts.tv_sec, ts.tv_nsec);
 #endif
 
 #if 0
@@ -777,13 +774,15 @@ spmd_fire_up(leader_struct_p leader)
       thread_exit();
     }
   }/*for*/
+#endif
+
 #ifdef __TIMELOG
     struct timeval tv;
     gettimeofday(&tv, NULL);
     leader->warp.last_stamp = tv.tv_sec * 1000000 + tv.tv_usec;
 #endif
 
-  
+#if 0  
   //FIXME: why kill pid does NOT work?
   //kill(leader->gid, SIGCONT);
 #endif
