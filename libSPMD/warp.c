@@ -50,6 +50,7 @@ void kill_handler(int signum)
 {
   thread_exit();
 }
+
 int __task 
 default_task_entry(void * arg)
 {
@@ -73,15 +74,18 @@ default_task_entry(void * arg)
 #endif
  
   struct sembuf buf;
+#if 0						
   sigset_t mask, oldmask;
   sigemptyset(&mask);
   sigaddset(&mask, SIGCONT); 
   sigprocmask(SIG_BLOCK, &mask, &oldmask);
+#endif
 
   while(1) {
     // open for SIGCONT
-    sigsuspend(&oldmask); 
-
+    //sigsuspend(&oldmask); 
+    struct sembuf sb = {.sem = 1, .sem_op = -1, .sem_flg=0};
+    semop(task->sem_ldr, &sb, 1); 
 #ifndef __NDEBUG
     fprintf(stderr, "@task [%d:%d] start working, task ptr = %p fn = %p\n", 
 	    getpid(), gettid(), task, task->fn);
@@ -286,16 +290,19 @@ default_creator_entry(void *arg)
   }/*for*/
 
   // set handler of this thread group for SIGCONT.
+#if 0 
   signal(SIGCONT, children_handler);
   signal(SIGINT, kill_handler);
+#endif
+  unsigned short array[2] = {nr, 0};
+
   // lock up semaphore of leader
-  if ( 0 != semctl(ldr->sem, 0, SETVAL, nr) ) {
+  if ( 0 != semctl(ldr->sem, 0, SETALL, array) ) {
     fprintf(ldr->warp.log_fd, "[ERROR] failed set up leader sem: %s\n", strerror(errno));
     thread_exit();
   }
 
   default_leader_entry(ldr);
-
   return 0;
 }
 
@@ -481,7 +488,7 @@ _spmd_initialize(int nr_pe)
     }
     
     the_pool.leaders[i].sem = 
-      semget(key, 1, 0666 | IPC_CREAT);
+      semget(key, 2, 0666 | IPC_CREAT);
     if ( the_pool.leaders[i].sem == -1 ) {
      perror("semget fail");
      goto err_happened3;
@@ -741,15 +748,19 @@ spmd_fire_up(leader_struct_p leader)
     thread_exit();
   }
 
+  //fireup
   if ( 0 != semctl(leader->sem, 1, SETVAL, buf[0]) ) {
-  
+    fprintf(stderr, "[ERROR] semctl SET value: %s\n", 
+	    strerror(errno));
+    thread_exit();
   }
 #if defined(__TIMELOG) && defined(LINUX)
   struct timespec ts;
   clock_gettime(CLOCK_REALTIME, &ts);
-  fprintf(leader->warp.log_fd, "UP semaphore: %d:%d\n",
+  fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n",
   	ts->tv_sec, ts->tv_nsec);
 #endif
+
 #if 0
   for (i=0; i<leader->nr; ++i) {
     tsk = &leader->warp.tsks[i];
