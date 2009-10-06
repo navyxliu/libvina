@@ -201,16 +201,19 @@ void wait_for_tg(leader_struct_p leader)
   */
   do {
     ret = semop(leader->sem, buf, (sizeof(buf)/sizeof(buf[0])));
-    fprintf(leader->warp.log_fd, "return from sempo ret = %d\n", ret);
+    //fprintf(leader->warp.log_fd, "return from sempo ret = %d\n", ret);
+    //int semval = semctl(leader->sem, 0, GETVAL);
+    //fprintf(stderr, "return from sempo sem = %d value= %d ret = %d\n", 
+    //   leader->sem, semval, ret);
   } while( ret == -1 && errno == EINTR );
   
   if ( ret != 0 ) {
-    fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));
+    //fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));
     thread_exit();
   }
 #ifndef __NDEBUG
   fprintf(stderr, "wait for tg sem=%d, reset=%d pid=%d\n", 
-  	sem, reset, getpid());
+  	leader->sem, leader->warp.nr, getpid());
 #endif
 }
 

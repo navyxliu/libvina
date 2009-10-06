@@ -95,11 +95,11 @@ typedef struct leader_struct{
 			      0: unused
 			   */
   int                sem;  /* current linux kernel lacks syscall to wait for all thread group
-			      after discussed to tomida, i decided to simulate it using
-			      semaphore temporarily and hopefully it wouldn't hurt performance
-			      to much. the affect of this change from [DESIGN] will be evaluated
-			      in later experiment.
-			   */
+			    * after discussed to tomida, i decided to simulate it using
+			    * semaphore temporarily and hopefully it wouldn't hurt performance
+			    * to much. the affect of this change from [DESIGN] will be evaluated
+			    * in later experiment.
+			    */
   struct warp_struct warp;
 }* leader_struct_p;
 

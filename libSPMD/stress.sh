@@ -26,6 +26,8 @@ for ((j=1; j<=25; ++j)); do
     then
        echo "An ERROR occured in -t $i -c 10 case"
        exit 
+    else
+       rm -f timelog*
     fi
 done
 done

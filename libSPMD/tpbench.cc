@@ -84,7 +84,7 @@ void worker2(void * self, void * ret, void * arg0, void * arg1)
 #ifdef __TIMELOG
    pthread_mutex_lock(&dbg_lock);
    dbg_task_counter ++;
-   fprintf(stderr, "work2 delay = %d\n", delay);
+   printf("work2 delay = %d\n", delay);
    pthread_mutex_unlock(&dbg_lock);  
 #endif
 

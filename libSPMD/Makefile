@@ -1,7 +1,7 @@
 CC:=gcc
 CXX:=g++
 SYSTEM := $(shell uname -s)
-CFLAGS=-O2 -g -Wall -DSMP_SUPPORT -D__NDEBUG 
+CFLAGS=-O2 -g -Wall -DSMP_SUPPORT #-D__NDEBUG 
 CFLAGS+=-DSPMD_SEM_KEY="\"/home/xliu/\"" -D__TIMELOG
 CFLAGS+=-DLINUX
 
