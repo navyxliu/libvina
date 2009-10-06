@@ -57,15 +57,15 @@ else
 endif
 
 #ifneq (, $(findstring LIBSPMD, $(TESTINFO)))
-MTSUPPORT+=-I$(SPMDPATH) $(SPMDLIB)
+#MTSUPPORT+=-I$(SPMDPATH) $(SPMDLIB)
 #else
 MTSUPPORT+=-I$(BOOSTINC) $(BOOSTLIB)
 #endif
 LDFLAGS+=$(MTSUPPORT)
 
 #ifneq (,$(findstring MKL,$(TESTINFO)))
-CFLAGS+=-I$(MKLPATH)/include
-LDFLAGS+=$(MKLLIB)
+#CFLAGS+=-I$(MKLPATH)/include
+#LDFLAGS+=$(MKLLIB)
 #endif
 
 AUX_OBJS = profiler.o toolkits.o mtsupport.o
