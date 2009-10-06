@@ -46,7 +46,10 @@ void children_handler(int signum)
 	 getpid(), gettid());
  */
 }
-
+void kill_handler(int signum)
+{
+  thread_exit();
+}
 int __task 
 default_task_entry(void * arg)
 {
@@ -58,7 +61,17 @@ default_task_entry(void * arg)
   task_struct_p task = (task_struct_p)arg;
   task->tid = gettid();
   set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
-
+#ifdef __TIMELOG
+  char log[80];
+  sprintf(log, "timelog-%d.tsk", task->tid);
+  FILE * fh = fopen(log, "w");
+  if ( fh == NULL ) {
+    fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
+    thread_exit();
+  }
+  task->log_fd = fh;
+#endif
+ 
   struct sembuf buf;
   sigset_t mask, oldmask;
   sigemptyset(&mask);
@@ -101,6 +114,7 @@ default_task_entry(void * arg)
     printf("task [%d:%d] gonna release pe: %d\n",
 	   getpid(), gettid(), task->oc);
 #endif
+
     /*release physical pe */
     buf.sem_num = task->oc;
     buf.sem_op = 1;
@@ -113,14 +127,15 @@ default_task_entry(void * arg)
     buf.sem_num = 0;
     buf.sem_op = -1;
     buf.sem_flg = 0;
+    int before = semctl(task->sem_ldr, 0, GETVAL);
     if ( -1 == semop(task->sem_ldr, &buf, 1) ) {
       fprintf(task->log_fd, "[ERROR] notify leader failed: %s\n", strerror(errno));
       thread_exit();
     }
-
 #ifndef __NDEBUG
-    fprintf(stderr, "@task [%d:%d] complete working, task ptr = %p fn = %p\n", 
-	    getpid(), gettid(), task, task->fn);    
+    int semval = semctl(task->sem_ldr, 0, GETVAL);
+    fprintf(stderr, "@task [%d:%d] complete working, leader->sem = %d before %d now=%d task ptr = %p fn = %p\n", 
+	    getpid(), gettid(), task->sem_ldr, before,  semval, task, task->fn);    
 #endif
 
 #ifdef __TIMELOG
@@ -130,10 +145,10 @@ default_task_entry(void * arg)
     clock_gettime(CLOCK_REALTIME, &myts);
     elapsed = ((myts.tv_sec - elapsed) * 1000000000 
     	+ (myts.tv_nsec - elapsed_nsec)) / 1000;
-    fprintf(task->log_fd, "task close timestamp %d:%d\n\
-    	task active time is %d, effectivity is %.2f\%\n",
+    fprintf(task->log_fd, "task close timestamp %d:%d\ntask active time is %d, effectivity is %.2f\%\n",
     	myts.tv_sec, myts.tv_nsec, elapsed, (100.0 * execspan) / elapsed );
 #endif
+   fflush(task->log_fd);
 #endif
   }
 
@@ -148,7 +163,6 @@ default_leader_entry(leader_struct_p leader)
 {
 
   leader->nr = 0;
-
   while (1) {
 
 #ifndef __NDEBUG
@@ -164,7 +178,6 @@ default_leader_entry(leader_struct_p leader)
     
     // reset the last value, otherwise, 
     wait_for_tg(leader);
-        
 #ifndef __NDEBUG
     fprintf(stderr, "#wait returned, reduce...%d\n", leader->gid);
 #endif
@@ -189,7 +202,7 @@ default_leader_entry(leader_struct_p leader)
     gettimeofday(&hook_end, NULL);
     // elapsed time of hooked function
     elapsed = (hook_end.tv_sec - hook_start.tv_sec) * 1000000
-      + (hook_end.tv_usec - hook_end.tv_usec);
+      + (hook_end.tv_usec - hook_start.tv_usec);
 
     fprintf(leader->warp.log_fd, "hook function consumes %d us\n", elapsed);
     leader->warp.time_in_reduce += elapsed;
@@ -209,6 +222,7 @@ default_leader_entry(leader_struct_p leader)
     	+ (tv.tv_usec - leader->warp.last_stamp%1000000);
     fprintf(leader->warp.log_fd, "time on fly %d\n", elapsed);
     leader->warp.time_on_fly += elapsed;
+    fflush(leader->warp.log_fd);
 #endif
 
   }
@@ -223,12 +237,29 @@ default_creator_entry(void *arg)
   void * stacks[nr]; // gcc ext.
   int i, tid;
 
+  ldr->gid = warp->gid = getpid();
+
+#ifdef __TIMELOG
+      char log[80];
+      sprintf(log, "timelog-%d.ldr", ldr->gid);
+      FILE * fh = fopen(log, "w");
+      if ( fh == NULL ) {
+        fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
+	thread_exit();
+      }
+      ldr->warp.log_fd = fh; 
+      ldr->warp.time_on_fly = 0;
+      ldr->warp.time_in_reduce = 0;
+      ldr->warp.time_in_wait = 0;
+      ldr->warp.counter = 0;
+#endif
+ 
+ 
 #ifndef __NDEBUG
   fprintf(stderr, "leader created, getppid=%d, getpid=%d ldr=%p\n",
 	 getppid(), getpid(), arg);
 #endif
 
-  ldr->gid = warp->gid = getpid();
   
   for(i=0; i<nr; ++i) {
     task_struct_p task = &(warp->tsks[i]);
@@ -251,21 +282,12 @@ default_creator_entry(void *arg)
     }
     else {
        *((warp->init_list).wb_tsks + i) = tid;
-
-#ifdef __TIMELOG
-      char log[80];
-      sprintf(log, "timelog-%d.tsk", tid);
-      FILE * fh = fopen(log, "w");
-      if ( fh == NULL ) {
-        perror("fopen failed");
-	exit(EXIT_FAILURE);
-      }
-      task->log_fd = fh;
-#endif
     }
   }/*for*/
+
   // set handler of this thread group for SIGCONT.
   signal(SIGCONT, children_handler);
+  signal(SIGINT, kill_handler);
   // lock up semaphore of leader
   if ( 0 != semctl(ldr->sem, 0, SETVAL, nr) ) {
     fprintf(ldr->warp.log_fd, "[ERROR] failed set up leader sem: %s\n", strerror(errno));
@@ -366,20 +388,6 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
     else {
       *(slot->wb_leaders + i) = pid; /*writeback*/
 
-#ifdef __TIMELOG
-      char log[80];
-      sprintf(log, "timelog-%d.ldr", pid);
-      FILE * fh = fopen(log, "w");
-      if ( fh == NULL ) {
-        perror("fopen failed");
-	exit(EXIT_FAILURE);
-      }
-      ldrs[i].warp.log_fd = fh; 
-      ldrs[i].warp.time_on_fly = 0;
-      ldrs[i].warp.time_in_reduce = 0;
-      ldrs[i].warp.time_in_wait = 0;
-      ldrs[i].warp.counter = 0;
-#endif
     }/*if*/
   }/*for*/
 }
@@ -723,6 +731,26 @@ spmd_fire_up(leader_struct_p leader)
 #ifndef __NDEBUG
   printf("fire up is called\n");
 #endif
+  unsigned short buf[2];
+  if ( -1 == semctl(leader->sem, 0, GETALL, buf) ) {
+    fprintf(stderr, "[ERROR] semctl failed: %s\n", strerror(errno)); 
+    thread_exit();
+  }
+  if ( buf[0] != leader->warp.nr || buf[1] != 0 ) {
+    fprintf(stderr, "[ERROR] leader->sem: ILL status sem0=%d sem1=%d\n", buf[0], buf[1]);
+    thread_exit();
+  }
+
+  if ( 0 != semctl(leader->sem, 1, SETVAL, buf[0]) ) {
+  
+  }
+#if defined(__TIMELOG) && defined(LINUX)
+  struct timespec ts;
+  clock_gettime(CLOCK_REALTIME, &ts);
+  fprintf(leader->warp.log_fd, "UP semaphore: %d:%d\n",
+  	ts->tv_sec, ts->tv_nsec);
+#endif
+#if 0
   for (i=0; i<leader->nr; ++i) {
     tsk = &leader->warp.tsks[i];
 #if defined(__TIMELOG) && defined(LINUX)
@@ -747,6 +775,7 @@ spmd_fire_up(leader_struct_p leader)
   
   //FIXME: why kill pid does NOT work?
   //kill(leader->gid, SIGCONT);
+#endif
 }
 
 int __spmd_export
