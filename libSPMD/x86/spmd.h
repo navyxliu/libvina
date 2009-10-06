@@ -56,10 +56,8 @@ typedef struct task_struct {
   int              sem_pe;  /* sem set for PEs */
   int              sem_ldr; /* sem set for leader */
   void *           args[4];   
-  #ifdef __TIMELOG
   FILE *           log_fd;
   int              counter;
-  #endif
 }* task_struct_p;
 
 typedef struct warp_struct {
@@ -70,14 +68,12 @@ typedef struct warp_struct {
   hook_handler_t  hook;    /* hook function, call after wait */
   task_struct_p   tsks;    
   void *          hk_arg;  /* the argument for hook function */
-#ifdef __TIMELOG
   FILE *          log_fd;
   long            time_on_fly;
   long            time_in_reduce;
   long            time_in_wait;
   int             counter;
   long            last_stamp; /* the timestamp before a warp is fired up*/
-#endif
   
   struct tag_init_list {
     unsigned int stk_sz;   /* stack size per task */
