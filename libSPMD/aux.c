@@ -182,10 +182,13 @@ void wait_for_tg(leader_struct_p leader)
 {
   int ret;
   struct sembuf buf[2] = {
+// wait all semaphores down
     {.sem_num = 0,
      .sem_op  = 0,
      .sem_flg = 0
     },
+// auto reset to stuck loop in default_leader_entry
+// the value this value might be modifed in create_warp
     {.sem_num = 0, 
      .sem_op = leader->warp.nr,
      .sem_flg = 0
@@ -199,21 +202,20 @@ void wait_for_tg(leader_struct_p leader)
   * this operation still may be interrupted.
   * to tolerate EINTR error,  we just retry semaphore op again.
   */
-  do {
-    ret = semop(leader->sem, buf, (sizeof(buf)/sizeof(buf[0])));
-    //fprintf(leader->warp.log_fd, "return from sempo ret = %d\n", ret);
-    //int semval = semctl(leader->sem, 0, GETVAL);
-    //fprintf(stderr, "return from sempo sem = %d value= %d ret = %d\n", 
-    //   leader->sem, semval, ret);
-  } while( ret == -1 && errno == EINTR );
+  //do {
+  ret = semop(leader->sem, buf, (sizeof(buf)/sizeof(buf[0])));
+  //} while( ret == -1 && errno == EINTR );
   
   if ( ret != 0 ) {
-    //fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));
+    fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));
     thread_exit();
   }
+  
 #ifndef __NDEBUG
-  fprintf(stderr, "wait for tg sem=%d, reset=%d pid=%d\n", 
-  	leader->sem, leader->warp.nr, getpid());
+  unsigned short array[2];
+  semctl(leader->sem, 0, GETALL, array);
+  fprintf(stderr, "wait for tg sem=%d, reset=%d pid=%d vales = %d, %d\n", 
+  	leader->sem, leader->warp.nr, leader->gid, array[0], array[1]);
 #endif
 }
 

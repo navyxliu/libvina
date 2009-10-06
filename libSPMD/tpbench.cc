@@ -293,8 +293,7 @@ main(int argc, char *argv[])
   }
 
   // init ck_burning
-  assert( initialize_ck_burning()
-    && "failed to initialize ck burning");
+  while (  !initialize_ck_burning() );
   //fprintf(stderr, "preset wkr_delay = %d\n", wkr_delay);
 
   Profiler &prof = Profiler::getInstance();
@@ -330,7 +329,7 @@ main(int argc, char *argv[])
     Profiler::getInstance().dump();
   if ( wkr_delay >= 0 ) {
   auto std = prof.eventRegister("seq");
-
+#if 0
 #ifndef __NDEBUG 
   for (int i=0; i<nr_thread; ++i){
     prof.eventStart(std);
@@ -339,6 +338,7 @@ main(int argc, char *argv[])
     sleep(1); //prohibit H/W opt.
   }
   printf("*run in sequence %d\n", prof.getEvent(std)->elapsed());
+#endif
 #endif
   }
   return 0;
