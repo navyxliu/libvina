@@ -36,6 +36,7 @@ functions. using variadic template, i intentatively make it.
 
 #include "vector.hpp"
 #include "trait.hpp"
+#include "pipe.hpp"
 
 //#include "TypeList.h"//loki
 using namespace vina;
@@ -88,7 +89,7 @@ typedef Lang<Italian> lang_itn;
 template <class Native, class Foreign>
 struct Person
 {
-
+  //runtime interface
   template< lang_t L>
   static bool understand(Lang<L>) {
     return isUnderstand<L>::value;
@@ -107,6 +108,17 @@ struct Person
     return hellos[ Foreign::value ];
   }
 
+  typedef std::string input_type;
+  typedef std::string output_type;
+  typedef Person<Native, Foreign> computation_type;
+
+  static output_type doit(const input_type & in)
+  {
+    assert ( sayHello() == in && "wrong input");
+    return sayForeign();
+  }
+
+  //static interface
   template <lang_t L>
   struct isUnderstand {
     const static bool value = tr1::is_same<Lang<L>, Native>::value
@@ -298,7 +310,6 @@ struct translate<P, true>
 
     return string(out.begin(), length);
   }
-
 };
 //==============================================//
 //~~   PIPELINE Transform template            ~~//
@@ -323,9 +334,9 @@ struct lang_pipeline<P, Last...>{
   {
     auto translated = translate<P, true>::doit(str);
     lang_pipeline<Last...>::doit(translated); 
-
   }
 };
+
 //==============================================//
 //~~   PIPELINE Transform template            ~~//
 //==============================================//
@@ -353,6 +364,7 @@ struct lang_pipeline2<unused, unused, unused, unused, unused, unused>
   static void doit(string);
 };
 
+
 int 
 main()
 {
@@ -373,7 +385,7 @@ main()
   Itn2Eng mario;
 
   auto salon = tr1::make_tuple(henry, juan, fangfang, mario);
-    
+ #if 0   
   SayHelloAll<Eng2Spn, Spn2Frn, Frn2Itn, Itn2Eng>::doit();
   
   cout << "^begin helloTo\n";
@@ -401,6 +413,8 @@ main()
   lang_pipeline<Eng2Spn, Spn2Frn>::doit("hello");
   lang_pipeline<Eng2Spn, Spn2Frn, Frn2Itn>::doit("hello");
 
+#endif
+  pipeline<Eng2Spn, Spn2Frn>::doit("hello");
 }
 
 
