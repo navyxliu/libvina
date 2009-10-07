@@ -202,20 +202,19 @@ void wait_for_tg(leader_struct_p leader)
   * this operation still may be interrupted.
   * to tolerate EINTR error,  we just retry semaphore op again.
   */
-  //do {
+  do {
   ret = semop(leader->sem, buf, (sizeof(buf)/sizeof(buf[0])));
-  //} while( ret == -1 && errno == EINTR );
-  
+  } while( ret == -1 && errno == EINTR );
+ 
   if ( ret != 0 ) {
     fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));
     thread_exit();
   }
-  
+ 
 #ifndef __NDEBUG
-  unsigned short array[2];
-  semctl(leader->sem, 0, GETALL, array);
-  fprintf(stderr, "wait for tg sem=%d, reset=%d pid=%d vales = %d, %d\n", 
-  	leader->sem, leader->warp.nr, leader->gid, array[0], array[1]);
+  int value = semctl(leader->sem, 0, GETVAL);
+  fprintf(stderr, "wait for tg sem=%d, reset=%d pid=%d value = %d\n", 
+  	leader->sem, leader->warp.nr, leader->gid, value);
 #endif
 }
 
@@ -245,4 +244,25 @@ set_normal(int pid)
   if (sched_setscheduler(pid, SCHED_OTHER, &sp) == -1) {
     fprintf(stderr, "Weird, could not unset RT scheduling!\n");
   }
+}
+
+
+void 
+pe_snapshot(FILE *out, int pos/*-1*/) 
+{
+  int i;
+  unsigned short array[the_pool.nr_pe];
+
+  semctl(the_pool.sem_pe, 0, GETALL, array);
+
+  fprintf(out, "pe map table:\n");
+  for (i=0; i<the_pool.nr_pe; ++i) 
+    fprintf(out, "%2d", array[i]);
+
+  fprintf(out, "\n");
+  if ( pos != -1 ) { 
+    for (i=0; i<pos; ++i) fprintf(out, "  ");
+    fprintf(out, " .\n");
+  }
+  fflush(out);
 }

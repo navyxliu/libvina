@@ -51,10 +51,12 @@ typedef void* task_func_t;
 typedef struct task_struct {
   task_t           tid;     /* task id, task shall not suppose to use gettid, getpid */
   leader_t         gid;     /* group id */
+  int              idx;
   task_func_t      fn;
   unsigned short   oc;      /* sem num in sem_pe, indicated occupied */
   int              sem_pe;  /* sem set for PEs */
   int              sem_ldr; /* sem set for leader */
+  int              sem_task;
   void *           args[4];   
   FILE *           log_fd;
   int              counter;
@@ -62,7 +64,6 @@ typedef struct task_struct {
 
 typedef struct warp_struct {
   leader_t        gid; 
-  int             sem;
   int             nr;      /* number of task thread */
   task_func_t     fn;      /* task function */
   hook_handler_t  hook;    /* hook function, call after wait */
@@ -96,6 +97,7 @@ typedef struct leader_struct{
 			    * to much. the affect of this change from [DESIGN] will be evaluated
 			    * in later experiment.
 			    */
+  int                sem_task;
   struct warp_struct warp;
 }* leader_struct_p;
 
