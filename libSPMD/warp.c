@@ -409,7 +409,7 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
 
     //printf("alloc clone stack pointer=%p\n", slot->leaders_stacks[i]);
     if (-1 == (pid = clone(&default_creator_entry, slot->leaders_stacks[i], 
-			   CLONE_VM | CLONE_FS, ldrs+i)) ) {
+			   CLONE_VM | SIGCHLD, ldrs+i)) ) {
       perror("clone leader failed");
       exit(EXIT_FAILURE);
     }
@@ -582,23 +582,37 @@ spmd_cleanup()
 {
   int i, j;
   int dummy;
-  
+  int status, ret;
+
   while ( !spmd_all_complete() );
+
   for ( i=0; i<the_pool.nr_leader; ++i) {
     leader_struct_p ldr = &(the_pool.leaders[i]);  
+
     assert( 0 == kill(ldr->gid, SIGTERM) 
     	   && "kill function failed.");
-    
-    spinlock_destroy(&(ldr->lck));
-    if ( -1 == semctl(ldr->sem, 0, IPC_RMID, dummy) ) {
-      perror("semctl IPC RMID sem");
+
+    if ( -1 == waitpid(ldr->gid, &status, 0) ) {
+       fprintf(stderr, "[ERROR] returned value from waitpid: %s\n", 
+     		strerror(errno)); 
     }
+
+    spinlock_destroy(&(ldr->lck));
+    fprintf(stderr, "gonna rm sem %d\n", ldr->sem);
+    if ( -1 == semctl(ldr->sem, 0, IPC_RMID) ) {
+      perror("semctl IPC RMID sem");
+      exit(EXIT_FAILURE);
+    }
+
+    fprintf(stderr, "gonna rm sem %d\n", ldr->sem_task); 
+    if ( -1 == semctl(ldr->sem_task, 0, IPC_RMID) ) {
+      perror("semctl IPC RMID sem_task");
+    } 
   }
   if ( -1 == semctl(the_pool.sem_pe, 0, IPC_RMID, dummy) ) {
     perror("semctl IPC RMID sem_pe");
   }
 
-#ifndef __NDEBUG
   printf("spmd close all children\n");
   printf("the_pool.leaders = %p\nthe_pool.thr_tasks = %p,\
   the_pool.thr_leaders = %p, the_pool.slots = %p\n", 
@@ -606,12 +620,13 @@ spmd_cleanup()
   the_pool.thr_tasks,
   the_pool.thr_leaders,
   the_pool.slots);
-#endif
 
+/*
   free(the_pool.leaders);
   free(the_pool.thr_tasks);
   free(the_pool.thr_leaders);
   free(the_pool.slots);
+*/
 }
 
 int  __spmd_export
@@ -725,7 +740,7 @@ spmd_runtime_dump()
   //FIXME: thread-safe
   assert(spmd_initialized && "spmd rt uninitialized");
 
-  sleep(1); 
+  //sleep(1); 
   printf("spmd thread pool:\n");
   printf("nr_pe|nr_slot|nr_leader|nr_task|nr_thread|\n");
   printf("%5d|%7d|%9d|%7d|%9d|\n", the_pool.nr_pe, the_pool.nr_slot,
@@ -916,10 +931,14 @@ spmd_all_complete()
 
   for (i=0; i<the_pool.nr_leader; ++i) {
     leader_struct_p ldr = &(the_pool.leaders[i]);
+    //contend
     if ( !spinlock_trylock(&(ldr->lck)) ) {
+      fprintf(stderr, "all_complete: lock leader failed %d", ldr->gid);
       return 0;
     }
+    //unfinshed yet
     else if ( ldr->oc != 0 ) {
+      fprintf(stderr, "all_complete: leader is occupied %d\n", ldr->gid);
       spinlock_unlock(&(ldr->lck));
       return 0;
     }

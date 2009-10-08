@@ -1,8 +1,8 @@
 CC:=gcc
 CXX:=g++
 SYSTEM := $(shell uname -s)
-CFLAGS=-O2 -g -Wall -DSMP_SUPPORT #-D__NDEBUG 
-CFLAGS+=-DSPMD_SEM_KEY="\"/tmp/evan2\"" -D__TIMELOG 
+CFLAGS=-O2 -g -Wall -DSMP_SUPPORT 
+CFLAGS+=-DSPMD_SEM_KEY="\"/tmp/evan2\"" -D__TIMELOG #-D__NDEBUG 
 CFLAGS+=-DLINUX
 
 ifeq ($(SYSTEM), Linux)
@@ -27,9 +27,11 @@ else
 #other system
 endif
 
-all: tpbench hackbench libSPMD.a
+all: tpbench hackbench tiny libSPMD.a
 tpbench: tpbench.o libSPMD.a
 	$(CXX) -o $@ ../profiler.o ../toolkits.o ../mtsupport.o $^ $(CFLAGS) -l$(THREAD_LIB) $(MTSUPPORT)
+tiny: tiny.o libSPMD.a
+	$(CC) -o $@ $^ -lpthread -lrt
 tpbench.o:%.o:%.cc 
 	$(CXX) -o $@ -c $< -std=c++0x $(CFLAGS) -I$(BOOST_PATH) 
 hackbench: hackbench.c 
@@ -40,7 +42,6 @@ warp.o: warp.c
 	$(CC) -c warp.c $(CFLAGS)
 aux.o: aux.c
 	$(CC) -c aux.c $(CFLAGS)
-
 .PHONY: all clean
 clean:
 	-rm tpbench hackbench *.a *.o *~

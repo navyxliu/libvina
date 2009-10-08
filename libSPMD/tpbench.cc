@@ -146,7 +146,7 @@ void group_with_warp()
     for (int j=0; j<nr; ++j, cnt++)
       assert ( -1 != spmd_create_thread(id, NULL, NULL, &(wkr_delay), NULL)
 	       && "spmd_create thread failed");
-    while ( !spmd_all_complete() );
+    //while ( !spmd_all_complete() );
 #ifdef __TIMELOG
 /*
     pthread_mutex_lock(&dbg_lock);
@@ -325,8 +325,10 @@ main(int argc, char *argv[])
     //sleep(1);
     spmd_cleanup();
   }
+
   if ( msk_bench ) 
     Profiler::getInstance().dump();
+
   if ( wkr_delay >= 0 ) {
   auto std = prof.eventRegister("seq");
 #if 0
