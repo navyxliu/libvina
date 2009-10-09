@@ -5,7 +5,7 @@
 #10/5 2009
 
 #kill all threads derived from tpbench
-sudo ../kill_them.sh tiny
+sudo ../kill_them.sh tiny 
 
 #rm all log files
 rm -f timelog*

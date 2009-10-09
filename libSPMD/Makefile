@@ -1,8 +1,8 @@
 CC:=gcc
 CXX:=g++
 SYSTEM := $(shell uname -s)
-CFLAGS=-O2 -g -Wall -DSMP_SUPPORT 
-CFLAGS+=-DSPMD_SEM_KEY="\"/tmp/evan2\"" -D__TIMELOG #-D__NDEBUG 
+CFLAGS= -g -Wall -D__NDEBUG -DSMP_SUPPORT 
+CFLAGS+=-DSPMD_SEM_KEY="\"/tmp/evan2\"" #-D__TIMELOG 
 CFLAGS+=-DLINUX
 
 ifeq ($(SYSTEM), Linux)
