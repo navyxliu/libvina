@@ -86,8 +86,8 @@ typedef struct warp_struct {
 typedef struct leader_struct{
   leader_t           gid;
   spinlock_t         lck;
-  int                nr;   /* num. of task installed on warp */
-  int                oc;   /* occupied bit protected by lck
+  volatile int       nr;   /* num. of task installed on warp */
+  volatile int       oc;   /* occupied bit protected by lck
 			      1: leader is used and has not finished yet.
 			      0: unused
 			   */

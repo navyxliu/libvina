@@ -63,8 +63,9 @@ default_task_entry(void * arg)
 
   task_struct_p task = (task_struct_p)arg;
   task->tid = gettid();
-  set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
 
+  //set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
+#ifdef __TIMELOG
   char log[80];
   sprintf(log, "timelog-%d.tsk", task->tid);
   FILE * fh = fopen(log, "w");
@@ -73,7 +74,7 @@ default_task_entry(void * arg)
     thread_exit();
   }
   task->log_fd = fh;
- 
+#endif
 #if 0						
   sigset_t mask, oldmask;
   sigemptyset(&mask);
@@ -256,20 +257,23 @@ default_creator_entry(void *arg)
   int i, tid;
 
   ldr->gid = warp->gid = getpid();
-
+#if 0
   char log[80];
   sprintf(log, "timelog-%d.ldr", ldr->gid);
   FILE * fh = fopen(log, "w");
+  //FILE * fh = stderr;
   if ( fh == NULL ) {
     fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
     thread_exit();
   }
+
   ldr->warp.log_fd = fh; 
   ldr->warp.time_on_fly = 0;
   ldr->warp.time_in_reduce = 0;
   ldr->warp.time_in_wait = 0;
   ldr->warp.counter = 0;
  
+#endif
 #ifndef __NDEBUG
   fprintf(stderr, "leader created, getppid=%d, getpid=%d ldr=%p\n",
 	 getppid(), getpid(), arg);
@@ -280,6 +284,7 @@ default_creator_entry(void *arg)
     fprintf(ldr->warp.log_fd, "[ERROR] failed set up leader sem: %s\n", strerror(errno));
     thread_exit();
   }
+
   unsigned short array[nr];
   memset(array, 0, sizeof(array));
   if ( 0 != semctl(ldr->sem_task, 0, SETALL, array) ) {
@@ -287,7 +292,6 @@ default_creator_entry(void *arg)
     thread_exit();
   }
   fprintf(stderr, "set sem %d nr %d to zeros\n", ldr->sem_task, nr);
-
   for(i=0; i<nr; ++i) {
     task_struct_p task = &(warp->tsks[i]);
 #ifndef __NDEBUG
@@ -299,8 +303,11 @@ default_creator_entry(void *arg)
     task->sem_ldr  = ldr->sem;
     task->sem_task = ldr->sem_task;
     task->fn = warp->fn;
+    task->counter = 0;
+#ifndef __TIMELOG
+    task->log_fd = stderr; 
+#endif
     stacks[i] = warp->init_list.stks[i];
-
     if ( -1 == (tid = clone(&default_task_entry, stacks[i], 
 			CLONE_THREAD | CLONE_SIGHAND | CLONE_SYSVSEM | \
 			CLONE_VM | CLONE_FS			       \
@@ -320,7 +327,10 @@ default_creator_entry(void *arg)
 #if 0
   signal(SIGCONT, children_handler);
 #endif
-
+  spinlock_lock(&(ldr->lck));
+  ldr->oc = 0;
+  ldr->nr = 0;
+  spinlock_unlock(&(ldr->lck));
   // infinite loop to serve as a leader.
   default_leader_entry(ldr);
   return 0;
@@ -406,16 +416,29 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
     ldrs[i].warp.init_list.stk_sz = SPMD_TASK_STACK_SIZE;
     ldrs[i].warp.init_list.stks   = slot->children_stacks[i];
     ldrs[i].warp.init_list.wb_tsks = slot->wb_tasks + i * width;
-
     //printf("alloc clone stack pointer=%p\n", slot->leaders_stacks[i]);
+    char log[80];
+    sprintf(log, "timelog-%d-%d.ldr", width, i);
+    FILE * fh = fopen(log, "w");
+    //FILE * fh = stderr;
+    if ( fh == NULL ) {
+      fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
+      //thread_exit();
+      exit(EXIT_FAILURE);
+    }
+     ldrs[i].warp.log_fd = fh; 
+     ldrs[i].warp.time_on_fly = 0;
+     ldrs[i].warp.time_in_reduce = 0;
+     ldrs[i].warp.time_in_wait = 0;
+     ldrs[i].warp.counter = 0;
+ 
     if (-1 == (pid = clone(&default_creator_entry, slot->leaders_stacks[i], 
-			   CLONE_VM | SIGCHLD, ldrs+i)) ) {
+			   CLONE_VM | CLONE_FS | SIGCHLD, ldrs+i)) ) {
       perror("clone leader failed");
       exit(EXIT_FAILURE);
     }
     else {
       *(slot->wb_leaders + i) = pid; /*writeback*/
-
     }/*if*/
   }/*for*/
 }
@@ -508,14 +531,15 @@ _spmd_initialize(int nr_pe)
     }
     
     the_pool.leaders[i].sem = 
-      semget(key, 2, 0666 | IPC_CREAT);
+      semget(key, 1, 0666 | IPC_CREAT);
 
     if ( the_pool.leaders[i].sem == -1 ) {
      perror("semget fail");
      goto err_happened3;
     }
     spinlock_init(&(the_pool.leaders[i].lck));
-    the_pool.leaders[i].oc = 0; 
+    // preoccupied until semaphores are settled.
+    the_pool.leaders[i].oc = 1; 
   }
 
   thread_t * ldr = the_pool.thr_leaders;
@@ -544,7 +568,6 @@ _spmd_initialize(int nr_pe)
       ++k;
     } 
   }/*for*/
-
   for (i=0, j=nr_pe; i<nr_slot; ++i, j>>=1) {
     spmd_thread_slot_p slot = the_pool.slots + i;
 
@@ -555,8 +578,7 @@ _spmd_initialize(int nr_pe)
     tsk = tsk + nr_pe;
     leaders += (nr_pe/j);
  }
-        
- spmd_runtime_dump();
+ //spmd_runtime_dump();
 
  return nr_pe;
  
@@ -583,8 +605,16 @@ spmd_cleanup()
   int i, j;
   int dummy;
   int status, ret;
-
-  while ( !spmd_all_complete() );
+  struct timespec spec = {
+      .tv_sec = 0,
+      .tv_nsec = 50000 /*50 usec*/
+  };
+  int val = 25000;
+  while ( !spmd_all_complete() ) {
+    val = val << 1;
+    spec.tv_nsec = val >= 1000000000 ? 50000 : val;
+    nanosleep(&spec, NULL);
+  }
 
   for ( i=0; i<the_pool.nr_leader; ++i) {
     leader_struct_p ldr = &(the_pool.leaders[i]);  
@@ -621,12 +651,10 @@ spmd_cleanup()
   the_pool.thr_leaders,
   the_pool.slots);
 
-/*
   free(the_pool.leaders);
   free(the_pool.thr_tasks);
   free(the_pool.thr_leaders);
   free(the_pool.slots);
-*/
 }
 
 int  __spmd_export
@@ -769,7 +797,7 @@ spmd_fire_up(leader_struct_p leader)
   int i, eno, last;
   task_struct_p tsk;
   cpu_set_t mask;
-
+/*
   for(i=0; i<leader->nr; ++i) {
     tsk  = &leader->warp.tsks[i];
     CPU_ZERO(&mask);
@@ -781,6 +809,7 @@ spmd_fire_up(leader_struct_p leader)
       //FIXME: unload rt task for gentle exit
     }
   }
+*/
 /* change myself to that last RT cpu, pervent suspending the signal sending*/
 //FIXME: add the following code will induce significant perf retreat.
 //I can not understand.
