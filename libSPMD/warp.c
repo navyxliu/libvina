@@ -9,7 +9,6 @@
 //          bugs fixed. use distribued semaphores for tasks.
 #include "warp.h"
 #include "x86/spmd.h"
-#include <time.h>
 
 /*globals*/
 struct spmd_thread_pool the_pool;
@@ -31,71 +30,52 @@ extern int  spinlock_trylock(spinlock_t * lck);
 
 extern pid_t gettid(void);
 extern int tkill(int tid, int sig);
-extern void thread_exit();
+extern void thread_exit(const char *);
 extern void wait_for_tg(leader_struct_p ldr);
-extern  void set_fifo(int pid, int prio);
-extern  void set_normal(int pid);
+extern void set_fifo(int pid, int prio);
+extern void set_normal(int pid);
 extern void pe_snapshot();
+extern void exp_backoff();
 
+extern void indent(FILE*, int, char);
+extern void indent_v(FILE*, int, int, char);
 /*aux func end*/
+
 static void spmd_runtime_dump();
 static int init_semaphore(int);
 void children_handler(int signum)
-{
-/*
-  assert ( signum == SIGCONT ); 
-  printf("p:t caught this signal %d:%d\n", 
-	 getpid(), gettid());
- */
-}
+{}
 void kill_handler(int signum)
 {
-  thread_exit();
+  thread_exit("interrupt from user");
 }
 
 int __task 
 default_task_entry(void * arg)
 {
-#ifndef __NDEBUG
-  fprintf(stderr, "@task created, getppid=%d, getpid=%d gettid=%d, arg=%p\n",
-	  getppid(), getpid(), gettid(), arg);
-#endif
-
   task_struct_p task = (task_struct_p)arg;
   task->tid = gettid();
+  struct sembuf sb = {.sem_num = 0, .sem_op = 1, .sem_flg = 0};
+  semop(task->ldr->warp._init_list.sem_task_prep, &sb, 1);
 
   //set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
-#ifdef __TIMELOG
-  char log[80];
-  sprintf(log, "timelog-%d.tsk", task->tid);
-  FILE * fh = fopen(log, "w");
-  if ( fh == NULL ) {
-    fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
-    thread_exit();
-  }
-  task->log_fd = fh;
-#endif
-#if 0						
+#ifdef SYNC_SIGNAL 
   sigset_t mask, oldmask;
   sigemptyset(&mask);
   sigaddset(&mask, SIGCONT); 
   sigprocmask(SIG_BLOCK, &mask, &oldmask);
 #endif
-
   while(1) {
-    int i;  
+
     // open for SIGCONT
-    //sigsuspend(&oldmask); 
-   
+#ifdef SYNC_SIGNAL
+    sigsuspend(&oldmask); 
     // down semaphore.
-    struct sembuf sb = {.sem_num = task->idx, .sem_op = -1, .sem_flg=0};
-    if ( 0  != semop(task->sem_task, &sb, 1) ) {
+#else
+    if ( 0  != semop(task->ldr->sem_task, &sb, 1) ) {
       fprintf(task->log_fd, "[ERROR] semop failed: %s\n", strerror(errno));
-      thread_exit();
+      thread_exit("down task semphore failed");
     }
-#ifndef __NDEBUG
-    fprintf(stderr, "@task [%d:%d] start working, task ptr = %p fn = %p\n", 
-	    getpid(), gettid(), task, task->fn);
 #endif
 
 #ifdef __TIMELOG
@@ -112,8 +92,9 @@ default_task_entry(void * arg)
 #endif 
 
     /* usually, the first paramter is pointer of function object */
-    task->fn(task->args[0], task->args[1], task->args[2], task->args[3]);
-
+    if ( (task->ldr->warp.fn) )  {
+      (*task->ldr->warp.fn)(task->arg);
+    }
 #ifdef __TIMELOG
     gettimeofday(&fntv_end, NULL);
     fprintf(task->log_fd, "task execution span %d usec\n", 
@@ -121,41 +102,39 @@ default_task_entry(void * arg)
 	+ (fntv_end.tv_usec - fntv_start.tv_usec)));
 #endif
 
-#ifndef __NDEBUG
-    printf("task [%d:%d] gonna release pe: %d\n",
-	   getpid(), gettid(), task->oc);
-#endif
     /*release physical pe */
     sb.sem_num = task->oc;
     sb.sem_op = 1;
     sb.sem_flg = 0;
-    if ( -1 == semop(task->sem_pe, &sb, 1) ){
+    if ( -1 == semop(the_pool.sem_pe, &sb, 1) ){
       fprintf(task->log_fd, "[ERROR] release pe failed: %s\n", strerror(errno));
-      thread_exit();
+      thread_exit("failed in semop release pe");
     }
-#ifdef  __TIMELOG
+
+#if !defined(__NDEBUG) ||  defined(__TIMELOG)
     pe_snapshot(task->log_fd, task->oc); 
-    int before = semctl(task->sem_ldr, 0, GETVAL);
+    int before = semctl(task->ldr->sem, 0, GETVAL);
 #endif
+    int ret;
     /*notify leader */
     sb.sem_num = 0;
     sb.sem_op = -1;
-    sb.sem_flg = 0;
-    if ( -1 == semop(task->sem_ldr, &sb, 1) ) {
-      fprintf(task->log_fd, "[ERROR] notify leader failed: %s\n", strerror(errno));
-      thread_exit();
+    sb.sem_flg = IPC_NOWAIT;
+    do { 
+      ret = semop(task->ldr->sem, &sb, 1);  
+      if ( -1 == ret && !(errno == EAGAIN || errno == EINTR) ) {
+        fprintf(task->log_fd, "[ERROR] notify leader failed: %s\n", strerror(errno));
+        thread_exit("failed in semop notify leader");
+      }
     }
+    while ( ret != 0 );
 
 #ifdef __TIMELOG
-    int semval = semctl(task->sem_ldr, 0, GETVAL);
+    int semval = semctl(task->ldr->sem, 0, GETVAL);
     fprintf(task->log_fd, "sem=%d, before=%d after = %d\n", 
-    	task->sem_ldr, before, semval);
+    	task->ldr->sem, before, semval);
 #endif
 
-#ifndef __NDEBUG
-    fprintf(stderr, "@task [%d:%d] complete working, leader->sem = %d before %d now=%d task ptr = %p fn = %p\n", 
-	    getpid(), gettid(), task->sem_ldr, before,  semval, task, task->fn);    
-#endif
 
 #ifdef __TIMELOG
 #if defined(LINUX)
@@ -171,9 +150,7 @@ default_task_entry(void * arg)
 #endif
 
   }/*while*/
-#ifndef __NDEBUG
-  fprintf(stderr, "@got signal, task quit");
-#endif
+
   return 0;
 }
 
@@ -181,27 +158,26 @@ void __leader
 default_leader_entry(leader_struct_p leader)
 {
 
-  leader->nr = 0;
-  while (1) {
+#ifdef __TIMELOG
+  fprintf(leader->warp.log_fd, "leader thread pid: %d\n", 
+     leader->gid);
+#endif
+  struct sembuf sb = {.sem_num = 0, .sem_op = 1, .sem_flg = 0};
+  semop(leader->warp._init_list.sem_task_prep, &sb, 1);
 
-#ifndef __NDEBUG
-    fprintf(stderr, "#leader %d, leader->sem = %d, sem number = %d\n", 
-	   leader->gid, leader->sem, leader->warp.nr);
-    fprintf(stderr, "#waiting for thread group %d\n", leader->gid);
-#endif    
+
+  while (1) {
 
 #ifdef __TIMELOG
     struct timeval tv;
     long elapsed;
+    fprintf(leader->warp.log_fd, "leader counter=%2d\n", 
+      leader->warp.counter++);
 #endif
     
     // reset the last value, otherwise, 
     wait_for_tg(leader);
     
-#ifndef __NDEBUG
-    fprintf(stderr, "#wait returned, reduce...%d\n", leader->gid);
-#endif
-
 #ifdef __TIMELOG
     struct timeval hook_start, hook_end;
     gettimeofday(&tv, NULL);
@@ -209,16 +185,16 @@ default_leader_entry(leader_struct_p leader)
     elapsed = (tv.tv_sec - leader->warp.last_stamp/1000000) * 1000000 
     	+ (tv.tv_usec - leader->warp.last_stamp%1000000);
     fprintf(leader->warp.log_fd, "leader counter = %d warp num. = %d wait_return=%d\n", 
-    	leader->warp.counter++, leader->warp.nr, elapsed);
+    	leader->warp.counter++, leader->warp.width, elapsed);
     leader->warp.time_in_wait += elapsed; 
     
     pe_snapshot(leader->warp.log_fd, -1);
     gettimeofday(&hook_start, NULL);
 #endif
 
-    void * arg = leader->warp.hk_arg;
-    if ( NULL != leader->warp.hook ) 
-      (leader->warp.hook)(arg);
+    void * arg = leader->warp.hook_arg;
+    if ( leader->warp.hook ) 
+      (*leader->warp.hook)(arg);
 
 #ifdef __TIMELOG
     gettimeofday(&hook_end, NULL);
@@ -229,6 +205,7 @@ default_leader_entry(leader_struct_p leader)
     fprintf(leader->warp.log_fd, "hook function consumes %d us\n", elapsed);
     leader->warp.time_in_reduce += elapsed;
 #endif
+
     //reset task counter
     //
     spinlock_lock(&(leader->lck));
@@ -245,6 +222,7 @@ default_leader_entry(leader_struct_p leader)
     fflush(leader->warp.log_fd);
 #endif
   }/*while*/
+
 }
 
 int __leader 
@@ -252,85 +230,54 @@ default_creator_entry(void *arg)
 {
   leader_struct_p ldr = (leader_struct_p)arg;
   warp_struct_p warp = &(ldr->warp);
-  int nr = warp->nr;
+  int nr = ldr->warp.width;
   void * stacks[nr]; // gcc ext.
   int i, tid;
-
-  ldr->gid = warp->gid = getpid();
-#if 0
-  char log[80];
-  sprintf(log, "timelog-%d.ldr", ldr->gid);
-  FILE * fh = fopen(log, "w");
-  //FILE * fh = stderr;
-  if ( fh == NULL ) {
-    fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
-    thread_exit();
-  }
-
-  ldr->warp.log_fd = fh; 
-  ldr->warp.time_on_fly = 0;
-  ldr->warp.time_in_reduce = 0;
-  ldr->warp.time_in_wait = 0;
-  ldr->warp.counter = 0;
- 
-#endif
-#ifndef __NDEBUG
-  fprintf(stderr, "leader created, getppid=%d, getpid=%d ldr=%p\n",
-	 getppid(), getpid(), arg);
-#endif
-
-  // lock up semaphore of leader
-  if ( 0 != semctl(ldr->sem, 0, SETVAL, ldr->warp.nr) ) {
-    fprintf(ldr->warp.log_fd, "[ERROR] failed set up leader sem: %s\n", strerror(errno));
-    thread_exit();
-  }
-
   unsigned short array[nr];
+
+  ldr->gid = getpid();
+  // lock up semaphore of leader
+  if ( 0 != semctl(ldr->sem, 0, SETVAL, nr) ) {
+    fprintf(ldr->warp.log_fd, "[ERROR] failed set up leader sem: %s\n", strerror(errno));
+    thread_exit("failed in initialization of leader sem");
+  }
+  
+#ifndef SYNC_SIGNAL
+  //block tasks
   memset(array, 0, sizeof(array));
   if ( 0 != semctl(ldr->sem_task, 0, SETALL, array) ) {
     fprintf(ldr->warp.log_fd, "[ERROR] failed set up sem_task: %s\n", strerror(errno));
-    thread_exit();
+    thread_exit("setup sem_task failed");
   }
-  fprintf(stderr, "set sem %d nr %d to zeros\n", ldr->sem_task, nr);
+#endif
+
   for(i=0; i<nr; ++i) {
     task_struct_p task = &(warp->tsks[i]);
-#ifndef __NDEBUG
-    printf("#leader %d task %d, task ptr = %p ldr->sem=%d\n", warp->gid, i, task, ldr->sem);
-#endif
-    task->gid = warp->gid;
+    task->ldr = ldr; 
     task->idx = i;
-    task->sem_pe   = the_pool.sem_pe;
-    task->sem_ldr  = ldr->sem;
-    task->sem_task = ldr->sem_task;
-    task->fn = warp->fn;
     task->counter = 0;
-#ifndef __TIMELOG
-    task->log_fd = stderr; 
-#endif
-    stacks[i] = warp->init_list.stks[i];
+
+    stacks[i] = warp->_init_list.stks[i];
     if ( -1 == (tid = clone(&default_task_entry, stacks[i], 
-			CLONE_THREAD | CLONE_SIGHAND | CLONE_SYSVSEM | \
+			CLONE_THREAD | CLONE_SIGHAND  | \
 			CLONE_VM | CLONE_FS			       \
 			| SIGCHLD/*signal sent to parent when the child dies*/,
 		    task/*arg*/)) )  {
 	fprintf(ldr->warp.log_fd, "[ERROR] clone task failed: %s\n", strerror(errno));
-	thread_exit();
+	thread_exit("failed in cloning task");
     }
     else {
-       *((warp->init_list).wb_tsks + i) = tid;
+       *((warp->_init_list).wb_tsks + i) = tid;
     }
   }/*for*/
 
   // set handler of this thread group for SIGINT.
   // This maybe helpful to obtains some information when the library gets stuck
   signal(SIGINT, kill_handler);
-#if 0
+#ifdef SYNC_SIGNAL
   signal(SIGCONT, children_handler);
 #endif
-  spinlock_lock(&(ldr->lck));
-  ldr->oc = 0;
-  ldr->nr = 0;
-  spinlock_unlock(&(ldr->lck));
+  
   // infinite loop to serve as a leader.
   default_leader_entry(ldr);
   return 0;
@@ -368,10 +315,8 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
   int i, j;
   leader_t pid;
 
-#ifndef __NDEBUG
-  printf("allocate_slot width=%d, size=%d, slot=%p, ldrs=%p\n",
-	 width, size, slot, ldrs);
-#endif
+  char log[SPMD_MAXIMAL_FILE_LENGTH];
+
   slot->warp_width = width;
   slot->warp_size  = size;
   
@@ -401,36 +346,57 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
       }				
       else {
 	slot->children_stacks[i][j] = (char *)slot->children_stacks[i][j] + SPMD_TASK_STACK_SIZE;
-	//printf("children[%d][%d] stack position=%p\n", i, j, slot->children_stacks[i][j]);
       }
     }
     /* postpone gid to creator function */
-    ldrs[i].warp.nr = width;   
+    ldrs[i].nr = 0;   
+    ldrs[i].warp.width = width;
     ldrs[i].warp.fn = NULL;
     ldrs[i].warp.hook = NULL;
     ldrs[i].warp.tsks = malloc(sizeof(struct task_struct) * width);
+
     if ( ldrs[i].warp.tsks == NULL ) {
       perror("malloc failed");
       exit(EXIT_FAILURE);
     }
-    ldrs[i].warp.init_list.stk_sz = SPMD_TASK_STACK_SIZE;
-    ldrs[i].warp.init_list.stks   = slot->children_stacks[i];
-    ldrs[i].warp.init_list.wb_tsks = slot->wb_tasks + i * width;
-    //printf("alloc clone stack pointer=%p\n", slot->leaders_stacks[i]);
-    char log[80];
+
+    ldrs[i].warp._init_list.stk_sz = SPMD_TASK_STACK_SIZE;
+    ldrs[i].warp._init_list.stks   = slot->children_stacks[i];
+    ldrs[i].warp._init_list.wb_tsks = slot->wb_tasks + i * width;
+    semctl(ldrs[i].warp._init_list.sem_task_prep, 0, SETVAL, 0);
+
+#ifdef __TIMELOG
     sprintf(log, "timelog-%d-%d.ldr", width, i);
     FILE * fh = fopen(log, "w");
-    //FILE * fh = stderr;
     if ( fh == NULL ) {
       fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
-      //thread_exit();
       exit(EXIT_FAILURE);
     }
-     ldrs[i].warp.log_fd = fh; 
-     ldrs[i].warp.time_on_fly = 0;
-     ldrs[i].warp.time_in_reduce = 0;
-     ldrs[i].warp.time_in_wait = 0;
-     ldrs[i].warp.counter = 0;
+    ldrs[i].warp.log_fd = fh; 
+#else 
+    ldrs[i].warp.log_fd = stderr;
+#endif
+
+    for (j=0; j<width; ++j) { 
+      task_struct_p task = &(ldrs[i].warp.tsks[j]);
+
+#ifdef __TIMELOG
+      sprintf(log, "timelog-%d-%d-%d.tsk", width, i, j);
+      fh = fopen(log, "w");
+      if ( fh == NULL ) {
+        fprintf(stderr, "[ERROR] fopen failed: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+      }
+      task->log_fd = fh;
+#else
+      task->log_fd = stderr;
+#endif
+    }/*for*/ 
+    
+    ldrs[i].warp.time_on_fly = 0;
+    ldrs[i].warp.time_in_reduce = 0;
+    ldrs[i].warp.time_in_wait = 0;
+    ldrs[i].warp.counter = 0;
  
     if (-1 == (pid = clone(&default_creator_entry, slot->leaders_stacks[i], 
 			   CLONE_VM | CLONE_FS | SIGCHLD, ldrs+i)) ) {
@@ -440,7 +406,16 @@ allocate_slot(int width, int size, spmd_thread_slot_p slot,
     else {
       *(slot->wb_leaders + i) = pid; /*writeback*/
     }/*if*/
-  }/*for*/
+
+    // wait for all tasks and leader have started up
+    struct sembuf sb =  {
+       .sem_num = 0, 
+       .sem_op = -width-1, 
+       .sem_flg = 0
+    };
+    semop(ldrs[i].warp._init_list.sem_task_prep, &sb, 1);
+  }/*for*/ 
+  
 }
 
 //FIXME: I doubt it is desirable to make this function thread-safe.
@@ -458,6 +433,7 @@ _spmd_initialize(int nr_pe)
   if ( nr_pe > nr_pe_ ) {
     return -1;
   }
+
   if ( 0 != spmd_initialized ) {
     return -1;
   }
@@ -487,13 +463,11 @@ _spmd_initialize(int nr_pe)
   the_pool.nr_leader = nr_leader;
   the_pool.nr_task   = nr_thr - nr_leader;
 
-  if ( nr_leader > 0xfe ) { /*too many leaders.
-			      currently, we use sem to simulates
-			      signal wait_for_tg.
-			      SEMs are identified by file. see ftok(3)
-			      0xff has already been associated with sem_pe.
-			    */
-			      
+  /*too many leaders. currently, we use semaphore to simulates signal wait_for_t
+   *SEMs are identified by file. see ftok(3). 0xff has already been associated with sem_pe.
+   *For the maxinal num. of SEMs set, refer to /proc/sys/kernel/sem 4th col.
+   */
+  if ( 2*nr_leader > 0xfe ) { 
     return -1;
   }
 
@@ -511,12 +485,7 @@ _spmd_initialize(int nr_pe)
     (the_pool.nr_task * sizeof(thread_t));
   if ( the_pool.thr_tasks == NULL ) 
     goto err_happened1;
-#ifndef __NDEBUG
-  else  {
-    printf("the_pool.thr_tasks = %lp\n", 
-      the_pool.thr_tasks);
-  }
-#endif
+
   the_pool.leaders = (struct leader_struct *)malloc
     (nr_leader * sizeof(struct leader_struct));
   if ( the_pool.leaders == NULL ) 
@@ -538,8 +507,10 @@ _spmd_initialize(int nr_pe)
      goto err_happened3;
     }
     spinlock_init(&(the_pool.leaders[i].lck));
-    // preoccupied until semaphores are settled.
-    the_pool.leaders[i].oc = 1; 
+
+    // pre-occupied until leaders and tasks are 
+    // determined
+    the_pool.leaders[i].oc = 0; 
   }
 
   thread_t * ldr = the_pool.thr_leaders;
@@ -550,6 +521,7 @@ _spmd_initialize(int nr_pe)
   for (i=0, nr=nr_pe, k=0; i<nr_slot; ++i, nr>>=1) {
     for (j=0; j<(nr_pe/nr); ++j) {
       int key = ftok(SPMD_SEM_KEY, nr_leader + k);
+      int key2 = ftok(SPMD_SEM_KEY, nr_leader*2 + k);
 
       if ( key == -1 ) {
         perror("ftok failed");
@@ -561,13 +533,16 @@ _spmd_initialize(int nr_pe)
         perror("semget fail");
         goto err_happened3;
       }
-
-      fprintf(stderr, "leader[%d] width=%d key = %d sem_task=%d\n", 
-        k, nr, key, the_pool.leaders[k].sem_task);
+      if ( -1 == (the_pool.leaders[k].warp._init_list.sem_task_prep = 
+      		semget(key2, 1, 0666 | IPC_CREAT)) ) {
+        perror("semget fail");
+        goto err_happened3;
+      }
 
       ++k;
     } 
   }/*for*/
+
   for (i=0, j=nr_pe; i<nr_slot; ++i, j>>=1) {
     spmd_thread_slot_p slot = the_pool.slots + i;
 
@@ -578,7 +553,10 @@ _spmd_initialize(int nr_pe)
     tsk = tsk + nr_pe;
     leaders += (nr_pe/j);
  }
- //spmd_runtime_dump();
+
+#ifndef __NDEBUG
+ spmd_runtime_dump();
+#endif
 
  return nr_pe;
  
@@ -602,18 +580,10 @@ spmd_initialize()
 void  __spmd_export
 spmd_cleanup()
 {
-  int i, j;
-  int dummy;
-  int status, ret;
-  struct timespec spec = {
-      .tv_sec = 0,
-      .tv_nsec = 50000 /*50 usec*/
-  };
-  int val = 25000;
+  int i, status;
+
   while ( !spmd_all_complete() ) {
-    val = val << 1;
-    spec.tv_nsec = val >= 1000000000 ? 50000 : val;
-    nanosleep(&spec, NULL);
+    exp_backoff();
   }
 
   for ( i=0; i<the_pool.nr_leader; ++i) {
@@ -628,21 +598,24 @@ spmd_cleanup()
     }
 
     spinlock_destroy(&(ldr->lck));
-    fprintf(stderr, "gonna rm sem %d\n", ldr->sem);
+
     if ( -1 == semctl(ldr->sem, 0, IPC_RMID) ) {
       perror("semctl IPC RMID sem");
-      exit(EXIT_FAILURE);
     }
 
-    fprintf(stderr, "gonna rm sem %d\n", ldr->sem_task); 
     if ( -1 == semctl(ldr->sem_task, 0, IPC_RMID) ) {
       perror("semctl IPC RMID sem_task");
     } 
-  }
-  if ( -1 == semctl(the_pool.sem_pe, 0, IPC_RMID, dummy) ) {
+    if ( -1 == semctl(ldr->warp._init_list.sem_task_prep, 0, IPC_RMID) ) {
+      perror("semctl IPC RMID sem_task_prep");
+    }
+  }/*for*/
+
+  if ( -1 == semctl(the_pool.sem_pe, 0, IPC_RMID) ) {
     perror("semctl IPC RMID sem_pe");
   }
 
+#ifndef __NDEBUG
   printf("spmd close all children\n");
   printf("the_pool.leaders = %p\nthe_pool.thr_tasks = %p,\
   the_pool.thr_leaders = %p, the_pool.slots = %p\n", 
@@ -650,6 +623,7 @@ spmd_cleanup()
   the_pool.thr_tasks,
   the_pool.thr_leaders,
   the_pool.slots);
+#endif
 
   free(the_pool.leaders);
   free(the_pool.thr_tasks);
@@ -661,7 +635,7 @@ int  __spmd_export
 spmd_create_warp(int nr, void * fn, unsigned int stk_sz, 
                  void * hook, void * hk_arg)
 {
-  int i, j, warp_id;
+  int i, warp_id;
   leader_struct_p cand, ldr;
   warp_struct_p warp;
   int offset;
@@ -674,29 +648,17 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz,
 
   ldr = NULL;
  pick_leader: cand = the_pool.leaders + offset;
-
   for (i=0; i < the_pool.nr_pe / nr; ++i, cand++) {
     if ( spinlock_trylock(&(cand->lck)) )  /* don't contend hot lock */
       if ( cand->oc == 0 ) {
-	fprintf(stderr, "ldr oc is 0, okay to obtain this leader\n");
-	ldr = cand;
-	break;
+	ldr = cand; break;
       }
-      else  {
-        fprintf(stderr, "ldr oc is 1, find another leader\n");
+      else  
 	spinlock_unlock(&(cand->lck));
-      }
-    else {
-	fprintf(stderr, "can not lock on %p\n", cand);
-    }
   }
 
   if ( ldr == NULL ) {
-    struct timespec spec = {
-      .tv_sec = 0,
-      .tv_nsec = 50000 /*50 usec*/
-    };
-    nanosleep(&spec, NULL);
+    exp_backoff();
     goto pick_leader;
   }
   //obtains leader and has locked up
@@ -704,46 +666,45 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz,
   spinlock_unlock(&(ldr->lck));
 
   warp = &(ldr->warp);
-  if ( nr != warp->nr ) {
+  if ( nr != warp->width ) {
     if ( 0 != semctl(ldr->sem, 0, SETVAL, nr) ) {
        perror("failed set up leader sem");
        exit(EXIT_FAILURE);
     } 
+    warp->width = nr;
   }
-
-  warp->nr = nr;
+  
   warp->fn = fn;
   warp->hook = hook;
-  warp->hk_arg = hk_arg;
+  warp->hook_arg = hk_arg;
+
   //FIXME: does not support customized stack size
   if ( stk_sz != 0 ) return -1;
 
+#if 0
   unsigned short snapshot[the_pool.nr_pe];
   struct sembuf buf[nr];
-  struct timespec ts;
   int eno;
 
   for (i=0; i<nr; ++i) buf[i].sem_op = -1;
-  ts.tv_sec = 0;
-  ts.tv_nsec = 50000; /* 2us timeout*/
  retry:  
   semctl(the_pool.sem_pe, 0, GETALL, snapshot);
   for(i=0, j=0; j<nr && i<the_pool.nr_pe; ++i) {
-    if ( snapshot[i] == 1 ) {
+    if ( snapshot[i] == 1 ) 
       buf[j++].sem_num = i;
-    }
-  }
+
   if ( j < nr ) {
+ #ifndef __NDEBUG
     fprintf(stderr, "j < nr failed, j=%d, nr=%d\n", j, nr); 
     int remained = semctl(ldr->sem, 0, GETVAL);
     int fired = semctl(ldr->sem, 1, GETVAL);
     fprintf(stderr, "remained=%d, fired=%d\n", remained, fired);
-    nanosleep(&ts, NULL); 
-    //sleep(1);  /*really busy*/
+ #endif
+    struct timespec = {.tv_sec = 0, .tv_nsec = 50000};
+    nanosleep(&spec, NULL); 
     goto retry;
   }
-    
-  if ( -1 == (eno=semtimedop(the_pool.sem_pe, buf, nr, &ts)) ) {
+  if ( -1 == (eno=semtimedop(the_pool.sem_pe, buf, nr, &spec)) ) {
     if ( eno == EAGAIN || eno == EINTR) { /* snapshot is old, try again */
       goto retry;
     }
@@ -752,11 +713,11 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz,
       return -1;
     }
   }
-
   for (i=0; i<nr; ++i) {
     //fprintf(stderr, "selected pe#%2d %d\n", i, buf[i].sem_num);
     ldr->warp.tsks[i].oc = buf[i].sem_num;
   }
+  #endif
   warp_id = (ldr - the_pool.leaders);
   return warp_id;
 }  
@@ -765,13 +726,14 @@ static void
 spmd_runtime_dump()
 {
   int i, j, k;
+
   //FIXME: thread-safe
   assert(spmd_initialized && "spmd rt uninitialized");
 
   //sleep(1); 
-  printf("spmd thread pool:\n");
-  printf("nr_pe|nr_slot|nr_leader|nr_task|nr_thread|\n");
-  printf("%5d|%7d|%9d|%7d|%9d|\n", the_pool.nr_pe, the_pool.nr_slot,
+  fprintf(stderr, "spmd thread pool:\n");
+  fprintf(stderr, "nr_pe|nr_slot|nr_leader|nr_task|nr_thread|\n");
+  fprintf(stderr, "%5d|%7d|%9d|%7d|%9d|\n", the_pool.nr_pe, the_pool.nr_slot,
 	 the_pool.nr_leader, the_pool.nr_task, the_pool.nr_thread);
 
   for (i=0; i<the_pool.nr_slot; ++i) {
@@ -779,15 +741,26 @@ spmd_runtime_dump()
     thread_t * ldr = slot->wb_leaders;
     thread_t * tsk = slot->wb_tasks;
 
-    printf("slot %d: %p\n", i, slot);
-    printf("width=%d, size=%d\n", slot->warp_width, slot->warp_size);
+    fprintf(stderr, "slot %d: %p\n", i, slot);
+    fprintf(stderr, "width=%d, size=%d\n", slot->warp_width, slot->warp_size);
     
     for(j=0; j<slot->warp_size; ++j) {
-      printf("ldr%d=%d:(", j, *ldr++);
+      fprintf(stderr, "ldr%d=%d:(", j, *ldr++);
       for(k=0; k<slot->warp_width; ++k)
-	printf("%d,", *tsk++); 
-      printf(")\n");
+	fprintf(stderr, "%d,", *tsk++); 
+      fprintf(stderr, ")\n");
     }
+  }
+
+  for (i=0; i<the_pool.nr_leader; ++i) {
+     leader_struct_p ldr = &(the_pool.leaders[i]);
+     fprintf(stderr, "Leader[%d] pid: %2d width = %2d\n", i, ldr->gid,
+     	ldr->warp.width);
+     for (j=0; j<ldr->warp.width; ++j) {
+       task_struct_p tsk = &(ldr->warp.tsks[j]);
+       indent(stderr, 4, ' ');
+       fprintf(stderr, "%d\n", tsk->tid);
+     }
   }
 }
 
@@ -797,6 +770,7 @@ spmd_fire_up(leader_struct_p leader)
   int i, eno, last;
   task_struct_p tsk;
   cpu_set_t mask;
+
 /*
   for(i=0; i<leader->nr; ++i) {
     tsk  = &leader->warp.tsks[i];
@@ -810,6 +784,7 @@ spmd_fire_up(leader_struct_p leader)
     }
   }
 */
+
 /* change myself to that last RT cpu, pervent suspending the signal sending*/
 //FIXME: add the following code will induce significant perf retreat.
 //I can not understand.
@@ -826,70 +801,71 @@ spmd_fire_up(leader_struct_p leader)
   }
 #endif
 
-#ifndef __NDEBUG
-  printf("fire up is called\n");
-#endif
-
-  unsigned short array[leader->warp.nr];
+#ifdef SYNC_SINGAL
+  unsigned short array[leader->warp.width];
   int semval;
 
   if ( -1 == (semval=semctl(leader->sem, 0, GETVAL)) ) {
     fprintf(stderr, "[ERROR] semctl failed: %s\n", strerror(errno)); 
-    thread_exit();
+    exit(EXIT_FAILURE);
   }
-  if ( semval != leader->warp.nr ) {
+  if ( semval != leader->warp.width ) {
     fprintf(stderr, "[ERROR] leader->sem: ILL status semval=%d\n", semval);
     exit(EXIT_FAILURE);
   }
 
+  semctl(leader->sem_task, 0, GETALL, array);
+  for(semval=0, i=0; i<leader->warp.width; ++i) semval+=array[i];
+  if ( semval ) {
+    fprintf(stderr, "[ERROR] leader->sem: ILL status BEFOR Esemval=%d\n", semval);
+    exit(EXIT_FAILURE);
+  }
+
+  assert ( leader->oc && "leader is not obtained");
+
   //fireup
-  for(i=0; i<leader->warp.nr; ++i) array[i] = 1;
+  for(i=0; i<leader->warp.width; ++i) array[i] = 1;
   if ( 0 != semctl(leader->sem_task, 0, SETALL, array) ) {
     fprintf(stderr, "[ERROR] raise leader->sem_task failed: %s\n", strerror(errno));  
     exit(EXIT_FAILURE);
   }
+#endif 
 
-#if defined(__TIMELOG) && defined(LINUX)
-  struct timespec ts;
-  clock_gettime(CLOCK_REALTIME, &ts);
-  fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n",
-  	ts.tv_sec, ts.tv_nsec);
-
-  pe_snapshot(leader->warp.log_fd, -1);
-#endif
-
-#if 0
+#ifdef SYNC_SIGNAL
   for (i=0; i<leader->nr; ++i) {
     tsk = &leader->warp.tsks[i];
-#if defined(__TIMELOG) && defined(LINUX)
-    struct timespec myts;
-    clock_gettime(CLOCK_REALTIME, &myts);
-    fprintf(tsk->log_fd, "send signal: %d\ntimestamp %d:%d\n",
-       SIGCONT, myts.tv_sec, myts.tv_nsec);
-#endif
+
     if ( -1 == tkill(tsk->tid, SIGCONT) ) {
-      fprintf(leader->warp.log_fd,
-      	"[ERROR] tkill %d SIGCONT failed: %s\n", 
-	strerror(errno));
-      thread_exit();
+      fprintf(stderr, "[ERROR] tkill %d SIGCONT failed: %s\n", 
+        tsk->tid, strerror(errno));
+      exit(EXIT_FAILURE);
     }
   }/*for*/
 #endif
 
 #ifdef __TIMELOG
+#if defined(LINUX)
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n",
+#endif
     struct timeval tv;
     gettimeofday(&tv, NULL);
     leader->warp.last_stamp = tv.tv_sec * 1000000 + tv.tv_usec;
 #endif
 
-#if 0  
-  //FIXME: why kill pid does NOT work?
-  //kill(leader->gid, SIGCONT);
-#endif
+/*
+  struct timespec ts = {.tv_sec = 0, .tv_nsec =1000000 };
+  nanosleep(&ts, NULL);
+  spinlock_lock(&(leader->lck));
+  leader->oc = 0;
+  leader->nr = 0;
+  spinlock_unlock(&(leader->lck));
+  */
 }
 
 int __spmd_export
-spmd_create_thread(int warp_id, void * self, void * ret, void * arg0, void * arg1)
+spmd_create_thread(int warp_id, void * arg) 
 {
   leader_struct_p ldr;
   int t;
@@ -898,33 +874,28 @@ spmd_create_thread(int warp_id, void * self, void * ret, void * arg0, void * arg
     return -1; /*ILL warp_id */
  
   ldr = &(the_pool.leaders[warp_id]);
-  spinlock_lock(&(ldr->lck));
+
+  if ( !spinlock_trylock(&(ldr->lck)) ) {
+    return -1;
+  }
 
   if ( ldr->oc != 1 && ldr->warp.fn == NULL ) {
     spinlock_unlock(&(ldr->lck));
     return -1;
   }
    
-  if ( ldr->nr >= ldr->warp.nr ) {
+  if ( ldr->nr >= ldr->warp.width ) {
     spinlock_unlock(&(ldr->lck));
     return -1; /*more task than warp. already fired*/
   }
 
   t = ldr->nr++;
-#ifndef __NDEBUG
-  printf("t = %2d, ldr->warp.nr=%2d ldr->warp.tsk[%d]= %p tid = %d ldr->warp.fn = %p\n", 
-	 t, ldr->warp.nr, t, &(ldr->warp.tsks[t]), ldr->warp.tsks[t].tid, ldr->warp.fn);
-#endif
   spinlock_unlock(&(ldr->lck));
 
   //load function and its arguments 
-  ldr->warp.tsks[t].fn = ldr->warp.fn;
-  ldr->warp.tsks[t].args[0] = self;
-  ldr->warp.tsks[t].args[1] = ret;
-  ldr->warp.tsks[t].args[2] = arg0;
-  ldr->warp.tsks[t].args[3] = arg1;
+  ldr->warp.tsks[t].arg = arg;
   // variable t is local. it guarantees fireup once.
-  if ( t+1 == ldr->warp.nr )
+  if ( t+1 == ldr->warp.width )
     spmd_fire_up(ldr);
   return t;
 }
@@ -939,8 +910,7 @@ int __spmd_export
 spmd_available_thread()
 {
   unsigned short snapshot[the_pool.nr_pe];
-  int i;
-  int nr = 0;
+  int i, nr = 0;
 
   if ( -1 == semctl(the_pool.sem_pe, 0, GETALL, snapshot) ) {
     perror("semctl GETALL failed");
@@ -962,12 +932,10 @@ spmd_all_complete()
     leader_struct_p ldr = &(the_pool.leaders[i]);
     //contend
     if ( !spinlock_trylock(&(ldr->lck)) ) {
-      fprintf(stderr, "all_complete: lock leader failed %d", ldr->gid);
       return 0;
     }
     //unfinshed yet
     else if ( ldr->oc != 0 ) {
-      fprintf(stderr, "all_complete: leader is occupied %d\n", ldr->gid);
       spinlock_unlock(&(ldr->lck));
       return 0;
     }
@@ -976,41 +944,3 @@ spmd_all_complete()
   }
   return 1;
 }
-
-
-#if 0
-void dummy_fn(void * ret, void * arg0, void * arg1)
-{
-  printf("dummy_fn%2d\n", gettid());
-}
-
-
-int 
-main()
-{
-  int warpid;
-  int tid;
-
-  printf("default_task_entry=%p\n", &(default_task_entry));
-  assert( probe_nr_processor() == 2);
-  assert( spmd_initialize() == 2);
-  sleep(1);  
-  spmd_runtime_dump();
-  
-  warpid = spmd_create_warp(2, dummy_fn, 0, NULL);
-  if ( warpid == -1 ) {
-    fprintf(stderr, "spmd_create_warp failed\n");
-    exit(1);n
-  }
-  else
-    printf("created warpid = %2d\n", warpid);
-
-  tid = spmd_create_thread(warpid, NULL, NULL, NULL);
-  assert( tid != -1 && "first task failed");
-  tid = spmd_create_thread(warpid, NULL, NULL, NULL);
-  assert( tid != -1 && "second task failed");
-  sleep(1);
-  spmd_cleanup();
-  return 0;
-}
-#endif

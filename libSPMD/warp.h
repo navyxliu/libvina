@@ -10,7 +10,9 @@ extern "C" {
    *-1 when failed
    */
   extern int spmd_initialize();
-  extern int spmd_initializ_n(int n);
+  extern int _spmd_initializ_n(int n);
+  extern int spmd_get_taskid();
+
 
   /*kill threads managed by spmd RT.
    *reclaim memory
@@ -46,7 +48,7 @@ extern "C" {
    *  task_id
    */
   //  extern int spmd_create_thread(int warp_id, int argc, ...);
-  extern int spmd_create_thread(int warp_id, void * self, void * ret, void * arg0, void * arg1);
+  extern int spmd_create_thread(int warp_id, void * arg); 
   /*check out avaialable threads in runtime.
    *return the maximal number of available PEs. libSPMD RT can not guarantee
    *that spawn threads continuously in returned number is non-blocking. it depends on

@@ -5,6 +5,7 @@
 
 #include "x86/spmd.h"
 #include <string.h>
+#include <stdio.h>
 
 extern struct spmd_thread_pool the_pool;
 
@@ -139,7 +140,8 @@ int tkill(int tid, int sig)
   return syscall(SYS_tkill, tid, sig);
 }
 
-int thread_exit()
+void
+thread_exit(const char * msg)
 {
   // flush files to make sure errors are avaible 
   int pid, tid, i, j;
@@ -149,6 +151,7 @@ int thread_exit()
   tid = gettid();
   int is_leader = pid == tid;
   leader_struct_p ldr;
+
   for (i=0; i<the_pool.nr_leader; ++i) {
     ldr = &(the_pool.leaders[i]);
     if ( ldr->gid == pid ) {
@@ -156,10 +159,10 @@ int thread_exit()
       break;
     }
   }
+
   if ( i == the_pool.nr_leader ) {
-    fprintf(stderr, "wrong call of thread_exit outside\
-    of libSPMD.\n");
-    exit(EXIT_FAILURE);
+    fprintf(stderr, "[ERROR] Calling thread_exit in main process: %s\n", msg);
+    exit (EXIT_FAILURE); 
   }
 
   for (nr=the_pool.nr_pe, j=0; j < i; 
@@ -171,10 +174,10 @@ int thread_exit()
   }
 
   if ( is_leader ) 
-    fprintf(stderr, "call thread_exit from leader %d\n", pid);
+    fprintf(stderr, "call thread_exit from leader %d: %s", pid, msg);
   else 
-    fprintf(stderr, "call thread_exit from task [%d:%d]\n", pid, tid);
-
+    fprintf(stderr, "call thread_exit from task [%d:%d]: %s\n", pid, tid, msg);
+  // suicide
   kill(getppid(), SIGKILL);	
 }
 
@@ -190,7 +193,7 @@ void wait_for_tg(leader_struct_p leader)
 // auto reset to stuck loop in default_leader_entry
 // the value this value might be modifed in create_warp
     {.sem_num = 0, 
-     .sem_op = leader->warp.nr,
+     .sem_op = leader->warp.width,
      .sem_flg = 0
     }
   };
@@ -208,14 +211,9 @@ void wait_for_tg(leader_struct_p leader)
  
   if ( ret != 0 ) {
     fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));
-    thread_exit();
+    thread_exit("failed in wait_for_tg");
   }
  
-#ifndef __NDEBUG
-  int value = semctl(leader->sem, 0, GETVAL);
-  fprintf(stderr, "wait for tg sem=%d, reset=%d pid=%d value = %d\n", 
-  	leader->sem, leader->warp.nr, leader->gid, value);
-#endif
 }
 
 /**set schduler to rt fifo.
@@ -265,4 +263,38 @@ pe_snapshot(FILE *out, int pos/*-1*/)
     fprintf(out, " .\n");
   }
   fflush(out);
+}
+/*exponential backoff*/
+void 
+exp_backoff()
+{
+  static int val = 25000;
+  struct timespec spec;
+  
+  //val = (val << 1) >= 500000000 ? 25000 : (val<<1); 
+  spec.tv_sec = 0;
+  spec.tv_nsec = val;
+
+  nanosleep(&spec, NULL);
+}
+
+void
+indent(FILE* out, int num, char ch) 
+{
+  int i;
+  for (i=0; i<num; ++i) 
+    putc(ch, out);
+}
+void
+indent_v(FILE * out, int line, int pos, char ch)
+{
+  int i;
+  char buf[pos+2];
+
+  for (i=0; i<pos-1; ++i) buf[i] = ' ';
+  buf[pos-1] = ch;
+  buf[pos] = '\n';
+  buf[pos+1] = 0;
+
+  for (i=0; i<line; ++i) fputs(buf, out);
 }
