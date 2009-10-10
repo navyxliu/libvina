@@ -89,10 +89,6 @@ typedef struct leader_struct{
   leader_t           gid;
   spinlock_t         lck;
   int                nr;   /* num. of task installed on warp */
-  volatile int       oc;   /* occupied bit protected by lck
-			      1: leader is used and has not finished yet.
-			      0: unused
-			   */
   int                sem;  /* current linux kernel lacks syscall to wait for all thread group
 			    * after discussed to tomida, i decided to simulate it using
 			    * semaphore temporarily and hopefully it wouldn't hurt performance

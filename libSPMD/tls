@@ -7,5 +7,5 @@ else
   cmd=-e
 fi
 
-ps $cmd -m -o pid,tid,ppid,cls,%cpu,wchan:18,s,ni,comm
+ps $cmd -m -o pid,tid,ppid,cls,%cpu,wchan:18,pending,blocked,caught,s,ni,comm
 

@@ -1,4 +1,4 @@
-<div class="moz-text-flowed" style="font-family: -moz-fixed">#include <algorithm>	// for generate()
+#include <algorithm>	        // for generate()
 #include <cstdlib>		// for rand()
 #include <cassert>		// for assert()
 
@@ -181,4 +181,4 @@ int main()
 
 	delete[] vector1;
 	delete[] vector2;
-}</div>
+}
