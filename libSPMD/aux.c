@@ -195,7 +195,7 @@ void wait_for_tg(leader_struct_p leader)
     {.sem_num = 0, 
      .sem_op = leader->warp.width,
      .sem_flg = 0
-    }
+    },
   };
 		   
 
@@ -207,7 +207,7 @@ void wait_for_tg(leader_struct_p leader)
   */
   do {
   ret = semop(leader->sem, buf, (sizeof(buf)/sizeof(buf[0])));
-  } while( ret == -1 && errno == EINTR );
+  } while( ret != 0);
  
   if ( ret != 0 ) {
     fprintf(leader->warp.log_fd, "[ERROR] wait_for_tg failed: %s\n", strerror(errno));

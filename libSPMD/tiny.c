@@ -5,13 +5,13 @@
 void 
 dummy(void * arg)
 {
-  printf("i am %d\n", spmd_get_taskid());
+  //printf("i am %d\n", spmd_get_taskid());
 }
 
 void 
 reduce(void * arg)
 {
-  printf("reduction %d\n", getpid());
+  //printf("reduction %d\n", getpid());
 }
 
 int
@@ -23,10 +23,11 @@ main(int argc, char * argv[])
 
   printf("spmd rts pe = %d\n", pe);
 
-
   assert ( pe == spmd_available_thread() 
 	&& "wrong num. of available thread");
   for ( k=0; k<ITERATION; ++k) {
+  //fprintf(stderr, "%d\n", k);
+
   int id = spmd_create_warp(nr, (void *)&dummy, 0, (void*)&reduce, NULL);
   assert( id != -1 && "create warp failed");
 

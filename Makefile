@@ -61,6 +61,7 @@ MTSUPPORT+=-I$(SPMDPATH) $(SPMDLIB)
 #else
 MTSUPPORT+=-I$(BOOSTINC) $(BOOSTLIB)
 #endif
+
 LDFLAGS+=$(MTSUPPORT)
 
 #ifneq (,$(findstring MKL,$(TESTINFO)))
@@ -69,13 +70,15 @@ LDFLAGS+=$(MKLLIB)
 #endif
 
 AUX_OBJS = profiler.o toolkits.o mtsupport.o
-OBJS = mat_mul.o test_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o
+OBJS = mat_mul.o test_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o tpbench.o
 OBJS += $(AUX_OBJS)
 
-all: mat_mul lang_pipe dot_prod conv2d saxpy
+all: mat_mul lang_pipe dot_prod conv2d saxpy tpbench
 
 mat_mul: mat_mul.o $(AUX_OBJS) 
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
+
+#matrix muliplication with openmp mlk
 mm_omp: mm_omp.o
 	$(CXX) -o $@ $< $(AUX_OBJS) $(MKLLIB_P) -lrt $(BOOSTLIB)
 
@@ -90,6 +93,9 @@ saxpy: saxpy.o $(AUX_OBJS)
 
 conv2d: conv2d.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) imgsuport.o -lpng
+
+tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
+	$(CXX) -o $@ $^ $(LDFLAGS) ./libSPMD/libSPMD.a 
 
 $(OBJS):%.o:%.cc frame.hpp Makefile params
 	$(CXX) -o $@ -c $< $(CFLAGS)

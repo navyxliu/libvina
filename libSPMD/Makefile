@@ -16,10 +16,9 @@ hackbench: hackbench.c
 	$(CC) -o $@ $< -lpthread $(CFLAGS)
 libSPMD.a: warp.o aux.o
 	$(AR) cr libSPMD.a warp.o aux.o
-warp.o: warp.c
-	$(CC) -c warp.c $(CFLAGS)
-aux.o: aux.c
-	$(CC) -c aux.c $(CFLAGS)
+%.o: %.c Makefile
+	$(CC) -o $@ -c $< $(CFLAGS)
+
 .PHONY: all clean
 clean:
 	-rm *.o *~ $(TARGETS)
