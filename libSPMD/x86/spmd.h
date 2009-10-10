@@ -1,5 +1,4 @@
 // x86_64 Linux implementation
-#define _GNU_SOURCE
 #include <sys/types.h>
 #include <unistd.h>
 #include <linux/unistd.h>/*for gettid*/
@@ -23,6 +22,7 @@
 #define SPMD_TASK_STACK_SIZE (32*1024*1024)
 #define SPMD_TASK_STACK_ALGN (16)
 #define SPMD_SPINLOCK_INITIALIZER PTHREAD_MUTEX_INITIALIZER
+#define SPMD_MAXIMAL_FILE_LENGTH 80
 
 #ifndef SPMD_SEM_KEY
 #define SPMD_SEM_KEY  "/tmp/tmp"
@@ -43,50 +43,52 @@ typedef void (*hook_handler_t)(void *);
 typedef void (*task_entry_t)(void);
 
 #ifdef SPMD_FIXED_PARAMETER 
-typedef void (*task_func_t)(void * self, void * ret, void * arg0, void * arg1);
+typedef void (*task_func_t)(void * arg); 
 #else
 typedef void* task_func_t;
 #endif
 
+struct leader_struct;
+
 typedef struct task_struct {
-  task_t           tid;     /* task id, task shall not suppose to use gettid, getpid */
-  leader_t         gid;     /* group id */
+  int              tid;
   int              idx;
-  task_func_t      fn;
   unsigned short   oc;      /* sem num in sem_pe, indicated occupied */
-  int              sem_pe;  /* sem set for PEs */
-  int              sem_ldr; /* sem set for leader */
-  int              sem_task;
-  void *           args[4];   
+  struct leader_struct *  ldr;
+
+  void *           arg;
   FILE *           log_fd;
   int              counter;
 }* task_struct_p;
 
 typedef struct warp_struct {
-  leader_t        gid; 
-  int             nr;      /* number of task thread */
   task_func_t     fn;      /* task function */
   hook_handler_t  hook;    /* hook function, call after wait */
   task_struct_p   tsks;    
-  void *          hk_arg;  /* the argument for hook function */
+  void *          hook_arg;  /* the argument for hook function */
+  int             width;
   FILE *          log_fd;
   long            time_on_fly;
   long            time_in_reduce;
   long            time_in_wait;
+
   int             counter;
   long            last_stamp; /* the timestamp before a warp is fired up*/
-  
+
+  // helper data for intialization 
   struct tag_init_list {
     unsigned int stk_sz;   /* stack size per task */
     void **      stks;     /* stacks for children */
     thread_t *   wb_tsks;  /* write back task id to pool */
-  } init_list;
+    int          sem_task_prep;
+  } _init_list;
+
 }* warp_struct_p;
 
 typedef struct leader_struct{
   leader_t           gid;
   spinlock_t         lck;
-  volatile int       nr;   /* num. of task installed on warp */
+  int                nr;   /* num. of task installed on warp */
   volatile int       oc;   /* occupied bit protected by lck
 			      1: leader is used and has not finished yet.
 			      0: unused
@@ -110,6 +112,8 @@ typedef struct spmd_thread_slot{
 
   thread_t        * wb_leaders;      /* write back leaders in the slot to pool */
   thread_t        * wb_tasks;        /* write back tasks in the slot to pool */
+
+  struct spmd_thread_slot * next; 
 }* spmd_thread_slot_p;
 
 typedef struct spmd_thread_pool

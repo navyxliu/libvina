@@ -2,7 +2,7 @@
 TEST_INFO=-DMM_TEST_TYPE=float -DMM_TEST_GRANULARITY=1024 -DMM_TEST_SIZE_N=8192 -DMM_TEST_K=8
 
 #test parameters for Vector manipulation
-TEST_INFO+=-DVEC_TEST_TYPE=float -DVEC_TEST_GRANULARITY=4000000 -DVEC_TEST_SIZE_N=32000000 -DVEC_TEST_K=8
+TEST_INFO+=-DVEC_TEST_TYPE=float -DVEC_TEST_GRANULARITY=8000000 -DVEC_TEST_SIZE_N=32000000 -DVEC_TEST_K=4
 
 #parameters for Image processing
 TEST_INFO+=-DIMG_TEST_SIZE_M=256 -DIMG_TEST_SIZE_N=256 -DIMG_TEST_GRANULARITY=128
@@ -15,10 +15,10 @@ TEST_INFO+=#-D__NDEBUG #-DVIZ_CALLSITE
 
 #THREAD MODEL
 #we has 3 types of multithread to execute libvina programs.
-1) libSPMD: customized thread for libvina
-#TEST_INFO+=-D__USE_LIBSPMD
+#1) libSPMD: customized thread for libvina
+TEST_INFO+=-D__USE_LIBSPMD
 #2) threadpool:
-TEST_INFO+=-D__USEPOOL
+#TEST_INFO+=-D__USEPOOL
 #3) if we both comment out previous two defines, we use plain pthread.
 
 #computation model

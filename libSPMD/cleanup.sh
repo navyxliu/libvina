@@ -1,11 +1,11 @@
-#! /bin/sh
+#! /bin/bash
 #this script is a helper tool to do cleanup stuff.
 #in case my program does not release system resource
 #navy.xliu@gmail.com
 #10/5 2009
 
 #kill all threads derived from tpbench
-sudo ../kill_them.sh tiny 
+sudo killall -q tiny
 
 #rm all log files
 rm -f timelog*
