@@ -96,7 +96,7 @@ default_task_entry(void * arg)
 #if defined(LINUX)
     struct timespec myts;
     clock_gettime(CLOCK_REALTIME, &myts);
-    fprintf(task->log_fd, "task start timestamp %d: %ld\n", myts.tv_sec, myts.tv_nsec);
+    fprintf(task->log_fd, "task start timestamp %d: %d\n", myts.tv_sec, myts.tv_nsec);
 #endif
     gettimeofday(&fntv_start, NULL); 
 #endif 
@@ -150,7 +150,7 @@ default_task_entry(void * arg)
     elapsed = ((myts.tv_sec - elapsed) * 1000000000 
     	+ (myts.tv_nsec - elapsed_nsec)) / 1000;
     fprintf(task->log_fd, "task close timestamp %d:%d\ntask active time is %d, effectivity is %.2f\%\n",
-    	myts.tv_sec, myts.tv_nsec, elapsed, (100.0 * execspan) / elapsed );
+    	myts.tv_sec, myts.tv_nsec, elapsed, (100.0f * execspan) / elapsed );
 #endif
    fflush(task->log_fd);
 #endif
@@ -847,7 +847,8 @@ spmd_fire_up(leader_struct_p leader)
 #if defined(LINUX)
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
-    fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n",
+    fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n", ts.tv_sec, 
+    	ts.tv_nsec);
 #endif
     struct timeval tv;
     gettimeofday(&tv, NULL);
