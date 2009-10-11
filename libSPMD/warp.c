@@ -7,6 +7,9 @@
 // Oct. 05, rewrite wait_for_tg to add atomatic reset. see aux.c
 // Oct. 07, remove all singal stuffs. uses semaphore.
 //          bugs fixed. use distribued semaphores for tasks.
+// Oct. 10, refactor the project of libSPMD. make it independent from libvina. 
+//          test it out by stress.sh and test_sh.sh. 
+//
 #include "warp.h"
 #include "x86/spmd.h"
 
@@ -57,7 +60,7 @@ default_task_entry(void * arg)
   task->tid = gettid();
   struct sembuf sb = {.sem_num = 0, .sem_op = 1, .sem_flg = 0};
   semop(task->ldr->warp._init_list.sem_task_prep, &sb, 1);
-
+  int ret;
   //set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
 #ifdef SYNC_SIGNAL 
   sigset_t mask, oldmask;
@@ -72,10 +75,16 @@ default_task_entry(void * arg)
     sigsuspend(&oldmask); 
     // down semaphore.
 #else
-    if ( 0  != semop(task->ldr->sem_task, &sb, 1) ) {
-      fprintf(task->log_fd, "[ERROR] semop failed: %s\n", strerror(errno));
-      thread_exit("down task semphore failed");
-    }
+    sb.sem_num = task->idx;
+    sb.sem_op = -1;
+    sb.sem_flg = 0;
+    do {
+      ret = semop(task->ldr->sem_task, &sb, 1); 
+      if ( ret != 0 && !(errno == EAGAIN || errno == EINTR ) ) {
+        fprintf(task->log_fd, "[ERROR] semop failed: %s\n", strerror(errno));
+        thread_exit("down task semphore failed");
+      }
+    } while( ret != 0 );
 #endif
 
 #ifdef __TIMELOG

@@ -489,7 +489,7 @@ namespace vina {
 	
     static void 
     doit_ptr(void * alpha, void* arg0, void * result) {
-	//printf("doit_ptr entry %p, %p, %p\n", alpha, arg0, result);
+      //printf("doit_ptr entry %p, %p, %p\n", alpha, arg0, result);
       vecArithImpl<T, DIM_N>::madd(*((const _M_ty*)alpha), *((const Arg0*)arg0), *((Result *)result));
     }	
     static void 

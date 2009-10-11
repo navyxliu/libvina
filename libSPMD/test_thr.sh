@@ -6,10 +6,9 @@
 NR_CPU=`cat /proc/cpuinfo | grep "processor" | wc -l`
 echo NR_CPU is ${NR_CPU}
 
-
-if [ ! -e "tiny" ] 
+if [ ! -e "../tpbench" ] 
 then
-   make tiny
+   ../make tpbench
    if (($? != 0)) 
    then
      echo "failed to build tpbench"
@@ -17,19 +16,30 @@ then
    fi
 fi
 
+delay=10000
+if [ $# > 0 ]
+then
+  delay=$1
+fi
+
+if [ $# > 1 && '$2' = 'q' ]
+then
+  quiet=">/dev/null"
+else
+  quiet=""
+fi
+
 echo "start to stress TEST"
-#NR_CPU=4
 for ((i=${NR_CPU}; i>=1; i=i>>1)); do
-for ((j=1; j<=200; ++j)); do
+for ((j=1; j<=50; ++j)); do
     echo "testing -t$i $j ..."
-    #../tpbench -t$i -d 1000 -m 4 -c10 -i 20 > /dev/null
-    ./tiny $i > /dev/null
+    ../tpbench -t$i -d${delay} -m 4 -c10 -i 20 ${quiet}
     if [ "$?" != "0" ]
     then
        echo "An ERROR occured in -t $i -c 10 case"
        exit 
     else
-       ./cleanup.sh tiny
+       ./cleanup.sh tpbench
     fi
 done
 done
