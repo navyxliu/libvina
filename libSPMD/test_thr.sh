@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #########################################################
 # this script imposed stress test to libSPMD.
 #########################################################
@@ -8,7 +8,7 @@ echo NR_CPU is ${NR_CPU}
 
 if [ ! -e "../tpbench" ] 
 then
-   ../make tpbench
+   make ../tpbench
    if (($? != 0)) 
    then
      echo "failed to build tpbench"
@@ -22,7 +22,7 @@ then
   delay=$1
 fi
 
-if [ $# > 1 && '$2' = 'q' ]
+if [ $# > 1 ]  && [ '$2' = 'q' ]
 then
   quiet=">/dev/null"
 else
