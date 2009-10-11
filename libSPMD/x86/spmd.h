@@ -1,7 +1,9 @@
 // x86_64 Linux implementation
+#define _GNU_SOURCE  // need this for some linux features.
 #include <sys/types.h>
 #include <unistd.h>
 #include <linux/unistd.h>/*for gettid*/
+#include <sys/ipc.h>
 #include <sys/sem.h> /*for sysV semaphore*/
 #include <sys/time.h>
 #include <pthread.h> /*FIXME: temporarily use pthread_mutex*/

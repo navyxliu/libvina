@@ -271,7 +271,7 @@ exp_backoff()
   static int val = 25000;
   struct timespec spec;
   
-  //val = (val << 1) >= 500000000 ? 25000 : (val<<1); 
+  val = (val << 1) >= 100000000 ? 25000 : (val<<1); 
   spec.tv_sec = 0;
   spec.tv_nsec = val;
 

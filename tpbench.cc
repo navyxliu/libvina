@@ -3,6 +3,7 @@
  * thread benchmark for vina framework
  *
  * author: jwhust@gmail.com
+ * navy.xliu@gmail.com
  */
 
 #include "mtsupport.hpp"
@@ -320,7 +321,7 @@ main(int argc, char *argv[])
   if ( msk_bench ) 
     Profiler::getInstance().dump();
   if ( wkr_delay >= 0 ) {
-  aut std = prof.eventRegister("seq");
+  auto std = prof.eventRegister("seq");
 
 #ifndef __NDEBUG 
   for (int i=0; i<nr_thread; ++i){
