@@ -53,19 +53,18 @@ struct saxpy{
   doit(const T& alpha, const Arg1& lhs, 
        Result& rhs)
   {
-//  printf("_pred=%d, SubTask::_pred=%d\n", 
-//	   _pred, SubTask::_pred);
-
     Map::doit(alpha, lhs, rhs);
   }
   
   typedef std::tr1::function<void (void*, void*, void*)> 
   _Comp;
-  static _Comp
+
+  static _Comp* 
   computation()
   {
-    return &(Func<Result, Arg1>::doit_ptr);
+    return new _Comp(&(Func<Result, Arg1>::doit_ptr));
   }
+
   typedef std::tr1::function<void (const T&, const Arg1&, Result&, mt::barrier_t)>
   _CompMT;
   static _CompMT
@@ -94,8 +93,13 @@ main(int argc, char * argv[])
   printf("SAXPY Program in Blas\n\
 VEC_TEST_SIZE_N=%d\n\
 VEC_TEST_GRANULARITY=%4d\n\
-VEC_TEST_K=%d\n\
-See Makefile TEST_INFO to set parameters\n",
+VEC_TEST_K=%d\n"
+#ifdef __USE_LIBSPMD
+"thread: LIBSPMD\n"
+#else
+"thread: pthread\n"
+#endif
+"See Makefile TEST_INFO to set parameters\n",
 	 VEC_TEST_SIZE_N, VEC_TEST_GRANULARITY, VEC_TEST_K);
   typedef Vector<VEC_TEST_TYPE, VEC_TEST_SIZE_N> TestVector;
   typedef Vector<vector_type<VEC_TEST_TYPE>, VEC_TEST_SIZE_N> TestVector_v;
@@ -123,14 +127,14 @@ See Makefile TEST_INFO to set parameters\n",
   auto temp2 = prof.eventRegister("MT");
   //auto temp3 = prof.eventRegister("OPENMP");
 #ifndef __NDEBUG
-  /*  
+/*
   for (int i=0; i<VEC_TEST_SIZE_N; ++i)
-    printf("%4d", x[i]);
+    printf("%4f ", x[i]);
   printf("\n");
   for (int i=0; i<VEC_TEST_SIZE_N; ++i)
-    printf("%4d", y[i]);
+    printf("%4f ", y[i]);
   printf("\n");
-  */
+*/
   STD_result.zero();
   float * data_x = x.data();
   float * data_y = STD_result.data();
@@ -157,6 +161,7 @@ See Makefile TEST_INFO to set parameters\n",
   CHECK_RESULT(y);
   printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed() / ITERS));
  */ 
+
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE, TestVector, vecMAddWrapper, p_simple, VEC_TEST_K, true>
     TF_MT;
@@ -169,7 +174,6 @@ See Makefile TEST_INFO to set parameters\n",
   prof.eventStart(temp2);
   for (int i=0; i<ITERS; ++i) {
     TF_MT::doit(7.0f, x, result);
-    //printf("iter#%2d: elasped %d\n", i, prof.getEvent(temp3)->elapsed());  
   }
   while ( !spmd_all_complete() );
   prof.eventEnd(temp2);

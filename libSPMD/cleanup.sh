@@ -5,7 +5,7 @@
 #10/5 2009
 
 #kill all threads derived from tpbench
-sudo killall -q tiny
+sudo killall -q $1
 
 #rm all log files
 rm -f timelog*

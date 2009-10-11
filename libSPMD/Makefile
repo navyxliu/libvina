@@ -5,7 +5,10 @@ AR:=ar
 CFLAGS= -g -Wall -D__NDEBUG -DSMP_SUPPORT 
 CFLAGS+=-DSPMD_SEM_KEY="\"/tmp/evan2\"" #-D__TIMELOG 
 CFLAGS+=-DLINUX
-CFLAGS+=-DSYNC_SIGNAL
+
+#define SYNC_SIGNAL will send signal for all task.
+#otherwise, use a array of semaphore.
+CFLAGS+=#-DSYNC_SIGNAL
 
 TARGETS=tiny hackbench libSPMD.a
 

@@ -8,9 +8,10 @@
 #define VINA_FRAMEWORK
 #include "vector.hpp"
 #include "mtsupport.hpp"
-#include "libSPMD/threadpool.hpp"
+#include "threadpool.hpp"
 #include "profiler.hpp"
 #include "toolkits.hpp"
+#include "libSPMD/warp.h"
 
 #include <tr1/type_traits>
 #include <tr1/functional>
@@ -21,7 +22,6 @@
 #include <boost/mpl/identity.hpp>
 #include <sstream>
 
-#include "libSPMD/warp.h"
 
 using namespace boost;
 
@@ -51,30 +51,41 @@ namespace vina {
 #define PROF_HIT(EVT) (Profiler::getInstance().eventHit(EVT))
 
   namespace __aux{
-/* To abridge the gap between libvina(modern c++ template library and i \
-   libSPMD general purpose c library,  a couple of function conversion  \
-   stab is neccessary. 
-*/
+/*
+ * To abridge the gap between libvina (modern c++ template library and   \
+ * libSPMD (general purpose c library), a couple of function conversion  \  
+ * stab is neccessary. two aims of these convertors:   
+ * 1) convert from function object to pure function pointer, i.e. any 
+ * following functions are reentries.
+ * 2) normalize to unary form. 
+ */
+    struct func_param {
+      void * callable; /*this object at least has operator() method*/
+      void * arg0;
+      void * arg1;
+      void * arg2;
+    };
+
     template<class F>
-    void wrapper_func_nullary(F * _self)
+    void wrapper_func_nullary(func_param * p)
     {
-  	_self->operator()();
+      static_cast<F*>(p->callable)->operator()();
     } 
     template <class F>
-    void wrapper_func_unary(F * _self, void * arg)
+    void wrapper_func_unary(func_param * p)
     {
-        _self->operator() (arg);
+      static_cast<F*>(p->callable)->operator()(p->arg0); 
     }
     template <class F>
-    void wrapper_func_binary(F * _self, void * ret, void * arg)
+    void wrapper_func_binary(func_param * p)
     {
-         _self->operator() (ret, arg);
+      static_cast<F*>(p->callable)->operator()(p->arg0, p->arg1); 
     }
     template <class F>
-    void wrapper_func_ternary(F * _self, void * ret, void * arg0, void *arg1)
+    void wrapper_func_ternary(func_param * p)
     {
-	//printf("ternary is called _self = %p, (%p, %p, %p)\n", _self, ret, arg0, arg1);
-    	_self->operator() (ret, arg0, arg1);
+      //printf("ternary\n");
+      static_cast<F*>(p->callable)->operator()(p->arg0, p->arg1, p->arg2);
     }
 
 /* libvina can cut off data regardlss of underlying data-structure. it's desireable to      \
@@ -197,7 +208,7 @@ namespace vina {
     typedef typename mpl::eval_if<arg0_arithm,
 				  mpl::int_<0>, 
 				  __aux::viewdim<typename Instance::SubTask::Arg0>
-				  >::type arg0_dim;
+		          >::type arg0_dim;
 
     typedef typename mpl::eval_if<arg1_arithm,
 				  mpl::int_<0>, 
@@ -232,16 +243,16 @@ namespace vina {
 #endif
 #else
         // libSPMD has implicit barrier
-	// furthermore, libspmd has indenpent breakdown profiler based on files
+	// furthermore, it has independent breakdown profiler based on files
         int wid;
         if ( _IsMT && lookahead == 1 ) {
 	  auto compF = Instance::SubTask::computation();
-	  typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
-	  func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
-	  //printf("func_t task %p\n", task); 
+	  typedef void (*func_t)(__aux::func_param *); 
+	  func_t task = &__aux::wrapper_func_ternary<typename Instance::SubTask::_Comp>;
+
 	  wid = spmd_create_warp(_K, (void *)task, 0, 0, 0);
 	  assert( wid != -1 && "spmd creation faied");
-	  printf("create warp id %d\n", wid);
+	  //printf("create warp id %d\n", wid);
         }
 #endif
 	for (int k=0; k < _K; ++k) {
@@ -259,11 +270,19 @@ namespace vina {
 #ifndef __NDEBUG
 #ifdef __USE_LIBSPMD
             auto compF = Instance::SubTask::computation();
-	    //printf("compF subArg0=%p, subArg1=%p, subResult=%p\n", subArg0, subArg1, subResult);
-	    int tid =  spmd_create_thread(wid, &compF, subArg0, subArg1, subResult);
+	    __aux::func_param * arg = new __aux::func_param;
+            arg->callable = compF;
+            arg->arg0 = (void *)subArg0; 
+	    arg->arg1 = (void *)subArg1;
+	    arg->arg2 = (void *)subResult;
+
+	    int tid =  spmd_create_thread(wid, arg);
+	   // printf("tid = %d compF=%p\n", tid, compF);
 	    if ( -1 == tid ) {
 		fprintf(stderr, "failed to create thread\n");
+		exit(-1);
 	    }
+
 	    PROF_HIT(__frm_libspmd_thread_cnt);
 #elif defined( __USEPOOL) // thread pool
             auto compF = Instance::SubTask::computationMT_t();
@@ -280,7 +299,13 @@ namespace vina {
 #else
 #ifdef __USE_LIBSPMD
 	    auto compF = Instance::SubTask::computation();
-	    spmd_create_thread(wid, &compF, subArg0, subArg1, subResult); 
+	    __aux::func_param * arg = new __aux::func_param;
+            arg->callable = (void*)compF;
+            arg->arg0 = (void *)subArg0; 
+	    arg->arg1 = (void *)subArg1;
+	    arg->arg2 = (void *)subResult;
+
+            spmd_create_thread(wid, arg);
 #else
 	    _Tail::doit(*subArg0, *subArg1, *subResult, barrier);
 #endif
@@ -299,7 +324,7 @@ namespace vina {
 	Profiler::getInstance().eventEnd(__frm_kernel_par);
 #endif
       }
-  };
+ };
   template<class Instance, int _K>
   struct mappar<Instance, _K, false, true>
   {
@@ -313,7 +338,7 @@ namespace vina {
 #ifndef __NDEBUG
       Profiler::getInstance().eventStart(__frm_kernel_seq);
 #endif
-      compF(arg0, arg1, result);
+      (*compF)(arg0, arg1, result);
 #ifndef __NDEBUG
       Profiler::getInstance().eventEnd(__frm_kernel_seq);
 #endif
@@ -612,12 +637,12 @@ struct mapreduce {
 
 #if defined(__USE_LIBSPMD)
             auto Comp = Instance::SubTask::computation();
-            int tid = spmd_create_thread(wid, &Comp, subArg0, subArg1, subResults[k]) ;
+            ////int tid = spmd_create_thread(wid, &Comp, subArg0, subArg1, subResults[k]) ;
 #ifndef __NDEBUG
             PROF_HIT(__frm_libspmd_thread_cnt);
-            if ( -1 == tid ) {
-               fprintf(stderr, "failed to create thread\n");
-	    }
+            ////if ( -1 == tid ) {
+            ////   fprintf(stderr, "failed to create thread\n");
+	    ////}
 #endif
 #elif defined(__USE_POOL)
 #ifndef __NDEBUG
