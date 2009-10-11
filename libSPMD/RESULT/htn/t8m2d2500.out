@@ -1,0 +1,39 @@
+do_sampling
+test #0: 10491
+test #1: 7502
+test #2: 7534
+test #3: 5921
+test #4: 5875
+test #5: 5022
+test #6: 3890
+test #7: 2600
+test #8: 5041
+test #9: 4063
+test #10: 6673
+test #11: 5137
+test #12: 5076
+test #13: 2636
+test #14: 5107
+test #15: 2609
+test #16: 2616
+test #17: 5130
+test #18: 2606
+test #19: 2599
+null=3168.45, NR=11, exp=4022.91 sd =444.29, se = 989.87, CI (3033.040294-5012.777888) p-value 0.05
+********** Result of ---threadpool--- **********
+Group Num is: 20
+Thread in one group is: 8
+Enforce to yield process: 0
+Poll size is: 9
+content level: 0
+Worker delay is 2500 us using CK-Burning
+Total time is 44249l us
+group overhead Expect is  3168.45 us
+group overhead Variance is 2171288.89
+group overhead Standard Error is  1473.53
+
+Profile info
+======================================================================
+# 0       ck-burning checker    1     2477usec            5.3%
+# 1               threadpool   11    44249usec            94.7%
+*run in sequence 19827

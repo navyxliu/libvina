@@ -23,7 +23,7 @@ for ((i=${NR_CPU}; i>=1; i=i>>1)); do
 for ((j=1; j<=200; ++j)); do
     echo "testing -t$i $j ..."
     #../tpbench -t$i -d 1000 -m 4 -c10 -i 20 > /dev/null
-    ./tiny $i > /dev/null
+    sudo ./tiny $i > /dev/null
     if [ "$?" != "0" ]
     then
        echo "An ERROR occured in -t $i -c 10 case"

@@ -1,0 +1,40 @@
+avl_pe is    8
+do_sampling
+test #0: 2571
+test #1: 2541
+test #2: 2541
+test #3: 2539
+test #4: 2542
+test #5: 2545
+test #6: 2558
+test #7: 2542
+test #8: 2536
+test #9: 2542
+test #10: 2543
+test #11: 2540
+test #12: 2541
+test #13: 2543
+test #14: 2551
+test #15: 2542
+test #16: 2538
+test #17: 2540
+test #18: 2541
+test #19: 2543
+null=2542.84, NR=17, exp=2542.71 sd =1.23, se = 2.61, CI (2540.098217-2545.313548) p-value 0.05
+********** Result of ---libspmd--- **********
+Group Num is: 20
+Thread in one group is: 8
+Enforce to yield process: 0
+Poll size is: 9
+content level: 0
+Worker delay is 2500 us using CK-Burning
+Total time is 43224l us
+group overhead Expect is  2542.84 us
+group overhead Variance is    25.72
+group overhead Standard Error is     5.07
+
+Profile info
+======================================================================
+# 0       ck-burning checker    1     2474usec            5.4%
+# 1                  libspmd   17    43224usec            94.6%
+*run in sequence 19864

@@ -1,5 +1,6 @@
 // This file is not supposed to be distributed.
 // History:
+// July.13, create file and document design in DESIGN.
 // Sep. 12, fix a bug about pointer calculation
 // Sep. 22, add file-based execution breakdown and __TIMELOG macro
 //          SMP machine support for probe_cpu function
@@ -61,7 +62,7 @@ default_task_entry(void * arg)
   struct sembuf sb = {.sem_num = 0, .sem_op = 1, .sem_flg = 0};
   semop(task->ldr->warp._init_list.sem_task_prep, &sb, 1);
   int ret;
-  //set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
+  set_fifo(task->tid, sched_get_priority_max(SCHED_FIFO));
 #ifdef SYNC_SIGNAL 
   sigset_t mask, oldmask;
   sigemptyset(&mask);
@@ -110,7 +111,6 @@ default_task_entry(void * arg)
     	(execspan = (fntv_end.tv_sec  - fntv_start.tv_sec) * 1000000 
 	+ (fntv_end.tv_usec - fntv_start.tv_usec)));
 #endif
-#if 0
     /*release physical pe */
     sb.sem_num = task->oc;
     sb.sem_op = 1;
@@ -119,7 +119,6 @@ default_task_entry(void * arg)
       fprintf(task->log_fd, "[ERROR] release pe failed: %s\n", strerror(errno));
       thread_exit("failed in semop release pe");
     }
-#endif
 #if !defined(__NDEBUG) ||  defined(__TIMELOG)
     pe_snapshot(task->log_fd, task->oc); 
     int before = semctl(task->ldr->sem, 0, GETVAL);
@@ -633,7 +632,7 @@ int  __spmd_export
 spmd_create_warp(int nr, void * fn, unsigned int stk_sz, 
                  void * hook, void * hk_arg)
 {
-  int i, warp_id;
+  int i, j, warp_id;
   leader_struct_p cand, ldr;
   warp_struct_p warp;
   int offset;
@@ -681,7 +680,6 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz,
   //FIXME: does not support customized stack size
   if ( stk_sz != 0 ) return -1;
 
-#if 0
   //select pe
   unsigned short snapshot[the_pool.nr_pe];
   struct sembuf buf[nr];
@@ -693,7 +691,7 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz,
   for(i=0, j=0; j<nr && i<the_pool.nr_pe; ++i) {
     if ( snapshot[i] == 1 ) 
       buf[j++].sem_num = i;
-
+  }
   if ( j < nr ) {
  #ifndef __NDEBUG
     fprintf(stderr, "j < nr failed, j=%d, nr=%d\n", j, nr); 
@@ -701,8 +699,7 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz,
     int fired = semctl(ldr->sem, 1, GETVAL);
     fprintf(stderr, "remained=%d, fired=%d\n", remained, fired);
  #endif
-    struct timespec = {.tv_sec = 0, .tv_nsec = 50000};
-    nanosleep(&spec, NULL); 
+    exp_backoff();
     goto retry;
   }
   if ( -1 == (eno=semtimedop(the_pool.sem_pe, buf, nr, &spec)) ) {
@@ -718,7 +715,6 @@ spmd_create_warp(int nr, void * fn, unsigned int stk_sz,
     //fprintf(stderr, "selected pe#%2d %d\n", i, buf[i].sem_num);
     ldr->warp.tsks[i].oc = buf[i].sem_num;
   }
-  #endif
   warp_id = (ldr - the_pool.leaders);
   //fprintf(stderr, "warpid=%d\n", warp_id);
   return warp_id;
@@ -776,7 +772,7 @@ spmd_fire_up(leader_struct_p leader)
   int semval;
 
   //fprintf(stderr,"fire up\n");
-/*
+  //
   for(i=0; i<leader->nr; ++i) {
     tsk  = &leader->warp.tsks[i];
     CPU_ZERO(&mask);
@@ -788,7 +784,6 @@ spmd_fire_up(leader_struct_p leader)
       //FIXME: unload rt task for gentle exit
     }
   }
-*/
 
 /*change myself to that last RT cpu, pervent suspending the signal sending*/
 //FIXME: add the following code will induce significant perf retreat.
@@ -930,23 +925,9 @@ spmd_all_complete()
   for (i=0; i<the_pool.nr_leader; ++i) {
     leader_struct_p ldr = &(the_pool.leaders[i]);
     //contend
-    /*
-    if ( !spinlock_trylock(&(ldr->lck)) ) {
-      return 0;
-    }
-    */
     if ( 0 == semctl(ldr->sem, 1, GETVAL) ) {
       return 0;
     }
-    //unfinshed yet
-    /*
-    else if ( ldr->oc != 0 ) {
-      spinlock_unlock(&(ldr->lck));
-      return 0;
-    }
-    else 
-      spinlock_unlock(&(ldr->lck));
-    */
   }
   return 1;
 }
