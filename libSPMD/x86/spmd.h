@@ -70,12 +70,13 @@ typedef struct warp_struct {
   void *          hook_arg;  /* the argument for hook function */
   int             width;
   FILE *          log_fd;
+
   long            time_on_fly;
   long            time_in_reduce;
   long            time_in_wait;
 
   int             counter;
-  long            last_stamp; /* the timestamp before a warp is fired up*/
+  struct timeval  last_stamp; /* the timestamp before a warp is fired up*/
 
   // helper data for intialization 
   struct tag_init_list {

@@ -187,10 +187,10 @@ default_leader_entry(leader_struct_p leader)
     struct timeval hook_start, hook_end;
     gettimeofday(&tv, NULL);
     // elapsed time  of waiting
-    elapsed = (tv.tv_sec - leader->warp.last_stamp/1000000) * 1000000 
-    	+ (tv.tv_usec - leader->warp.last_stamp%1000000);
+    elapsed = (tv.tv_sec - leader->warp.last_stamp.tv_sec) * 1000000 
+    	+ (tv.tv_usec - leader->warp.last_stamp.tv_usec);
     fprintf(leader->warp.log_fd, "leader counter = %d warp num. = %d wait_return=%d\n", 
-    	leader->warp.counter++, leader->warp.width, elapsed);
+    	leader->warp.counter, leader->warp.width, elapsed);
     leader->warp.time_in_wait += elapsed; 
     
     pe_snapshot(leader->warp.log_fd, -1);
@@ -216,8 +216,8 @@ default_leader_entry(leader_struct_p leader)
     }
 #ifdef __TIMELOG
     gettimeofday(&tv, NULL);
-    elapsed = (tv.tv_sec - leader->warp.last_stamp/1000000) * 1000000 
-    	+ (tv.tv_usec - leader->warp.last_stamp%1000000);
+    elapsed = (tv.tv_sec - leader->warp.last_stamp.tv_sec) * 1000000 
+    	+ (tv.tv_usec - leader->warp.last_stamp.tv_usec);
     fprintf(leader->warp.log_fd, "time on fly %d\n", elapsed);
     leader->warp.time_on_fly += elapsed;
     fflush(leader->warp.log_fd);
@@ -594,8 +594,6 @@ spmd_cleanup()
      		strerror(errno)); 
     }
 
-    //spinlock_destroy(&(ldr->lck));
-
     if ( -1 == semctl(ldr->sem, 0, IPC_RMID) ) {
       perror("semctl IPC RMID sem");
     }
@@ -606,6 +604,11 @@ spmd_cleanup()
     if ( -1 == semctl(ldr->warp._init_list.sem_task_prep, 0, IPC_RMID) ) {
       perror("semctl IPC RMID sem_task_prep");
     }
+    fprintf(ldr->warp.log_fd, "time_on_fly = %2d\ntime_in_reduce = %2d\ntime_in_wait = %2d\n", 
+    	ldr->warp.time_on_fly, 
+        ldr->warp.time_in_reduce, 
+	ldr->warp.time_in_wait);
+    fclose(ldr->warp.log_fd);
   }/*for*/
 
   if ( -1 == semctl(the_pool.sem_pe, 0, IPC_RMID) ) {
@@ -822,6 +825,16 @@ spmd_fire_up(leader_struct_p leader)
   }
 #endif
 
+#ifdef __TIMELOG
+#if defined(LINUX)
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n", ts.tv_sec, 
+    	ts.tv_nsec);
+#endif
+    gettimeofday(&(leader->warp.last_stamp), NULL);
+#endif
+
 #ifndef SYNC_SIGNAL
   //fireup
   for(i=0; i<leader->warp.width; ++i) array[i] = 1;
@@ -838,23 +851,9 @@ spmd_fire_up(leader_struct_p leader)
         tsk->tid, strerror(errno));
       exit(EXIT_FAILURE);
     }
-    //struct sembuf sb = {.sem_num =0, .sem_op = -1, .sem_flg = 0};
-    //semop(leader->sem, &sb, 1);
   }/*for*/
 #endif
   leader->nr = 0;
-#ifdef __TIMELOG
-#if defined(LINUX)
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    fprintf(leader->warp.log_fd, "fire up timestamp: %d:%d\n", ts.tv_sec, 
-    	ts.tv_nsec);
-#endif
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    leader->warp.last_stamp = tv.tv_sec * 1000000 + tv.tv_usec;
-#endif
-
 }
 
 int __spmd_export
@@ -863,29 +862,16 @@ spmd_create_thread(int warp_id, void * arg)
   leader_struct_p ldr;
   int t;
    //printf("warp_id = %d\n", warp_id); 
+   //FIXME RESET
   if ( !( 0 <= warp_id && warp_id < the_pool.nr_leader ) ) 
     return -1; /*ILL warp_id */
- 
+
   ldr = &(the_pool.leaders[warp_id]);
-  //printf("ldr = %p\n", ldr);
-/*
-  if ( !spinlock_trylock(&(ldr->lck)) ) {
-    return -1;
-  }
-*/
-/*
-  if ( ldr->oc != 1 && ldr->warp.fn == NULL ) {
-    spinlock_unlock(&(ldr->lck));
-    return -1;
-  }
- */  
   if ( ldr->nr >= ldr->warp.width ) {
-    //spinlock_unlock(&(ldr->lck));
     return -1; /*more task than warp. already fired*/
   }
 
   t = ldr->nr++;
-  //spinlock_unlock(&(ldr->lck));
 
   //load function and its arguments 
   ldr->warp.tsks[t].arg = arg;
