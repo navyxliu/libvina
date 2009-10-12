@@ -10,7 +10,7 @@ extern "C" {
    *-1 when failed
    */
   extern int spmd_initialize();
-  extern int _spmd_initializ_n(int n);
+  extern int _spmd_initialize(int n);
   extern int spmd_get_taskid();
 
 

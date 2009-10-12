@@ -1,9 +1,15 @@
 //This file is not supposed to be distributed.
+//This file provides TF classes for
+// mapseq
+// mappar
+// mapreduce
+// See Sequoia[sc06] for the meanings of these contructs.
+//
 //History
 //July. 20, create file 
 //Aug. 13, introduce thread pool
 //Sep. 22, introduce libspmd
-//
+//Oct. 10, function wrapper
 #ifndef VINA_FRAMEWORK
 #define VINA_FRAMEWORK
 #include "vector.hpp"
@@ -568,6 +574,7 @@ struct mapreduce {
     typedef mapreduce2 <Instance, _K, _IsMT, Instance::_pred> _Self;
 
     typedef view_trait2<typename Instance::SubTask::Result>  trait_result;
+
 #ifdef __USEPOOL
     typedef memory_pool<typename trait_result::container_type,
 			_K, Instance::SubTask::_pred> mem_pool;
@@ -603,8 +610,6 @@ struct mapreduce {
 	    	<Instance::SubWView::VIEW_SIZE_X,
                  Instance::SubWView::VIEW_SIZE_Y>(i * (Instance::SubWView::VIEW_SIZE_X), 
                                                   j * (Instance::SubWView::VIEW_SIZE_Y)));    
-            //printf("subResult = %p subResults[0] = %p\n", subResults, subResults[0]);
-            //assert ( subResults == Instance::localstorage(false, subResults) && "wrong local storage");
 #if !defined(__NDEBUG) && !defined(__USE_LIBSPMD)
               event_id timers[_K];
 	      for (int _i=0; _i<_K; ++_i) {
@@ -613,7 +618,7 @@ struct mapreduce {
 	        timers[_i] = Profiler::getInstance().eventRegister(oss.str());
 	      }
 
-	      Profiler::getInstance().eventStart(__frm_kernel_par);
+	    Profiler::getInstance().eventStart(__frm_kernel_par);
 #endif
 
 #ifndef __USE_LIBSPMD
@@ -621,12 +626,13 @@ struct mapreduce {
 #else
         int wid;
         auto compF = Instance::SubTask::computation();
-	typedef void (* func_t) (decltype(compF) *, void *, void *, void *);
-	func_t task = &__aux::wrapper_func_ternary<decltype(compF)>;
-	wid = spmd_create_warp (_K, (void *)task, 0, 
-	                        (void *)&Instance::reduce_ptr, (void *)subResults);
-        //wid = spmd_create_warp(_K, (void *)task, 0, NULL, NULL);
-	assert( wid != -1 && "spmd creation faied");
+	typedef void (* func_t) (__aux::func_param *);
+	func_t task = &__aux::wrapper_func_ternary<typename Instance::SubTask::_Comp>;
+
+	//wid = spmd_create_warp (_K, (void *)task, 0, 
+	//                       (void *)&Instance::reduce_ptr, (void *)subResults);
+	//wid = spmd_create_warp(_K, (void *)task, 0, NULL, NULL);
+	//assert( wid != -1 && "spmd creation faied");
 	//printf("warp %d is created\n", wid);
 #endif
 	for (int k=0; k<_K; ++k) {
@@ -636,41 +642,53 @@ struct mapreduce {
 		                      Instance::SubRView1::VIEW_SIZE_Y, false>::sub_reader(arg1, k, j);
 
 #if defined(__USE_LIBSPMD)
-            auto Comp = Instance::SubTask::computation();
-            ////int tid = spmd_create_thread(wid, &Comp, subArg0, subArg1, subResults[k]) ;
+	    __aux::func_param * param = new __aux::func_param;
+	    param->callable = Instance::SubTask::computation();
+	    param->arg0 = subArg0;
+	    param->arg1 = subArg1;
+	    param->arg2 = subResults[k];
+
+	    Instance::SubTask::computation()->operator() (subArg0, subArg1, subResults[k]);
+            //int tid = spmd_create_thread(wid, param);
+	    
 #ifndef __NDEBUG
+/*
+            if ( -1 == tid ) {
+              fprintf(stderr, "failed to create thread\n");
+	      exit(-1);
+	    }
+	    */
             PROF_HIT(__frm_libspmd_thread_cnt);
-            ////if ( -1 == tid ) {
-            ////   fprintf(stderr, "failed to create thread\n");
-	    ////}
 #endif
+
 #elif defined(__USE_POOL)
 #ifndef __NDEBUG
-              auto Comp = Instance::SubTask::computationMT_t();
-	      pool.run(boost::bind(Comp, *subArg0, *subArg1, *subResults[k],
-				    barrier, timers[k]))
-	      PROF_HIT(__frm_threadpool_enqueue_cnt);
+            auto Comp = Instance::SubTask::computationMT_t();
+	    pool.run(boost::bind(Comp, *subArg0, *subArg1, *subResults[k],
+		    barrier, timers[k]))
+	    PROF_HIT(__frm_threadpool_enqueue_cnt);
 #else
-              auto Comp = Instance::SubTask::computationMT();
-	      pool.run(boost::bind(Comp, *subArg0, *subArg1, *subResults[k], 
+            auto Comp = Instance::SubTask::computationMT();
+	    pool.run(boost::bind(Comp, *subArg0, *subArg1, *subResults[k], 
 	                            barrier);
 #endif
 #else  //normal pthread 
 #ifndef __NDEBUG
-              auto Comp = Instance::SubTask::computationMT_t();
-              boost::thread leaf(Comp, *subArg0, *subArg1, *subResults[k], 
+            auto Comp = Instance::SubTask::computationMT_t();
+            boost::thread leaf(Comp, *subArg0, *subArg1, *subResults[k], 
 				 barrier, timers[k]);
-	      leaf.detach();
-              //std::cout << "thread " << leaf.get_id() << "\n";
-              PROF_HIT(__frm_thread_creation_cnt);
+	    leaf.detach();
+            //std::cout << "thread " << leaf.get_id() << "\n";
+            PROF_HIT(__frm_thread_creation_cnt);
 #else
-              auto Comp = Instance::SubTask::computationMT();
-	      boost::thread leaf(Comp, *subArg0, *subArg1, *subResults[k], 
+            auto Comp = Instance::SubTask::computationMT();
+	    boost::thread leaf(Comp, *subArg0, *subArg1, *subResults[k], 
 	                         barrier);
-	      leaf.detach();
-#endif              
+	    leaf.detach();
+#endif            
 #endif
 	    }
+	    //while( spmd_all_complete());
 #ifndef __USE_LIBSPMD
 	    barrier->wait();
 #endif
@@ -689,6 +707,8 @@ struct mapreduce {
 	    //Instance::reduce(result, i, j, subResults[0]);
 #endif
 #ifndef __USEPOOL
+            //unsafe delete here. 
+	    //
 	    //delete [] submats;
 #endif
 	  }

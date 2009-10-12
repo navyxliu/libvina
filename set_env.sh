@@ -12,5 +12,8 @@ export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 #otherwise, processor will simply ignore it.
 #  3.Observe user applications only. to include OS affect, using 0xc3412e
 #for more information, see [profiler.cc]
-sudo /usr/sbin/wrmsr 390 0xc1412e
-sudo chmod -o+r /dev/cpu/0/msr
+#sudo /usr/sbin/wrmsr 390 0xc1412e
+#sudo chmod -o+r /dev/cpu/0/msr
+
+#Set PATH to access scripts in libSPMD
+export PATH=.:./libSPMD:$PATH

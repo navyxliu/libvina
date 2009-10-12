@@ -97,9 +97,9 @@ struct matmul_parallel
   typedef std::tr1::function<void (void *, void *, void *)>
   _Comp;
 
-  static _Comp
+  static _Comp*
   computation() {
-    return  &(Func<Result, Arg0, Arg1>::doit_ptr);
+    return  new _Comp(&Func<Result, Arg0, Arg1>::doit_ptr);
   }
 
   typedef std::tr1::function<void (const Arg0&, const Arg1&, Result&)>

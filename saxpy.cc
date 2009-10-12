@@ -166,7 +166,7 @@ VEC_TEST_K=%d\n"
   typedef ::saxpy<Writer, VEC_TEST_TYPE, TestVector, vecMAddWrapper, p_simple, VEC_TEST_K, true>
     TF_MT;
 
-  int nr_pe = spmd_initialize();
+  int nr_pe = _spmd_initialize(VEC_TEST_K);
   assert( nr_pe != -1 && "failed to initialize libSPMD runtime");
   printf("startup libspmd runtime: %d pe is detected\n", nr_pe);
 
