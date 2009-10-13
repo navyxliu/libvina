@@ -13,6 +13,7 @@
 #include <tr1/functional>
 using namespace vina;
 #include <pthread.h>
+#include <mkl.h>
 #include "mkl_cblas.h"
 
 #ifdef __NDEBUG
@@ -207,6 +208,13 @@ struct p_simple{
   const static bool value = size_x <= MM_TEST_GRANULARITY;
 };
 
+template <class T>
+void 
+printm(const T& M)
+{
+  for (int i=0; i<T::DIM_M; ++i, putc('\n', stdout)) for (int j=0; j<T::DIM_N; ++j) 
+    printf("%.4f ", M[i][j]);
+}
 int main()
 {  
 
@@ -215,17 +223,20 @@ int main()
   printf("Matrix Multiplication test program\n\
   MM_TEST_SIZE_N=%4d\n\
   MM_TEST_GRANULARITY=%4d\n\
-  MM_TEST_K=%4d\n\
-  see Makefile TEST_INFO to set parameters\n", 
+  MM_TEST_K=%4d\n"
+#ifdef __USE_LIBSPMD
+"thread: LIBSPMD\n"
+#else
+"thread: pthread\n"
+#endif
+  "see Makefile TEST_INFO to set parameters\n", 
 	 MM_TEST_SIZE_N, MM_TEST_GRANULARITY, MM_TEST_K);
 
   typedef Matrix<MM_TEST_TYPE, MM_TEST_SIZE_N, MM_TEST_SIZE_N> TestMatrix;
   typedef Matrix<vector_type<MM_TEST_TYPE>, MM_TEST_SIZE_N, MM_TEST_SIZE_N> TestMatrix_v;
-  typedef Matrix<vector_type<MM_TEST_TYPE>, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K> matrix_ss_t; // small set;
 
   static TestMatrix x, y, z, STD_result;
   static TestMatrix_v x_v, y_v, z_v;
-  static matrix_ss_t x_ss, y_ss, z_ss;
 
   Profiler &prof = Profiler::getInstance();
   //local
@@ -243,35 +254,32 @@ int main()
   for (int i=0; i<TestMatrix::DIM_M; ++i) 
     for (int j=0; j<TestMatrix::DIM_N; ++j) 
       x[i][j] = x_v[i][j] = gen(), y[i][j] = y_v[i][j] = gen();
-
-  for (int i=0; i<TestMatrix::DIM_M/MM_TEST_K; ++i)
-    for (int j=0; j<TestMatrix::DIM_N/MM_TEST_K; ++j)
-      x_ss[i][j] = gen(), y_ss[i][j] = gen();
-
-
+/*
+  printf("matrix X:\n");
+  printm(x);
+  printf("\nmatrix Y:\n");
+  printm(y);
+  printf("\n");
+*/
   double Comp = MM_TEST_SIZE_N * MM_TEST_SIZE_N;
   Comp = Comp * MM_TEST_SIZE_N * 2;
-  double Comp2 = MM_TEST_SIZE_N/MM_TEST_K * (MM_TEST_SIZE_N/MM_TEST_K);
-  Comp2 = Comp2 * (MM_TEST_SIZE_N / MM_TEST_K) * 2;
 
   z.zero();
   z_v.zero();
-  z_ss.zero();
 
   STD_result.zero();
   auto result = z.subWView();
   auto result_v = z_v.subWView();
-  auto result_ss = z_ss.subWView(); 
   /*
    * replace my trivial mm with mkl sgemm procedure
    */
-  //multiply<MM_TEST_TYPE, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K, MM_TEST_SIZE_N/MM_TEST_K>
-   // (x_ss, y_ss, z_ss);
+  //multiply<MM_TEST_TYPE, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N>
+  //(x, y, z);
+#ifndef __NDEBUG
   float * std_x, * std_y, * std_z;
   std_x = x.data();
   std_y = y.data();
   std_z = STD_result.data();
-#if 0  
   prof.eventStart(temp0);
   {
     cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N,
@@ -279,8 +287,8 @@ int main()
   }
   prof.eventEnd(temp0); 
   printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
-
 #endif
+
 /*  
   typedef matmul_parallel<Writer, TestMatrix, TestMatrix, 
     matMAddWrapper, matAddWrapper2, p_simple, MM_TEST_K, false> TF; // fransformer :~)
@@ -312,17 +320,21 @@ int main()
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
 */
 
+  //_spmd_initialize(MM_TEST_K);
   spmd_initialize();
+  //mkl_set_num_threads(1);
   z_v.zero();
-
   typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
     matMulWrapper, matAddWrapper2, p_simple, MM_TEST_K> TF_PARALLEL_SSE;
- 
+
+  printf("x_v.data() = %p, y_v.data() = %p result_v = %p\n", 
+         x_v.data(), y_v.data(), result_v.data());
+
   prof.eventStart(temp4);
   TF_PARALLEL_SSE::doit(x_v, y_v, result_v);
   while (!spmd_all_complete());
   prof.eventEnd(temp4);
-  //CHECK_RESULT(z_v);
+  CHECK_RESULT(z_v);
   printf("MT SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp4)->elapsed()));
   spmd_cleanup();
   prof.dump();

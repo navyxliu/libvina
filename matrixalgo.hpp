@@ -76,7 +76,8 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
   typedef ReadView2<vFloat, SIZE_A, SIZE_B>   RView0;
   typedef ReadView2<vFloat, SIZE_B, SIZE_C>   RView1;
   typedef WriteView2<vFloat, SIZE_A, SIZE_C>  Result;
-    
+  
+
   static void mul(const RView0& X, const RView1& Y, 
 		  Result& result)
   {
@@ -88,6 +89,8 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
     
     float * c = result.data();
     const size_t C_DIM_N = result.dimN();
+
+    //printf("a = %p, b = %p, c = %p\n", a, b, c);
 #ifndef MKL
     for(int i=0; i<SIZE_A; i+=4)
       {
@@ -151,10 +154,11 @@ struct matArithImpl<vFloat, SIZE_A, SIZE_B,SIZE_C>{
 	a += 4*A_DIM_N;
       }// for i
 #else
-    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, SIZE_A, SIZE_B, SIZE_C,
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, SIZE_A, SIZE_C, SIZE_B,
          1.0f/*alpha*/, a, A_DIM_N, b, B_DIM_N, 0.0f/*beta*/, c, C_DIM_N); 
 #endif
   }
+
   static void madd(const RView0& X, const RView1& Y, 
 		   Result& result)
   {

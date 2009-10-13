@@ -91,7 +91,9 @@ namespace vina {
     void wrapper_func_ternary(func_param * p)
     {
       //printf("ternary\n");
-      static_cast<F*>(p->callable)->operator()(p->arg0, p->arg1, p->arg2);
+      //static_cast<F*>(p->callable)->operator()(p->arg0, p->arg1, p->arg2);
+      mt::thread_t thr(*(static_cast<F*>(p->callable)), p->arg0, p->arg1, p->arg2);
+      thr.join();
     }
 
 /* libvina can cut off data regardlss of underlying data-structure. it's desireable to      \
@@ -510,6 +512,7 @@ struct mapreduce {
 	Instance::reduce(result,/*<--*/ submats[0]);
 	delete [] submats;
       }
+
       else {
 	  for (int k=0; k < _K; ++k) {
 	    auto subArg0   = arg0.template subRView
@@ -610,6 +613,7 @@ struct mapreduce {
 	    	<Instance::SubWView::VIEW_SIZE_X,
                  Instance::SubWView::VIEW_SIZE_Y>(i * (Instance::SubWView::VIEW_SIZE_X), 
                                                   j * (Instance::SubWView::VIEW_SIZE_Y)));    
+            //printf("subResult[0]->data() = %p\n", subResults[0]->data());
 #if !defined(__NDEBUG) && !defined(__USE_LIBSPMD)
               event_id timers[_K];
 	      for (int _i=0; _i<_K; ++_i) {
@@ -629,10 +633,9 @@ struct mapreduce {
 	typedef void (* func_t) (__aux::func_param *);
 	func_t task = &__aux::wrapper_func_ternary<typename Instance::SubTask::_Comp>;
 
-	//wid = spmd_create_warp (_K, (void *)task, 0, 
-	//                       (void *)&Instance::reduce_ptr, (void *)subResults);
-	//wid = spmd_create_warp(_K, (void *)task, 0, NULL, NULL);
-	//assert( wid != -1 && "spmd creation faied");
+	wid = spmd_create_warp (_K, (void *)task, 0, 
+	                       (void *)&Instance::reduce_ptr, (void *)subResults);
+	assert( wid != -1 && "spmd creation faied");
 	//printf("warp %d is created\n", wid);
 #endif
 	for (int k=0; k<_K; ++k) {
@@ -648,16 +651,15 @@ struct mapreduce {
 	    param->arg1 = subArg1;
 	    param->arg2 = subResults[k];
 
-	    Instance::SubTask::computation()->operator() (subArg0, subArg1, subResults[k]);
-            //int tid = spmd_create_thread(wid, param);
-	    
+            //printf("arg0->data %p\n", subArg0->data());
+	    //printf("arg1->data %p\n", subArg1->data());
+            int tid = spmd_create_thread(wid, param);
+	    //printf("tid=%d\n", tid);
 #ifndef __NDEBUG
-/*
             if ( -1 == tid ) {
               fprintf(stderr, "failed to create thread\n");
 	      exit(-1);
 	    }
-	    */
             PROF_HIT(__frm_libspmd_thread_cnt);
 #endif
 
@@ -688,9 +690,19 @@ struct mapreduce {
 #endif            
 #endif
 	    }
-	    //while( spmd_all_complete());
 #ifndef __USE_LIBSPMD
 	    barrier->wait();
+#else
+            //while (!spmd_all_complete());
+/*
+            printf("i = %d, j = %d\n", i, j);
+	    printf("data %p\n", &(result[i*2][j*2]));
+	    for (int ii=0; ii<2; ++ii, putc('\n', stdout))
+	      for(int jj=0; jj<2; ++jj)
+	        printf("%.4f", result[i*2 + ii][j*2+jj]);
+            printf("\n");
+*/
+
 #endif
 
 #if !defined(__NDEBUG) && !defined(__USE_LIBSPMD)

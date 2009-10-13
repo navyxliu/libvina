@@ -27,7 +27,7 @@ MKLLIB=-L$(MKLPATH)/lib/em64t  \
 	-Wl,--start-group $(MKLPATH)/lib/em64t/libmkl_intel_lp64.a\
 	$(MKLPATH)/lib/em64t/libmkl_sequential.a \
 	$(MKLPATH)/lib/em64t/libmkl_core.a -Wl,--end-group \
-	-liomp5 -lpthread
+	-lpthread
 MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
 	-Wl,--start-group $(MKLPATH)/lib/em64t/libmkl_intel_lp64.a\
 	$(MKLPATH)/lib/em64t/libmkl_intel_thread.a \

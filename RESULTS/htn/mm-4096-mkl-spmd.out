@@ -1,3 +1,29 @@
+harpertown libvina]$ sudo ./mat_mul ; ./cleanup.sh mat_mul
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+    MM_TEST_GRANULARITY=1024
+      MM_TEST_K=   4
+      thread: LIBSPMD
+      see Makefile TEST_INFO to set parameters
+      x_v.data() = 0x86a1800, y_v.data() = 0x46a1800 result_v = 0x6a1800
+      _pred=0 SubTask::_pred=1
+      SubTask::RESULT::WRITER_SIZE_X=1024
+      MT SSE gflop=95.652825
+      time_on_fly =  0
+      time_in_reduce =  0
+      time_in_wait =  0
+      Profile info
+      ======================================================================
+      # 0             STD multiply    0        0usec            0.0%
+      # 1          Single-threaded    0        0usec            0.0%
+      # 2                   ST SSE    0        0usec            0.0%
+      # 3          mulmat_parallel    0        0usec            0.0%
+      # 4      mulmat_parallel SSE    1  1436852usec            100.0%
+      # 5          mulmat_smallset    0        0usec            0.0%
+
+
+
+
 Matrix Multiplication test program
   MM_TEST_SIZE_N=4096
   MM_TEST_GRANULARITY=1024
@@ -44,3 +70,28 @@ Profile info
 # 3          mulmat_parallel    0        0usec            0.0%
 # 4      mulmat_parallel SSE    1  1714194usec            100.0%
 # 5          mulmat_smallset    0        0usec            0.0%
+
+
+[xliu@harpertown libvina]$ sudo ./mat_mul 
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+    MM_TEST_GRANULARITY=1024
+      MM_TEST_K=   4
+      thread: LIBSPMD
+      see Makefile TEST_INFO to set parameters
+      x_v.data() = 0x86a1800, y_v.data() = 0x46a1800 result_v = 0x6a1800
+      _pred=0 SubTask::_pred=1
+      SubTask::RESULT::WRITER_SIZE_X=1024
+      MT SSE gflop=92.128005
+      time_on_fly =  0
+      time_in_reduce =  0
+      time_in_wait =  0
+      Profile info
+      ======================================================================
+      # 0             STD multiply    0        0usec            0.0%
+      # 1          Single-threaded    0        0usec            0.0%
+      # 2                   ST SSE    0        0usec            0.0%
+      # 3          mulmat_parallel    0        0usec            0.0%
+      # 4      mulmat_parallel SSE    1  1491826usec            100.0%
+      # 5          mulmat_smallset    0        0usec            0.0%
+
