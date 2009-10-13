@@ -23,6 +23,8 @@
 #include <tr1/functional>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/if.hpp>
+#include <boost/mpl/or.hpp>
+#include <boost/mpl/logical.hpp>
 #include <boost/mpl/int.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/identity.hpp>
@@ -95,6 +97,11 @@ namespace vina {
       mt::thread_t thr(*(static_cast<F*>(p->callable)), p->arg0, p->arg1, p->arg2);
       thr.join();
     }
+    template <class F>
+    void wrapper_func_ternary_(func_param * p) 
+    {
+      static_cast<F*>(p->callable)->operator()(p->arg0, p->arg1, p->arg2);
+    } 
 
 /* libvina can cut off data regardlss of underlying data-structure. it's desireable to      \
    distint scalar and vector. We use function overload or template specialization to handle \
@@ -256,7 +263,7 @@ namespace vina {
         if ( _IsMT && lookahead == 1 ) {
 	  auto compF = Instance::SubTask::computation();
 	  typedef void (*func_t)(__aux::func_param *); 
-	  func_t task = &__aux::wrapper_func_ternary<typename Instance::SubTask::_Comp>;
+	  func_t task = &__aux::wrapper_func_ternary_<typename Instance::SubTask::_Comp>;
 
 	  wid = spmd_create_warp(_K, (void *)task, 0, 0, 0);
 	  assert( wid != -1 && "spmd creation faied");

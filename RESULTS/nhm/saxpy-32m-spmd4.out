@@ -1,0 +1,28 @@
+root@siv-desktop:~/source/libvina# ./saxpy 
+SAXPY Program in Blas
+VEC_TEST_SIZE_N=32000000
+VEC_TEST_GRANULARITY=8000000
+VEC_TEST_K=4
+thread: LIBSPMD
+See Makefile TEST_INFO to set parameters
+elapsed=2809908
+STD gflop=2.277661
+startup libspmd runtime: 4 pe is detected
+elapsed=2252585
+MT gflop=2.841287
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation  400                           
+# 7                      STD    1  2809908usec            55.5%
+# 8                       ST    0        0usec            0.0%
+# 9                       MT    1  2252585usec            44.5%
+

@@ -148,8 +148,7 @@ VEC_TEST_K=%d\n"
   printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
   printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()/ITERS));
 #endif 
-  
-/*    
+/* 
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE,  TestVector, vecMAddWrapper, p_simple, VEC_TEST_K>
     TF;
@@ -160,8 +159,7 @@ VEC_TEST_K=%d\n"
   prof.eventEnd(temp1);
   CHECK_RESULT(y);
   printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed() / ITERS));
- */ 
-
+*/
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE, TestVector, vecMAddWrapper, p_simple, VEC_TEST_K, true>
     TF_MT;
