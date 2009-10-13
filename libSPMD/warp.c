@@ -875,6 +875,7 @@ spmd_create_thread(int warp_id, void * arg)
 
   //load function and its arguments 
   ldr->warp.tsks[t].arg = arg;
+  //fprintf(stderr, "task %d arg = %p\n", t, arg);
   // variable t is local. it guarantees fireup once.
   if ( t+1 == ldr->warp.width )
     spmd_fire_up(ldr);

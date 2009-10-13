@@ -5,10 +5,13 @@
 #10/5 2009
 
 #kill all threads derived from tpbench
-sudo killall -q $1
+#sudo killall -q $1
+#../kill_them.sh $1
 
 #rm all log files
 rm -f timelog*
+
+echo "ipcrm"
 
 #release all requested semaphores
 #use ipcs to check out this information
