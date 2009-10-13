@@ -22,7 +22,7 @@ endif
 include params 
 
 #intel Math kernel library
-MKLPATH=/opt/intel/mkl/10.2.1.017
+MKLPATH=/opt/intel/mkl/10.2.2.025
 MKLLIB=-L$(MKLPATH)/lib/em64t  \
 	-Wl,--start-group $(MKLPATH)/lib/em64t/libmkl_intel_lp64.a\
 	$(MKLPATH)/lib/em64t/libmkl_sequential.a \
@@ -41,10 +41,10 @@ SPMDLIB=-L$(SPMDPATH) -lSPMD
 #boost::thread lib
 ifeq ($(SYSTEM), Linux)
 ISSUE=$(shell cat /etc/issue)
-ifeq ($(word 1, $(ISSUE)), Red) #RHEL
-BOOSTPATH=/root/Desktop/boost_1_39_0
-BOOSTLIB=-L$(BOOSTPATH)/stage/lib -lboost_thread-gcc44-mt
-BOOSTINC=/usr/local/include/boost-1_39
+ifeq ($(word 1, $(ISSUE)), Ubuntu) 
+BOOSTPATH=/root/source/boost_1_40_0
+BOOSTLIB=-L$(BOOSTPATH)/stage/lib -lboost_thread
+BOOSTINC=/usr/local/include/boost
 else                            #fedora
 BOOSTLIB=-L/usr/lib64 -lboost_thread-mt
 BOOSTINC=/usr/include
