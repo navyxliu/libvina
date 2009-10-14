@@ -415,13 +415,24 @@ namespace vina {
     			  >::type arg1_dim;
 
     typedef mappar2<typename Instance::SubTask, _K, _IsMT, Instance::SubTask::_pred> _Tail;
-    
+    const static int lookahead = 1 + _Tail::lookahead;
+
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1, 
 		     typename Instance::Result& result)
     {
 
-      for(int i=0; i<_K; ++i) for(int j=0; j<_K; ++j) {
+      for(int i=0; i<_K; ++i) {
+#ifdef __USE_LIBSPMD
+        int wid;
+        if ( lookahead == 1 && _IsMT ) {
+	typedef void (*func_t)(__aux::func_param *);
+	func_t task = &(__aux::wrapper_func_ternary_<typename Instance::SubTask::_Comp_void>);
+	wid = spmd_create_warp(_K, (void *)task, 0, 0, 0);
+	assert( wid != -1 && "failed in create warp");
+	}
+#endif
+        for(int j=0; j<_K; ++j) {
 	  auto subResult = result.template subWView
 	    <Instance::SubWView::VIEW_SIZE_X, Instance::SubWView::VIEW_SIZE_Y>
 	    (i * (Instance::SubWView::VIEW_SIZE_X), j * Instance::SubWView::VIEW_SIZE_Y);
@@ -433,16 +444,33 @@ namespace vina {
 	  auto subArg1   = __aux::subview2<typename Instance::Arg1,
 				  arg1_dim::view_x::value, arg1_dim::view_y::value, 
 				  arg1_isomorph::value>::sub_reader(arg1, i, j); 
-	  
-	  _Tail::doit(subArg0, subArg1, subResult); 
-	}
-      
-    }  
-  };
+#ifndef __USE_LIBSPMD	  
+	  _Tail::doit(subArg0, *subArg1, subResult);
+#else
+          if ( _IsMT && 1 == lookahead ) {
+          auto compF = Instance::SubTask::computation_ptr();
+          __aux::func_param * arg = new __aux::func_param;
+          arg->callable = compF;
+          arg->arg0 = new typename Instance::SubTask::Arg0(subArg0);
+          arg->arg1 = subArg1; 
+          arg->arg2 = new typename Instance::SubTask::Result(subResult);
+          int tid = spmd_create_thread(wid, arg);
+	  //printf("tid = %d\n", tid);
+	  assert( tid != -1 && "failed in creating task");
+	  }
+	  else 
+	    _Tail::doit(subArg0, *subArg1, subResult);
+#endif
+	}/*for*/
+     }/*for*/  
+   }
+};
 
   template<class Instance, int _K>
   struct mappar2<Instance, _K, false, true>
   {
+    const static int lookahead = 0;
+
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1,
 		     typename Instance::Result& result)
@@ -458,11 +486,13 @@ namespace vina {
 			 typename Instance::Result
 			 >::value>
     result_arithm;
+    const static int lookahead = 0;
 
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1,
 		     typename Instance::Result& result)
     {
+#ifndef __USE_LIBSPMD
       auto compF = Instance::computation();
       
       mt::thread_t leaf(compF, arg0, arg1, 
@@ -473,6 +503,9 @@ namespace vina {
 #endif
 
       leaf.detach();
+#else
+     assert( 0 && "wrong code");
+#endif
     }
   };
 

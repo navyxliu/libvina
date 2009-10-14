@@ -9,7 +9,7 @@ SYSTEM := $(shell uname -s)
 #compiler conf.
 CXX=g++
 CFLAGS=-g -std=c++0x $(TEST_INFO) $(OPT) 
-OPT=-O3 -msse
+OPT= -msse
 #Linux system support additional features, such as
 # 1.PMC counter
 # 2.high-resolution timer
@@ -22,7 +22,6 @@ endif
 include params 
 
 #intel Math kernel library
-MKLPATH=/opt/intel/mkl/10.2.2.025
 MKLLIB=-L$(MKLPATH)/lib/em64t  \
 	-Wl,--start-group $(MKLPATH)/lib/em64t/libmkl_intel_lp64.a\
 	$(MKLPATH)/lib/em64t/libmkl_sequential.a \
@@ -41,11 +40,13 @@ SPMDLIB=-L$(SPMDPATH) -lSPMD
 #boost::thread lib
 ifeq ($(SYSTEM), Linux)
 ISSUE=$(shell cat /etc/issue)
-ifeq ($(word 1, $(ISSUE)), Ubuntu) 
+ifeq ($(word 1, $(ISSUE)), Ubuntu) #Ubuntu, nhm, jw's 
+MKLPATH=/opt/intel/mkl/10.2.2.025
 BOOSTPATH=/root/source/boost_1_40_0
 BOOSTLIB=-L$(BOOSTPATH)/stage/lib -lboost_thread
 BOOSTINC=/usr/local/include/boost
-else                            #fedora
+else                            #fedora, xliu's
+MKLPATH=/opt/intel/mkl/10.2.1.017
 BOOSTLIB=-L/usr/lib64 -lboost_thread-mt
 BOOSTINC=/usr/include
 endif
@@ -92,7 +93,7 @@ saxpy: saxpy.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 
 conv2d: conv2d.o $(AUX_OBJS)
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) imgsuport.o -lpng
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) imgsupport.o -lpng
 
 tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 	$(CXX) -o $@ $^ $(LDFLAGS) ./libSPMD/libSPMD.a 

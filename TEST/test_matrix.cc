@@ -17,6 +17,16 @@ int main()
   for (int i=0; i<10; ++i)
     A[i][i] = i;
 
+typedef vina::Matrix<float , 
+		    1024, 
+		    1024>
+ImageBuffer;
+
+  ImageBuffer in, STD_out;
+  for (int i=0; i<1024; ++i) for (int j=0; j<1024; ++j) 
+    STD_out[i][j] = in[i][j];
+
+
   // test iterator
   /*
   Matrix<int, 10, 10>::iterator it
@@ -106,7 +116,7 @@ int main()
   for(int i=0; i<5; ++i) for(int j=0; j<5; ++j)
 			   assert( kerl_r[i][j] == kernelInt[i*5 +j]  
 				   && "reader view failed");
-
+/*
   auto frame = kernel.frame<5, 5>(2, 0, 0, 0);
   for (int i=-2; i<7; ++i) 
     for (int j=-2; j<7; ++j) 
@@ -119,6 +129,7 @@ int main()
 	  assert( frame[i][j] == 0 );
 	}
       }
+      */
   //==============================================//
   //==              ALGORITHMS TEST             ==//
   //==============================================//

@@ -6,10 +6,12 @@
 
 #kill all threads derived from tpbench
 #sudo killall -q $1
-#../kill_them.sh $1
 
 #rm all log files
 rm -f timelog*
+
+#./kill_them.sh $1
+killall $1
 
 echo "ipcrm"
 
@@ -20,3 +22,4 @@ for s in `ipcs -s | awk '{if (NR > 3) print $2}END{print end}'`
 do
    ipcrm -s $s
 done
+
