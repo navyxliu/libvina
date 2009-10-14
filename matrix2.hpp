@@ -59,6 +59,7 @@ namespace vina {
 	for (int j=0; j < _N_dim && I != end; ++j) 
 	  _M_[i][j] = *(I++);
     }
+
     template<class ForwardIter>
     Matrix(ForwardIter beg, ForwardIter end,
 	   int row, int col, _T val)
@@ -82,7 +83,6 @@ namespace vina {
 
     typename view_trait<_Basic>::reader_type 
     inline operator[] (int dx) const { return _M_[dx];}
-
 
     // iterators
     
@@ -728,6 +728,11 @@ namespace vina {
 	 Result& result) {
       
       matConvlImpl<T, SIZE_A, SIZE_B, U, KERL_A, KERL_B>::conv2d(arg0, arg1, result);
+    }
+    static void 
+    doit_ptr(void * arg0, void * arg1, void * arg2)
+    {
+      doit(*(In*)arg0, *(Kerl*)arg1, *(Result*)arg2);
     }
     static void
     doitMT(const In& arg0, const Kerl& arg1,

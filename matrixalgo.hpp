@@ -379,14 +379,18 @@ void conv2d(const Matrix<T, DIM_A, DIM_B>& in,
 	    const Matrix<U, KERNL_A, KERNL_B>& kernel,
 	    Matrix<T, DIM_A, DIM_B>& result)
 {
+
+  /*
+  printf("in=%p kernel=%p\n", &in,&kernel);
   printf("in=%p kernel=%p\n", &in, &kernel);
   printf("in.data=%p, kernel.data=%p, result=%p\n",
 	 in.data(), kernel.data(), result.data());
+
+	 */
   printf("DIM_A=%2d, DIM_B=%2d, KEREL_A=%2d KERNEL_B=%2d\n",
 	 DIM_A, DIM_B, KERNL_A, KERNL_B);
-
   for (int i=0; i<DIM_A; ++i) 
-    for (int j=0; j<DIM_B; ++j){
+    for (int j=0; j<DIM_B; ++j) {
       result[i][j] = 0;
       int dx, dy;
       for (int ki=0; ki<KERNL_A; ++ki, dx++) {
