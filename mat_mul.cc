@@ -322,7 +322,7 @@ int main()
 
   //_spmd_initialize(MM_TEST_K);
   spmd_initialize();
-  //mkl_set_num_threads(1);
+  mkl_set_num_threads(1);
   z_v.zero();
   typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
     matMulWrapper, matAddWrapper2, p_simple, MM_TEST_K> TF_PARALLEL_SSE;

@@ -9,7 +9,7 @@ SYSTEM := $(shell uname -s)
 #compiler conf.
 CXX=g++
 CFLAGS=-g -std=c++0x $(TEST_INFO) $(OPT) 
-OPT= -msse
+OPT= -O3 -msse
 #Linux system support additional features, such as
 # 1.PMC counter
 # 2.high-resolution timer

@@ -13,7 +13,7 @@
 #include "imgsupport.hpp"
 #include "toolkits.hpp"
 #include "frame.hpp"
-
+#define ITER 1
 #ifdef __NDEBUG
 #define CHECK_RESULT(X) 
 #endif
@@ -186,24 +186,31 @@ main(int argc, char **argv)
   for (int i=0; i<IMG_TEST_SIZE_M; ++i) for (int j=0; j<IMG_TEST_SIZE_N; ++j) 
     STD_out[i][j] = in[i][j];
 */
+#ifndef __NDEBUG
   printf("start\n");
   ///    auto writer = out.subWView();
   prof.eventStart(temp0);
+  for (int i=0; i<ITER; ++i) 
   vina::conv2d(in, kerl, STD_out);
   prof.eventEnd(temp0);
 
-  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
+  printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()/ITER));
+#endif
   //dump_m(kerl, "kernel after");
   //
-  spmd_initialize();
+  _spmd_initialize(IMG_TEST_K);
 
   typedef conv2d_map<ImageBuffer, ImageBuffer, KernelBuffer, 
-  matConv2dWrapper, p_simple, 2> TF;
+    matConv2dWrapper, p_simple, 2> TF;
   prof.eventStart(temp1);
-  TF::doit(in, kerl, out);
+
+  for ( int i=0; i<ITER; ++i) 
+    TF::doit(in, kerl, out);
   while (! spmd_all_complete() );
   prof.eventEnd(temp1); 
-  printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed()));
+
+  printf("MT gflop=%f\n", Gflops(Comp, 
+    prof.getEvent(temp1)->elapsed()/ITER));
   spmd_cleanup();
 
   CHECK_RESULT(out);

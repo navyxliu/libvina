@@ -6,6 +6,9 @@
 
 #include <stdio.h>
 #include <tr1/functional>
+#include <mkl.h>
+#include "mkl_cblas.h"
+
 
 using namespace vina;
 
@@ -14,20 +17,20 @@ using namespace vina;
 #endif
 
 #ifndef CHECK_RESULT
-/*
-#define CHECK_RESULT(V_)  if ( fabs(V_-STD_result) > 1e-6) {	\
+#define CHECK_RESULT(V_)  if ( fabs(V_-STD_result) > 1.0) {	\
     printf("result= %f WA, correct is %f\n",	\
 	   V_, STD_result);			\
     exit(1);					\
   }
-*/
+#endif
+ /*
 #define CHECK_RESULT(V_) if ( V_ != STD_result ) {	\
     printf("result= %d WA, correct is %d\n",	\
 	   V_, STD_result);			\
     exit(1);					\
   }   
 #endif
-
+*/
 template <class RESULT,  class ARG0, class ARG1,
 	  template <typename, typename, typename> class Func,
 	  template <typename> class Redu,
@@ -68,13 +71,22 @@ struct dotprod{
   computation() {
     return &(Func<Result, Arg0, Arg1>::doit);
   }
-  
+
+  typedef std::tr1::function<void (void *, void *, void *)>
+  _Comp_ptr;
+
+  static _Comp_ptr *
+  computation_ptr () {
+    return new _Comp_ptr(&(Func<Result, Arg0, Arg1>::doit_ptr));
+  }
+
   typedef std::tr1::function<void (const Arg0&, const Arg1&, Result&, mt::barrier_t)>
   _CompMT;
   static _CompMT
   computationMT() {
     return &(Func<Result, Arg0, Arg1>::doitMT);
   }
+
   typedef std::tr1::function<void (T&, const T&)>
   _Redu;
 
@@ -88,6 +100,14 @@ struct dotprod{
   reduce(T& lhs, const T& rhs)
   {
     Redu<T>::doit(lhs, rhs);
+  }
+
+  static void
+  reduce2(T * R) 
+  {	
+     for (int s=1; s < K; s<<=1) for (int k=0; k < K; k+=(s<<1)) {
+	 *(R+k) += *(R+k+s);
+     }
   }
 };
 template <class T, int DIM>
@@ -109,9 +129,14 @@ int main()
   printf("Vector DotProduction program\n\
 VEC_TEST_SIZE_N=%4d\n\
 VEC_TEST_GRANULARITY=%4d\n\
-VEC_TEST_K=%d\n\
-See Makefile TEST_INFO to set parameters\n",
-	 VEC_TEST_SIZE_N, VEC_TEST_GRANULARITY, VEC_TEST_K);
+VEC_TEST_K=%d\n"
+#ifdef __USE_LIBSPMD
+"thread: libspmd"
+#else
+"thread:pthread"
+#endif
+"See Makefile TEST_INFO to set parameters\n",
+ VEC_TEST_SIZE_N, VEC_TEST_GRANULARITY, VEC_TEST_K);
 
   typedef Vector<VEC_TEST_TYPE, VEC_TEST_SIZE_N> TestVector;
   typedef Vector<vector_type<VEC_TEST_TYPE>, VEC_TEST_SIZE_N> TestVector_v;
@@ -147,31 +172,44 @@ See Makefile TEST_INFO to set parameters\n",
     printf("%4d", y[i]);
   printf("\n");
   */
+  const float * data_x = x.data();
+  const float * data_y = y.data();
   prof.eventStart(temp0);
-  STD_result = dotproduct<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(x, y);
+  //STD_result = dotproduct<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(x, y);
+  //
+  STD_result = cblas_sdot(VEC_TEST_SIZE_N, data_x, 1, data_y, 1);
+
   prof.eventEnd(temp0);  
 
-  //printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
+  printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
   printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
 #endif 
-  
+ /* 
   typedef dotprod<VEC_TEST_TYPE, TestVector, TestVector, 
     vecDotProdWrapper, reduce_add, p_simple,VEC_TEST_K> TF;
+
   z = 0;
   prof.eventStart(temp1);
   TF::doit(x, y, z);
   prof.eventEnd(temp1);
+ 
   CHECK_RESULT(z);
   printf("ST gflop=%f\n", Gflops(Comp, prof.getEvent(temp1)->elapsed()));
   fflush(stdout);
-    
+*/
+
+  spmd_initialize();
   typedef dotprod<VEC_TEST_TYPE, TestVector, TestVector,
     vecDotProdWrapper, reduce_add, p_simple, VEC_TEST_K, true> TF_MT;
+
   z = 0;
   prof.eventStart(temp2);
   TF_MT::doit(x, y, z);
   prof.eventEnd(temp2);
+
+  spmd_cleanup();
   CHECK_RESULT(z);
+  printf("elapsed=%d\n", prof.getEvent(temp2)->elapsed());
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed()));
   fflush(stdout);
   
