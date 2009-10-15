@@ -521,19 +521,59 @@ struct mapreduce {
   typedef mapreduce <typename Instance::SubTask, _K, _IsMT, 
 		     Instance::SubTask::_pred> _Tail;
   const static int lookahead = 1 + _Tail::lookahead;
-  
+
+  typedef typename Instance::SubTask::Result
+	  SubResultType;
+
+  static SubResultType * 
+  get_result() 
+  {
+    static SubResultType results[_K];
+    //memset(results, 0, sizeof(results));
+    return results;
+  }
   static void doit(const typename Instance::Arg0& arg0, 
 		   const typename Instance::Arg1& arg1, 
 		   typename Instance::Result& result,
 		   mt::barrier_t barrier = mt::trivial_barrier)
   {
     if (_IsMT && lookahead == 1) { // leaf
-	mt::barrier_t barrier(new boost::barrier(_K+1));
+/*
 	typedef typename Instance::SubTask::Result
 	  SubResultType;
 	auto submats = new SubResultType[_K];
 	std::fill(submats, submats+_K, 0);
+*/
+        auto submats = get_result();
+#ifdef __USE_LIBSPMD
+        typedef void (*func_t)( __aux::func_param * );
+	func_t task = &__aux::wrapper_func_ternary_<typename Instance::SubTask::_Comp_ptr>;
+        typedef void (*redu_t)( SubResultType * ); 
+        redu_t redu = &Instance::reduce2;
 
+        int wid = spmd_create_warp(_K, (void*)task, 0, (void*)redu, submats);         
+	assert ( wid != -1 && "failed in created warp");
+
+	for(int k=0; k<_K; ++k) {
+	  auto subArg0   = arg0.template subRView
+	    <Instance::SubRView0::VIEW_SIZE>(k * (Instance::SubRView0::VIEW_SIZE));
+	  auto subArg1   = arg1.template subRView
+	    <Instance::SubRView1::VIEW_SIZE>(k * (Instance::SubRView1::VIEW_SIZE));
+
+	  auto Comp = Instance::SubTask::computation_ptr();
+	  __aux::func_param * arg = new __aux::func_param;
+
+	  arg->callable = Comp;
+	  arg->arg0     = new typename Instance::SubTask::Arg0(subArg0);
+	  arg->arg1     = new typename Instance::SubTask::Arg1(subArg1);
+	  arg->arg2     = &(submats[k]);
+	  int tid = spmd_create_thread(wid, arg);
+	  assert( tid != -1 && "failed in created task");
+	}
+        while (!spmd_all_complete()); 
+	result = submats[0];
+#else
+	mt::barrier_t barrier(new boost::barrier(_K+1));
 	for(int k=0; k<_K; ++k) {
 	  auto subArg0   = arg0.template subRView
 	    <Instance::SubRView0::VIEW_SIZE>(k * (Instance::SubRView0::VIEW_SIZE));
@@ -550,7 +590,7 @@ struct mapreduce {
 	    reduF(in0, in1);
 	}
 	Instance::reduce(result,/*<--*/ submats[0]);
-	delete [] submats;
+#endif
       }
 
       else {

@@ -529,7 +529,11 @@ namespace vina {
     {
       vecArithImpl<T, DIM_N>::dotprod(arg0, arg1, result);
     }
-
+    static void
+    doit_ptr(void * arg0, void * arg1, void * result)
+    {
+      doit(*((Arg0*)arg0), *((Arg1*)arg1), *((T*)result));
+    }
     static void
     doitMT(const Arg0& arg0, const Arg1& arg1, T& result, 
 	   mt::barrier_t barrier)

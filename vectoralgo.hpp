@@ -58,8 +58,14 @@ struct vecArithImpl{
   static void dotprod(const RView& X, const RView& Y, 
 		      T& result)
   {
+#ifdef MKL
+    const float * x = X.data();
+    const float * y = Y.data();
+    result = cblas_sdot(DIM_N, x, 1, y, 1);
+#else
     for (int i=0; i<DIM_N; ++i)
       result += X[i] * Y[i];
+#endif
   }
 };
 

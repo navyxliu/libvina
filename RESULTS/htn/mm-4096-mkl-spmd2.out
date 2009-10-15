@@ -1,0 +1,23 @@
+[xliu@harpertown libvina]$ sudo ./mat_mul
+Matrix Multiplication test program
+MM_TEST_SIZE_N=4096
+MM_TEST_GRANULARITY=2048
+MM_TEST_K=   2
+thread: LIBSPMD
+see Makefile TEST_INFO to set parameters
+x_v.data() = 0x106aa180, y_v.data() = 0x146aa180 result_v = 0x186aa180
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=2048
+MT SSE gflop=28.719393
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    0        0usec            0.0%
+# 2                   ST SSE    0        0usec            0.0%
+# 3          mulmat_parallel    0        0usec            0.0%
+# 4      mulmat_parallel SSE    1  4785580usec            100.0%
+# 5          mulmat_smallset    0        0usec            0.0%
+
