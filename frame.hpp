@@ -415,8 +415,12 @@ namespace vina {
     			  >::type arg1_dim;
 
     typedef mappar2<typename Instance::SubTask, _K, _IsMT, Instance::SubTask::_pred> _Tail;
+<<<<<<< local
+   
+=======
     const static int lookahead = 1 + _Tail::lookahead;
 
+>>>>>>> other
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1, 
 		     typename Instance::Result& result)

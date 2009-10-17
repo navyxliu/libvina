@@ -58,7 +58,7 @@ else
 endif
 
 #ifneq (, $(findstring LIBSPMD, $(TESTINFO)))
-MTSUPPORT+=-I$(SPMDPATH) $(SPMDLIB)
+#MTSUPPORT+=-I$(SPMDPATH) $(SPMDLIB)
 #else
 MTSUPPORT+=-I$(BOOSTINC) $(BOOSTLIB)
 #endif
@@ -66,12 +66,12 @@ MTSUPPORT+=-I$(BOOSTINC) $(BOOSTLIB)
 LDFLAGS+=$(MTSUPPORT)
 
 #ifneq (,$(findstring MKL,$(TESTINFO)))
-CFLAGS+=-I$(MKLPATH)/include
-LDFLAGS+=$(MKLLIB)
+#CFLAGS+=-I$(MKLPATH)/include
+#LDFLAGS+=$(MKLLIB)
 #endif
 
 AUX_OBJS = profiler.o toolkits.o mtsupport.o
-OBJS = mat_mul.o test_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o tpbench.o
+OBJS = mat_mul.o lang_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o tpbench.o
 OBJS += $(AUX_OBJS)
 
 all: mat_mul lang_pipe dot_prod conv2d saxpy tpbench
@@ -83,7 +83,7 @@ mat_mul: mat_mul.o $(AUX_OBJS)
 mm_omp: mm_omp.o
 	$(CXX) -o $@ $< $(AUX_OBJS) $(MKLLIB_P) -lrt $(BOOSTLIB)
 
-lang_pipe: test_pipe.o $(AUX_OBJS)
+lang_pipe: lang_pipe.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 
 dot_prod: dot_prod.o $(AUX_OBJS)
