@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 #include "mtsupport.hpp"
 #include "profiler.hpp"
@@ -234,11 +236,22 @@ namespace vina {
       return &(impl_[offset_]);
     }
     template <int SZ>
-    ReadView<T, SZ> subRView(unsigned pos) const
+    ReadView<T, SZ> subRView(unsigned pos = 0) const
     {
       return ReadView<T, SZ>(impl_, offset_ + pos);
     }
-
+    reader_type subRView() const 
+    {
+      return ReadView<T, _sz_>(impl_, offset_);
+    }
+    /*
+    const writer_type 
+    subWView() const 
+    {
+      return WriteView<T, _sz_>(impl_, offset_);
+    }
+    */
+    void set() {}
   private:
     size_t         offset_;
     const _M_ty*   impl_;
@@ -317,6 +330,7 @@ namespace vina {
     _M_ty* data() {
       return &(impl_[offset_]);
     }
+    void set(){}
   private:
     size_t offset_;
     _M_ty* impl_;
@@ -332,7 +346,7 @@ namespace vina {
   // is no corresponding signal in x86_64 and POSIX env for threads,
   // we simulate it with conditional variable.
   template <class T, int _sz_>
-  class WriteViewMT : public mt::signal_t {
+  class WriteViewMT {
   public:
     enum { 
       VIEW_SIZE = _sz_,
@@ -349,22 +363,40 @@ namespace vina {
     typedef typename _Vector_type::iterator       iterator;
     typedef typename _Vector_type::const_iterator const_iterator;
     
-    WriteViewMT(writer_type* rhs)
+    WriteViewMT(writer_type* rhs): src_(rhs), signal_(new mt::signal())
     {
-      src_ = rhs;
     }
-    operator WriteView<T, _sz_>()
+
+    void release() {
+      signal_->set();
+    }
+    void set() {
+      signal_->set();
+    }
+    operator writer_type () 
     {
-      wait();
       return *src_;
     }
     
+    boost::shared_ptr<mt::signal_t>
+    get_semaphore()
+    {
+      return signal_;
+    }
+
+    boost::shared_ptr<writer_type>
+    get_data()
+    {
+      return src_;
+    }
+
   private:
-    writer_type * src_;
+    boost::shared_ptr<writer_type>  src_;
+    boost::shared_ptr<mt::signal_t> signal_;
   };
 
   template <class T, int _sz_>
-  class ReadViewMT : public mt::signal_t {
+  class ReadViewMT {
   public:
     enum { 
 	   VIEW_SIZE = _sz_,
@@ -381,17 +413,32 @@ namespace vina {
     typedef typename _Vector_type::iterator       iterator;
     typedef typename _Vector_type::const_iterator const_iterator;
 
-    ReadViewMT(const writer_type*  rhs)
+    ReadViewMT(writer_mt_type*  rhs) : src_(new reader_type(rhs->get_data()->subRView()))
+				     , signal_(rhs->get_semaphore())
+				     , mt_(true)
     {
-      src_ = rhs;
+    }
+    
+    ReadViewMT(const reader_type* rhs)
+    {
+      mt_ = false;
+
+      src_ = boost::shared_ptr<reader_type>(new reader_type(rhs->subRView()) );
     }
     operator ReadView<T, _sz_>()
     {
-      wait();
+      if ( mt_ ) {
+	boost::shared_ptr<mt::signal_t> p(signal_.lock());
+	p->wait();
+	mt_ = true;
+      }
       return src_ -> subRView();
     }
+
   private:
-    const writer_type * src_;
+    boost::shared_ptr<reader_type> src_;
+    boost::weak_ptr<mt::signal_t> signal_;
+    bool mt_;
   };
 
   //==============================================//

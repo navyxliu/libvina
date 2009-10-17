@@ -505,8 +505,12 @@ _spmd_initialize(int nr_pe)
     }
     
     the_pool.leaders[i].sem = 
+<<<<<<< local
+      semget(key, 3, 0666 | IPC_CREAT);
+=======
       semget(key, 2, 0666 | IPC_CREAT);
 
+>>>>>>> other
     if ( the_pool.leaders[i].sem == -1 ) {
      perror("semget fail");
      goto err_happened3;
