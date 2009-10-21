@@ -16,12 +16,7 @@ functor objects are much more powerful than classes only consist of static
 functions. using variadic template, i intentatively make it. 
 **/
 
-/*
-#include "matrix2.hpp"   // i don't know why it is neccessary,
-			 // but gcc complain harshly without it.
-			 // i can not find ill dependence in my
-			 // library.
-			 */
+
 #include <string>
 
 #define NUM_OF_LANG 8

@@ -352,8 +352,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{Libvina: A Template Approach to Specialize S;
-ources for Multicore Architectures}
+\title{A Template Approach to transform Sources for Multicore Architectures}
 
 
 % author names and affiliations
@@ -397,7 +396,8 @@ ources for Multicore Architectures}
 
 
 \begin{abstract}
-We introduce libvina -- a template library designed to specialize programs for different architectures. A source-to-source compilation is helpful to change programs more closer to contemporary multicore hardwares. We proposed a new approach to achieve this target for problems with rich static information. In libvina, parallelization and optimization of memory hierarchy are conducted by a groups of C++ template classes. It is flexible and extensible. Programmers with decent knowledge of template meta-programming are capable to extend library. Because template library effects in compiler time, minimal runtime cost is incurred from our approach. Finally, We evaluate the effects of specialization of some typical applications in multimedia and scientific computation on commodity x86 and GPU platforms.
+In advent of multicore era, plain C/C++ programming language can not fully reflects the hardware artchitecture any more. A source-to-source compilation assists in adapting programs close to contemporary multicore hardwares. We proposed a template-based approach to perform the transformation for programs with rich static information. We presented template metaprogramming to conduct parallelization and memory hierarchical optimization. It enables programmers to adapte new architectural feature or parallel computation models by extending template library. 
+In this paper, we implemented a prototype template library -- libvina to demonstrate the idea. Finally, We evaluate the performance on commodity x86 and GPU platforms by a variaty of typical applications in multimedia and scientific fields. The experiments show that our approach is flexible to support multiple computational models. In addition, the experimental results reveal that our approach incurs little runtime overhead because it takes effects in compile-time.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -416,31 +416,31 @@ static analysis; Compiler optimization; parallelization
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-In multicore period, hardware architects rely on parallelism and memory hierarchy to enhance performance. Both cloned processors and elaborated storage-on-chip require programmer to restructure their source code and keep tuning binaries for a specific target.Therefore, writing a high-performance application requires non-trivial knowledge of underlying machine's architecture. The gap between hardware vendors and software developers extends development cycle, which increases marketing cost and risks for innovative multicore architectures in silicon industry.
+In multicore period, hardware architects rely on parallelism and memory hierarchy to enhance performance. Both cloned processors and elaborated storage-on-chip require programmer to restructure their source code and keep tuning binaries for a specific target. Therefore, writing a high-performance application requires non-trivial knowledge of underlying machine's architecture. The gap between hardware vendors and software developers extends development cycle, which increases marketing cost and risks for innovative multicore architectures in silicon industry.
 
-Algorithm experts usually focus on their specific domains and have limited insights on diverging computer systems. They expect hardware and optimized compiler to guarantee decent performance for their programs. The expectation was roughly held until massive parallelization was introduced to computer community. Since frequency of general purpose processor stops growing faster, it's hard for legacy software to obtain performance enhancement from hardware's refinement freely. Plain C/C++ can not fully reflect contemplate architecture any more. Researchers have admitted that it is tremendously challenging for optimizing sequential code by a compiler, so the answer to bridge programmer to parallel hardware relies on language and library to express concurrency richer than ever.
+Algorithm experts usually focus on their specific domains and have limited insights on diverging computer systems. They expect hardware and optimized compiler to guarantee decent performance for their programs. The expectation was roughly held until parallel system was introduced to computer community. Since frequency of general purpose processor stops growing faster, it has been hard to obtain free performance enhancement from hardware's refinement any more. Essentially, plain C/C++ can not fully reflect contemplate architecture such as multicore and distributed storage-on-chip. Researchers have admitted that it is tremendously challenging for optimizing sequential code by a compiler, so the answer to bridge programmer to parallel hardware relies on language and library to express concurrency richer than ever.
 
-Designing new parallel programming is possible. Many functional languages \cite{b13} with inherent concurrency supports have emerged to the horizon of computer. However, a conservative programmer may turn them down because there are still lack of convincing evidences to demonstrate programmability and efficiency comparing to traditional programming languages. Another reason is software cost. Considering the time span which a large computer system serves, hardwares are cheap and become cheaper with time passing; software and personnel with well-trained programming knowledge are expensive. Even numerous legacy systems designed without consideration of multi-threaded environment at that time, vendors usually prefer to update and maintain software systems for current and future hardwares rather than restarting from scratch. 
+Designing new parallel programming is possible. Many functional languages \cite{b13} with inherent concurrency supports have emerged to the horizon of computer. However, a conservative programmer may turn them down because there are still lack of convincing evidences to demonstrate programmability and efficiency comparing to traditional programming languages. Another reason is software cost. Considering the time span which a large computer system serves, hardwares are cheap and become cheaper with time passing; software and well-trained personnel are expensive. Even numerous legacy systems designed with little consideration of multi-threaded environment at that time, vendors usually prefer to maintain and update legacy software systems for current and future hardwares rather than rebuilding them from scratch. 
 
-One side, software developers insist on classic programming diagrams and are reluctant to rewrite all the existing sources. On the other side, utilizing the powerhouse of modern processors to boost performance for existing and new systems is an important issue for them. Therefore, it is desirable to extend traditional programming languages to honor the trade-off.
+One side, software developers insist on classic programming diagrams and are reluctant to rewrite existing sources. On the other side, exploiting horsepower of modern processors for existing and new systems is a moderate issue. Therefore, it is desirable to extend traditional programming languages to balance the trade-off.
 
-Many programming languages extending popular programming languages had been proposed for multicore. However, most of existing solutions aimed at specific architectures or computer systems. \textit{e.g.} CUDA only works on vender-dependent GPU architecture; UPC and OpenMP are designed for shared memory system \cite{b15}. Sequoia \cite{b1} is an attempt to customize code-generation rule by XML configuration, however, it follows the similar restriction because it enforces programmer to model target as a tree of abstract machines.
+Many programming languages extending popular programming languages had been proposed for multicore. However, most of existing solutions aimed at specific architectures or computation models. UPC and OpenMP are designed for shared memory system \cite{b15}. CUDA works on vender-dependent GPU architecture for streaming computation; Sequoia \cite{b1} is an attempt to customize code-generation rules by XML configuration, however, it follows the similar restriction by enforce programs execute on a tree of abstract machines.
 
-Our approach is similar to Sequoia and OpenMP to perform source-to-source transformation by compiler. We shared the same idea of cite{1} to generate a cluster of subprocedures for a task recursively. Instead of modifying compiler and introducing new language constructs, we exploit the capability of C++ template mechanism to achieve translation. All transformation rules are programmed in C++ meta-programming \cite{b10}.  In libvina, a primary limitation is that only type and static constant value are available in compiler time. Therefore, it only works for problems which have rich static information. Fortunately, applications with this attributions are numerous in multimedia, digital processing, and scientific computations 
+Our approach performs source-to-source transformation by compiler like Sequoia and OpenMP. We shared the same idea of  ~\cite{b1} to generate a cluster of subprocedures for a task recursively. Instead of modifying compiler and introducing new language constructs, we exploit the capability of C++ template mechanism to achieve translation. All transformation rules are programmed in C++ meta-programming \cite{b10} and are conducted by a group of template class when that are instantiated. The primary limitation is that only type and static constant value are available in compile time. Therefore, it only works for programs which own rich static information. Fortunately, applications with this characteristic are pervasive in multimedia, digital processing, and scientific computations 
 
-Because libvina effects in compiler time, it is possible to avoid from deploying runtime system, which means that it can incur minimal runtime cost if applications allow. Another advantage of template approach is that it imposes less restricts comparing with other static approaches:
+Because libvina takes effect in compile time, it is possible to avoid from deploying runtime system, which means that it can incur minimal runtime cost. Besides that, our template-based approach imposes few restricts comparing with other static approaches:
 
 \begin{itemize}
-\item Thread-independent:  It is possible to generate all kind of threads for target, including pthread, native LWP provided by OS, even vendor-dependent thread. 
+\item Thread-independent: It is possible to generate all kind of threads for target, including pthread, native LWP provided by OS, even vendor-dependent thread. 
 
-\item Execution-independent:  Our approach does not bind to any execution model. Libvina can change program to SPMD threads to exploit parallelism from multicore; link many subroutines to build a pipeline to hide latency of memory; or separate our program into blocks to improve locality. 
+\item Execution-independent: Our approach does not bind to any execution model. Utilizing template transform, we can change program into SPMD threads to exploit parallelism from multicore; chain many subroutines to build a pipeline to hide latency of memory; and separate program into blocks to improve locality. 
 
-\item Extendability:  It is flexible to develop new template class to utilize new architectural features. Template meta-programming is intimate for C++ experts. It's easy to extend new execution rules and parallel patterns. Another approaches have to ratify languages and then modify compiler to add features.
+\item Extendability:  It is flexible to develop new template class to utilize new architectural features. Template meta-programming is intimate for C++ programmers. It is easy to extend new execution rules and parallel patterns. Other approaches have to ratify languages and then modify compiler to complete features.
 
 \item Portability: Template mechanism are standardized in ISO \cite{b8, b17}. Our template library conforms to standards and is guaranteed to be portable for all mainstreaming C++ compilers.
 \end{itemize}
 
-The remaining parts of this paper are structured as follows. Section 2 summarizes some related works on static transformation and other library-based solutions. Section 3 introduces fundamentals of libvina. Then Section 4 represents some typical transformations in libvina. Experiments and results are in Section 5 to evaluate effect of transformations. Final section is conclusion and future works.
+The remaining parts of this paper are structured as follows. Section 2 summarizes some related works on static transformation and other library-based solutions. Section 3 show techniques to perform transforms by template metaprogramming. Audiences with C++ template programming experiences or functional programming concepts are helpful but not prerequisites. Then Section 4 presents some typical transforms by our template library. Experiments are in Section 5 to evaluate effect of specialization. Final section is conclusion and future works.
 
 \section{Related work}
 As mentioned before, it is desirable to extend conventional programming languages to reflects the essence of newer hardware. Researches in the field have two major directions:
@@ -449,31 +449,41 @@ As mentioned before, it is desirable to extend conventional programming language
 \item extending language constructs to extend parallel semantics
 \end{enumerate}
 
-First, library is a common method to extend language capability without introducing new language constructs or modifying grammar. POSIX thread library is a de facto standard interface to utilize multi-thread for applications on UNIX-like systems. The relationship between pthread and native thread provided by OS is straightforward. Therefore, abstraction of pthread is far away from naturally expressing parallelism and concurrency. Furthermore, the implementation of thread on hardware is unspecific in the standard, so it can not guarantee performance or even correctness on some architectures \cite{b4, b5}
+First, library is a common method to extend language capability without introducing new language constructs or modifying grammar. POSIX thread library is a de facto standard to utilize multi-thread for applications on UNIX-compatible systems. The relationship between pthread and native thread provided by OS is straightforward. Therefore, abstraction of pthread is far away from naturally expressing parallelism and concurrency. Furthermore, the implementation of thread on hardware is unspecific in the standard, so it can not guarantee performance or even correctness on some architectures \cite{b4, b5}.
 
-C++ community intends to develop parallel library while bearing generic programming in mind. TBB(Thread Block Builder) has a plenty of containers and execution rules. Entities including partitioner and scheduler in TBB are created in runtime. In that case, key data structures have to be thread-safe. Although TBB exploits task parallelism or other sophisticated concurrency on general purpose processors, the runtime overhead is relative high in data parallel programs, especially in the scenario that massive ALUs are exposed by hardware. Solution we proposed here is orthogonal to runtime parallel libraries. We only exploit parallelism that can be determined in static time, developers feel free to resort to other ways to speedup the programs in runtime, such as TBB.
+C++ community intends to develop parallel library while bearing generic programming in mind. TBB(Thread Block Builder) has a plenty of containers and execution rules. Entities including partitioner and scheduler in TBB are created in runtime. In that case, key data structures have to be thread-safe. Although TBB exploits task parallelism or other sophisticated concurrency on general purpose processors, the runtime overhead is relative high in data parallel programs, especially in the scenario that massive ALUs are exposed by hardware. Solution we proposed here is orthogonal to runtime parallel libraries. We only explore parallelism that can be determined in compile time, developers feel free to deploy other ways to speedup the programs in runtime, such as TBB.
  
 %% MPI
 %Another dominant parallel library is MPI in supercomputing community. It based on message-passing mechanism and SPMD model to execute parallel program. The difficulties of developing MPI programs are as notorious as pthread counterpart for programmers without sufficent training of parallel programming. 
 %%
 
-Second, language communities extend their semantics by modifying compiler. They could add directive or annotation to help compiler transform source code. OpenMP is designed for shared memory and has shipped in almost every C/Fortran compilers. OMP compilers transform sequential code into multi-threaded programs with OMP runtime. Although OpenMP is simple and portable, the performance is not optimal in most cases. A handful of directives leave small room for further enhancing program and scaling up to larger systems. Hybrid OpenMP with MPI is possible, but difficulty surges.
+Second choice for language communities is to extend semantics by modifying compiler. They add directive or annotation to help compiler transform source code. OpenMP is designed for shared memory and has shipped in almost every C/Fortran compilers. OMP compilers transform sequential code into multi-threaded programs with OMP runtime. Although OpenMP is simple and portable, the performance is not optimal in most cases. A handful of directives leave little room for further enhancement and scaling up to larger systems. Hybrid OpenMP with MPI is possible, but difficulty surges.
 
-Another approach needing to modify compiler is to add new language constructs. Sequoia is a source-to-source compiler to support programming memory hierarchy. First of all, It targets execution environment as a tree of machines, which an individual machine owns its storage and computation unit. Second, It terms a computation-intensive function as \textit{task}. New constructs apply on \emph{task}. Sequoia compiler transforms a \textit{task} into a cluster of subprocedures based on machines hierarchy. The target machines are described in XML files. Based on this idea, Sequoia actually can specialize task for target architectures. \cite{b2} reports Sequoia can successfully transform codes for CellBE, SMP, cluster while keeping very competitive performance. However, Sequoia as a language extension is restrictive. The basic data structure is array, which obviously shows the preference of scientific computation. The language constructs do not cover all the common parallel patterns such as pipeline and task queue. Libvina derived the idea of Sequoia to transform source code recursively. However, template meta-programming utilizes existing mechanism in C++ compiler and is capable to express all the semantics in Sequoia programming language. Moreover, Sequoia can not leverage type system to specialize code. \textit{e.g.} Many modern processors usually provide SIMD instructions. Libvina could generate corresponding source based on predefined vector types. Sequoia compiler ignores this important information and simply relies on following compiler.
+Another approach is to add new language constructs. Sequoia is a source-to-source compiler to support programming memory hierarchy. First of all, It targets execution environment as a tree of machines, which an individual machine owns its storage and computation unit. Second, It terms a computation-intensive function as \textit{task}. New constructs apply on \emph{task}. Sequoia compiler transforms a \textit{task} into a cluster of subprocedures based on machines hierarchy. The target machines are described in XML files. Based on this idea, Sequoia actually can specialize task for target architectures. \cite{b2} reports Sequoia can successfully transform codes for CellBE, SMP, cluster while keeping very competitive performance. However, Sequoia as a language extension is restrictive. The basic data structure is array, which obviously shows the preference of scientific computation. The language constructs do not cover all the common parallel patterns such as pipeline and task queue. Libvina derived the idea of Sequoia to transform source code recursively. However, template meta-programming utilizes existing mechanism in C++ compiler and is capable to express all the semantics in Sequoia programming language. Moreover, Sequoia can not leverage type system to specialize code. \textit{e.g.} Many modern processors usually provide SIMD instructions. Libvina could generate corresponding source based on predefined vector types. Sequoia compiler ignores this important information and simply relies on native compilers.
 
-With the astonishing pace of core proliferation and architecture refinement, GPU has evolved to a pioneer of supercomputing. OpenCL \cite{b12} programming language is strongly affected by vender-dependent predecessor CUDA. It provides a unified computation platform. The downside of OpenCL is the obvious bias toward Streaming architectures. Because OpenCL has to assume its simplest computation unit for target, recursion in kernel function is forbidden in the specification. It is regarded as a simple and neat way to divide problems. Libvina can cooperate with OpenCL to transform code for GPU. It recursively generates tasks and finally emit OpenCL kernel programs while hiding details to user programming. 
+%With the astonishing pace of core proliferation and architecture refinement, GPU has evolved to a pioneer of supercomputing. OpenCL \cite{b12} programming language is strongly affected by vender-dependent predecessor CUDA. It provides a unified computation platform. The downside of OpenCL is the obvious bias toward Streaming architectures. Because OpenCL has to assume its simplest computation unit for target, recursion in kernel function is forbidden in the specification. It is regarded as a simple and neat way to divide problems. Libvina can cooperate with OpenCL to transform code for GPU. It recursively generates tasks and finally emit OpenCL kernel programs while hiding details to user programming. 
 
-\section{Mechanism of libvina}
-\subsection{template meta-programming approach}
-Originally, C++ template mechanism is invented to supersede C preprocessor. It is type-safe and could facility generic programming. People found the potential of template computation by chance. \cite{b6} later proved template itself is Turing completeness. 
+\section{A Template library}
+\subsection{Overview}
+We implemented a template library, libvina, to perform source specialization. One fundation of our approach is that assume C++ compiler front-end as a code generator. It actually practices source-to-source transforms in the guidance of template meta-programming. Defintely, to ulitize static information, we provides a couple of data structures with template parameters to carry such information. When template classes are instantiated , compiler recursively generates codes until specific conditions are statisfied.
 
-Template meta-programming is similar to functional programming language except it effects in compiler time. It only relies on static information to determine control flow and perform computation. Beside the job it meant to do, template has successfully applied to many innovative purposes in modern C++ programming practices \cite{b9}. MPL Library \cite{b16} provides control statement and STL-like data structures, which greatly eases programming in static realm.
+In our design philosophy, programmers only care about developing efficient algorithms. Template library takes responsibility for parallelization and optimizstion of memory while keeping the same interface. Porting to another platforms might need to refine template parameters or apply to new templates to obtain maximal performance, however, it is unnecessary for programmers to modify even know details of algorithms.
+
+\subsection{Prerequisites}
+%template general
+Originally, C++ template mechanism is invented to supersede C preprocessor. It is type-safe and could facility generic programming. People found the potential of template computation by chance. \cite{b6} later proved template itself is Turing completeness. Beside the job it meant to do, template has successfully applied to many innovative purposes in modern C++ programming practices \cite{b9}. 
+
+%template sepcialization
+A powerful feature of C++'s templates is template specialization. This allows alternative implementations to be provided based on certain characteristics of the parameterized type that is being instantiated. Template specialization has two purposes: to allow certain forms of optimization, and to reduce code bloat ~\cite{b18}.
+
+%template metaprogramming 
+Template meta-programming is similar to functional programming language except it takes effect in compile time. It only relies on static information to determine control flow and perform computation. MPL Library \cite{b16} provides control statement and STL-like data structures, which greatly eases programming in static realm.
 
 \subsection{Concepts}
-In libvina, we assume C++ compiler front-end with template mechanism as a code generator. It actually practices source-to-source transformation in the guidance of meta-programming. 
-
+\subsubsection{TF class}
 %TF class
-Libvina focuses on computation-intensive functions which are commonly referred to \emph{kernel} or \emph{filter}. Mathematically, a function is single-target binary relation. Kernel functions are usually self-contained, \textit{i.e.} external data references are limited and calling graphs are simple. It's possible for a kernel function to decouple into a group of subprocedures. Each subprocedure may be exactly the same as kernel and spread on multicore running in parallel.  Another approach is to divide a kernel into finer stages and run in streaming manner to respect data locality and bandwidth. In libvina, a \emph{transform class (TF class)} is a template class which transforms a function to a cluster of subprocedures in isomorphism. As shown in ~\ref{fig:tfcls}, the transformed function on right side has the same interface while owns a call graph to complete the original computation by a cluster of subprocedures. Execution of the call graph can be programmed by in the library to scrutinise target's architecture.
+Computation-intensive functions are commonly referred to \emph{kernel} or \emph{filter}. Mathematically, a function is single-target binary relation. Kernel functions are usually self-contained, \textit{i.e.} external data references are limited and calling graphs are simple. It's possible for a kernel function to decouple into a group of subprocedures. Each subprocedure may be exactly the same as kernel and spread on multicore running in parallel.  Another approach is to divide a kernel into finer stages and run in streaming manner to respect data locality and bandwidth. In libvina, a \emph{transform class (TF class)} is a template class which transforms a function to a cluster of subprocedures in isomorphism. As shown in ~\ref{fig:tfcls}, the transformed function on right side has the same interface while owns a call graph to complete the original computation by a cluster of subprocedures. Execution of the call graph can be programmed by in the library to scrutinise target's architecture.
+
 
 \begin{figure}
 \centering
@@ -482,8 +492,24 @@ Libvina focuses on computation-intensive functions which are commonly referred t
 \label{fig:tfcls}
 \end{figure}
 
+\subsubsection{Polymorphism in compile-time}
+In programming language, a function which can applies any values of differnt types are parameteric polymophism. C++ has already supportted this language feature by template function. Our library need to manipulate template functions and instantiate them on demand, which we call it \emph{late-instantiation} inspired of \emph{late-binding}. However, the entry address of a template function is not available until it is instantiated. Therefore, it is desirable to extend function polymorphism in compile-time. Our approach is to wrap the template function by a template class and pass class as template template class. This is the only way to implement late-instantiation. It incurs an extra function call and will be hopefully eliminated by compiler's optimization.
+
+\begin{verbatim}
+template<class Result, class Arg0, class Arg1>
+struct vecAddWrapper {
+ //...
+ static void 
+ doit(const Arg0& arg0, const Arg1& arg1, 
+     Result& result)
+ {
+    vecArithImpl<T, DIM_N>::add (arg0, arg1, result);
+ }
+};
+\end{verbatim}
 
 %predicate and sentinel
+\subsubsection{Predicate}
 Borrowed from lisp concept, \emph{predicate} represents a indicator of some conditions. In libvina, it is a template class with static fields initialized by constant expressions consisting of template parameters and constants. These fields are automatically evaluated when template classes are instantiated. ~\ref{lst:pred} is an example to determine whether the problem size is fitting to last level cache.
 
 \makebox[3.1\width]{\hrulefill}
@@ -501,35 +527,60 @@ struct p_lt_cache_ll {
 
 %\caption{List - 1 : predicate lt\_cache\_ll}
 
+\subsubsection{Sentinel}
+\emph{Sentinels} in libvina are non-type template parameters of \emph{TF class}, with a \emph{predicate} as default initializer. When a template class is instantiating, sentinels are evaluated.  A \emph{predicate} determines whether a specific requirement has been satisfied. Sentinel is responsible for changing generation strategy according to the result. Using \emph{template specialization}, C++ compiler chooses different versions of a class to instantiate basing on the values or types of template arguments. The most important application of \emph{sentinel} is terminate code generation. More general flow control such as branch is feassible in ~\cite{16}.
 
-
-\emph{Sentinels} in libvina are non-type template parameters of \emph{TF class}, with a \emph{predicate} as default initializer. When a template class is instantiating, sentinels are evaluated.  A \emph{predicate} determines whether a specific requirement has been satisfied. Sentinel is responsible for changing generation strategy according to the result. C++ compiler chooses different versions of a template class to instantiates basing on the values or types of template arguments. This mechanism is known as \emph{specialization}.
-
+\subsection{Supporting data structure}
 %view
-Template meta-programing can only manipulate static information. As a result, ADTs in libvina need to carry information such as dimensionality as template parameters. Only Vector and Matrix are implemented in our library, because they cover a wide spectrum of application in multimedia area. Users require more versatile data structures could resort to \cite{b10}. As ~\ref{fig:view} depicted, View is a concept to abstract dataset in libvina. It is divisible and type-safe. Shadow region is the other thread space. The only approach to communicate with other thread is through ViewMT. It guarantees synchronization by signal mechanism internally. We only provide synchronizations for data set to encourage block operations.  
+Template meta-programing can only manipulate static information. As a result, ADTs in libvina need to carry such information as template parameters. Only Vector and Matrix are implemented in our library, because they cover a wide spectrum of application in multimedia area. Users require more versatile data structures could resort to mature library such as \cite{b10}. As ~\ref{fig:view} depicted, View is a concept to abstract data set. It is not neccessary to duplicate concrete data in shared memory. View classes are divisible and type-safe.
+
+Shadow region is the other thread space. The only approach to communicate with other thread is through ViewMT. We only provide synchronization for ViewMT to encourage bulk operations. ViewMTs can copy in non-blocking, however inducing from ViewMT to normal View is a blocking operation. By this approach, libvina guarantees synchronization by internal signal. We defined a signal class with semphore sematics. It is copyable to support transmitting data set to multiple receivers. In addition, many contemporary multicore architectures ~\cite{b20} have explicit facilities to perform such kind of operation so we can implement it effectively.
 
 \begin{figure}
 \includegraphics[width=3.3in]{view_concept}
 \caption{View}
 \label{fig:view}
 \end{figure}
-
-%
+%%
 \section{Program specialization}
-\subsection{Multi-threaded}
-Multi-threading is dominant approach to utilize duplicated computation units.  There are numerous kernel functions in multimedia applications and scientific computations which can easily exploit data parallelism by dividing task into smaller and independent subtasks. This feature naturally matches libvina's transformation. We implemented \emph{mappar} and \emph{mapreduce} language constructs in \cite{b1} as template classes. 
+\subsection{SPMD}
+Multi-threading is dominant approach to utilize duplicated computation units. SPMD model is the most intuitive manner to describe parallelism. Furthermore, high performance of SPMD is fundation of streaming model. There are numerous kernel functions in multimedia applications and scientific computations which can easily exploit data parallelism by dividing task into smaller and independent subtasks. This feature naturally matches libvina's transformation. We implemented \emph{mappar} and \emph{mapreduce} language constructs in \cite{b1} as template classes. aux::subview is a meta-functions to deal with cutting off data set. It could return a real subview or itself according to types of template parameters. ~\ref{lst:mappar} gives the definition of arg1\_isomoph, which determintes whether the \textit{arg1} is isomorphic.
 
-~\ref{lst:mappar} is the definition of \emph{mappar} TF class. Template parameter \emph{Instance} is computation task containing kernel function wrapper and arguments. The last template parameter \emph{\_\_SENTINEL\_\_} determines control flow when internalization occurs. ~\ref{lst-mappar2} is a specialization to generate concrete thread to practice computation. It is noteworthy that the last two arguments are \emph{true}, which means that this class is multi-threaded and leaf node version. 
+~\ref{lst:mappar} is the definition of \emph{mappar TF} class. Template parameter \emph{Instance} is computation task containing a kernel function wrapper and arguments. The last template parameter \emph{\_\_SENTINEL\_\_} determines control flow when instantiation occurs. ~\ref{lst-mappar2} is a template partial specialization to generate concrete thread to practice computation. It is noteworthy that the last two arguments are \emph{true}, which means that this class is multi-threaded and leaf node version. 
 
 \makebox[3.1\width]{\hrulefill}
 \begin{verbatim}
 template <class Instance, int  _K,
 	  bool _IsMT,  bool __SENTINEL__>
 struct mappar {
-typedef mappar<typename Instance::SubTask, 
+  typedef mappar<typename Instance::SubTask, 
         _K, _IsMT, 
 	Instance::SubTask::_pred> _Tail;
-// ...
+
+  typedef typename mpl::or_<mpl::bool_<std::tr1::is_arithmetic<typename Instance::Arg1>::value>,
+			    mpl::bool_<std::tr1::is_same<typename Instance::Arg1, 
+							 typename Instance::SubTask::Arg1>
+					 ::value>
+			      >::type
+  arg1_isomorph;
+  //...
+  static void doit(const typename Instance::Arg0& arg0, 
+		   const typename Instance::Arg1& arg1, 
+		     typename Instance::Result& result)
+  {
+     for (int k=0; k < _K; ++k) {
+	auto subArg0   = aux::subview<typename Instance::Arg0, 
+	    arg0_dim::value, arg0_isomorph::value>::sub_reader(arg0, k);
+	  
+	auto subArg1   = aux::subview<typename Instance::Arg1,
+	    arg1_dim::value, arg1_isomorph::value>::sub_reader(arg1, k); 
+	  
+	auto subResult = aux::subview<typename Instance::Result,
+	    ret_dim::value, ret_isomorph::value>::sub_writer(result, k);
+
+	_Tail::doit(*subArg0, *subArg1, *subResult);
+    }//end for
+ }
 };
 \end{verbatim}
 \begin{center}
@@ -543,58 +594,74 @@ struct mappar <Instance, _K, true, true>
 {
 // ...
  static void 
- doit(const typename Instance::Arg0& arg0, 
+ Doit(const typename Instance::Arg0& arg0, 
    const typename Instance::Arg1& arg1,
    typename Instance::Result& result,
    mt::barrier_t barrier)
  {
    auto compF = Instance::computationMT();
-#ifndef __USEPOOL
+
    mt::thread_t leaf(compF, arg0, arg1, 
      __aux::ref(result, result_arithm()), 
      barrier);
-   leaf.detach();
-#else
-   pool.run(bind(compF, arg0, arg1, 
-     __aux::ref(result, result_arithm()), 
-     barrier));
-#endif
-  }
+ }
 };
 \end{verbatim}
-\begin{center}
-\label{lst:mappar2}
-\end{center}
 
 \begin{figure}
 \centering
-\includegraphics[width=3.3in]{test_matrixa}
+\includegraphics[width=3.3in]{test_matrix}
 \caption{MM internal call graph}
 \label{fig:mm}
 \end{figure}
 
-~\ref{fig:mm} is a cluster of subprocedures generated by libvina after applying \emph{mapreduce} to a matrix multiplication function. Template parameter \_K is 2 in this case because we perform this transform for dual core x86 machine. Libvina \emph{mapreduce} divides a matrix into 4 sub-matrices. The figure except dashed lines is actually a call graph. Shadow lines is multi-threaded environment and two subprocedures are executed in parallel. Dashed lines indicate synchronization logically. 
+~\ref{fig:mm} is a cluster of subprocedures generated by libvina after applying \emph{mapreduce} to a matrix multiplication function. Template parameter \_K is 2 in this case because we perform this transform for dual core machine. Libvina \emph{mapreduce} divides a matrix into 4 sub-matrices. The figure except dashed lines is actually a call graph. Shadow lines is multi-threaded environment and two subprocedures are executed in parallel. Dashed lines indicate logical synchronization. We implemented it by semphore or higher level barrier based on different thread libraries.
 
 \emph{mapseq} in \cite{b1} can be trivially implemented by passing false to \emph{\_IsMT} parameter. Nested block is possible by recursively defining \emph{TF classes}.
 
-In libvina, programmers only care about developing efficient algorithms. Library takes responsibility for parallelization while keeping the same interface. Porting to another platforms might need to refine template parameters or apply to new template to maintain maximum performance, however, it is unnecessary for programmers to know details of algorithms beneath of the libraries.
-\subsection{Pipelining and Streaming}
+\subsection{Streaming and pipelining}
+Streaming computation is a computer paradigm to perform massive parallelled computation. It models data set as a \emph{stream}. Operations are usually orangized in pipeline way to process in turn, while keeping stream in on-chip storage. It can utlize duplicated ALUs array to perform computation in parallel and reduce external bandwidth. 
+
+More general streaming computation does not restrict to keep data stationary. Pipeline processing inherently support heterogeneous architecture or ring network ~\cite{b19,b14}. If specific processors are exposed by platform and communition cost is manageable, developers intend to ultize them for throughput or energy advantages. Our template approach has no problem to link external computation as long developers provides communication layers.
+
+Our template library provides two components to support streaming compuation. First of all, we provides a multithreated \emph{ViewMT} classes depicted in ~\ref{fig:view}. Accessing elements from ViewMT is blocking and that thread is supposed to sleep until concerned event arrives. \textit{e.g.} upstreaming thread completes job and release the ownership, this event will wake up sleeping threads and proceeding with data. On shared memory system, we implemented it by plain pointer and semphore. For external accelerator, we implemented by memory map and event provided by OpenCL ~\cite{b12}. Secondly, we provide a TF class to build a pipeline. The simplifed class is enlisted as follows ~\ref{lst:pipe}. The class chains a serie of stages. It is noteworthy that we dedicatedly undefine the end of recursion because framework has no idea how to deal with the output of pipeline. It is user's responsibility to add final stage to clarify behaviors. 
+
+graph to depict multithreaded structure on x86. 
+
+\begin{verbatim}
+template <typename... Stages>
+struct pipeline;
+
+template <class P, typename... Tail>
+struct pipeline<P, Tail...> {
+  typedef typename P::input_type in_t;
+  typedef typename P::output_type out_t;
+ 
+ static out_t doit(in_t in)
+  {
+     pipeline<Tail...>::doit(  P::doit(in)  );
+  }
+};  
+\end{verbatim}
 \subsection{Blocking}
 \subsection{Cooperation with other libraries}
-We implemented our library in ISO standard C++. Theoretically, any standard-compliance C++ compiler should proceed our classes without trouble. C++0X \cite{b17} added a lot of language features to ease template meta-programming. Compilers without C++0X supports need some workarounds to pass compilation. Consider the trend of C++, development libraries such as libvina should be easier in the future. 
+We implemented our library in ISO standard C++. Theoretically, any standard-compliance C++ compiler should process our classes without trouble. C++0X \cite{b17} added a lot of language features to ease template meta-programming. Compilers without C++0X supports need some workarounds to pass compilation. Consider the trend of C++, development of template libraries such as libvina should became easier and smoother in the future. 
 
-We implemented \emph{vina::thread} based on underlying Linux PThread. A simple C++ thread pool is developed to reduce cost of thread creation. SPMD(Single program multiple data) is very important execution model. We utilize OpenCL to execute SPMD programs on GPU. OpenCL framework shipped with Mac OS 10.6 SDK is a library and be totally compatible with our approach. In order to obtain bigger performance on x86, we designed a lightweight thread library(libSPMD) based on Linux clone(2) and semaphore.
-
+We implemented \emph{mt::thread} based on underlying Linux PThread. A simple C++ thread pool is developed to reduce cost of thread creation. SPMD(Single program multiple data) is very important execution model. In order to obtain similiar SPMD execution model on x86, we designed a lightweight thread library(libSPMD) based on Linux clone(2) and semaphore. In order to obtain platform independence, we utilize GPU by OpenCL API. Many Acceleraters are scheduled to implemented OpenCL, which might be extend our approach to new territories in the future. 
+ 
 \section{Experiment and evaluation}
 \subsection{Methodology}
-C++0X is partially supported by mainstreaming compilers. Currently, we developed the library for gcc 4.4.0. In order to utilize OpenCL, we modified some codes to satisfied gcc 4.2 for apple. Modifications only increase tediousness of typing and enforce some requirements. They don't affect power of libvina or hurt performance in measurable experiments.
+C++0X is partially supported by mainstreaming compilers. Currently, we developed the library for gcc 4.4.0. GPU performance was measured on Mac OSX 10.6. 
 
-A couple of algorithms are evaluated for libvina.  They are representatives in image processing and scientific computations. 
+A couple of algorithms are evaluated for libvina.  They are typical programs in image processing and scientific computations. In addition, we implemented a language translation scenario to illustreate pipeline processing. 
+On x86 platform, We linked Intel Math kernel library to perform BLAS functions. Other procedures are implemented on our own. 
+
 \begin{itemize}
 \item[saxpy] Procedure in BLAS level 1. A scalar multiplies to a single precision vector, which contains 32 million elements.
-\item[sgemm] Procedure in BLAS level 3. Two 4096\*4096 dense matrices multiply.
+\item[sgemm] Procedure in BLAS level 3. Two 4096X4096 dense matrices multiply.
 \item[dot\_prod] Two vectors perform dot production.
 \item[conv2d] 2-Dimensional convolution operation on image.
+\item[lang\_pipe] Pseudo-Multi-language translation. A word is translated from one language A to language B, and then new function will translate it from language B to language C, etc.
 \end{itemize}
 
 Three multicore systems are used to conduct experiments. 
@@ -603,34 +670,36 @@ Three multicore systems are used to conduct experiments.
 \begin{center}
 \begin{tabular}{|l|r|r|l|r|r|}
 \hline
-name       & ISA         & topology   & frequency  & storage-on-chip & bandwidth      \\
+name& ISA         & topology   & frequency  & storage-on-chip & bandwidth\\
 \hline 
-harpertown & x86 core 2  & 2-way quad cores & 2.00Ghz & 64K DCache 64K ICache &         \\
-           &             &                  &         & 2x 6M shared L2 Cache &         \\
+htn & x86 harpertown& 2-way & 2.00Ghz & 6M shared& \\
+    &               &quadcores&       & L2 Cache X2&\\           
 \hline
-nehalem    & x86 nehalem & quad cores       & 2.93Ghz & same L1 cache; 256K L2&         \\
-           &             &                  &         & 8M shared L3          &         \\
+nhm & x86 nehalem & quad cores& 2.93Ghz & 256K L2&  \\
+    &             &           &         & 8M shared L3&         \\                   
 \hline
-9400m      & gpu g80     & 16 cores         & 1.10Ghz & 16k local storage     & 3.4Gb/s \\
+9400m & gpu g80  & 2 MultiProcessors& 1.10Ghz & 16k local storage& 3.4Gb/s \\
 \hline
 \end{tabular} 
 \end{center}
 \end{table}
-On x86 platform, We linked Intel Math kernel library to perform BLAS functions. We implemented convolution 2D and other algorithms on GPU. 
 
 \subsection{Results}
 Figures are preparing...\\
-1. speedup\\
-2. table: peak performance\\
-3. comparison 3 SPMD threads.\\
-4. cache misses reduction in blocking\\
+1. speedup on x86\\
+2. speedup on GPU.\\
+3. table: peak performance for x86 and gpu\\
+4. comparison 3 SPMD threads.\\
+%5. cache misses reduction in blocking\\
 5. comparison between gpu and cpu. matrix-multiplications?
-\section{Conclusions}
+\section{Conclusions and Future work}
 % number - used to balance the columns on the last page
 % adjust value as needed - may need to be readjusted if
 % the document is modified later
 \newpage
+
 \IEEEtriggeratref{11}
+
 % The "triggered" command can be changed if desired:
 %\IEEEtriggercmd{\enlargethispage{-5in}}
 
@@ -668,6 +737,9 @@ Figures are preparing...\\
 \bibitem{b15} El-Ghazawi, T., Cantonnet, F., Yao, Y, Rajamony, R.: Developing an Optimized UPC Compiler for Future Architecture
 \bibitem{b16} Gurtovoy, A., Abrahams, D.: The BOOST C++ Meta-programming Library
 \bibitem{b17} C++ Standard Committee: ISO/IEC DTR 19768 Doc No. 2857, 2009
+\bibitem{b18} Stroustrup, B.: The C++ Programming Language (Spcial Edition) Addison Wesley. Reading Mass. USA. 2000. ISBN 0-201-70073-5
+\bibitem{b19} J. A. Kahle, M. N. Day, H. P. Hofstee, C. R. Johns, T. R. Maeurer, and D. Shippy: Introduction to the Cell Multiprocessor, IBM Journal of Research and Development 49, No. 4/5, 589-604, 2005
+\bibitem{b20} Official OpenMP Specifications, OpenMP Architecture Review Board, 2002, http://www.openmp.org/specs/.
 \end{thebibliography}
 
 

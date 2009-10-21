@@ -71,7 +71,7 @@ LDFLAGS+=$(MTSUPPORT)
 #endif
 
 AUX_OBJS = profiler.o toolkits.o mtsupport.o
-OBJS = mat_mul.o lang_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o tpbench.o
+OBJS = mat_mul.o lang_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o tpbench.o test_cl.o
 OBJS += $(AUX_OBJS)
 
 all: mat_mul lang_pipe dot_prod conv2d saxpy tpbench
@@ -97,6 +97,10 @@ conv2d: conv2d.o $(AUX_OBJS)
 
 tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 	$(CXX) -o $@ $^ $(LDFLAGS) ./libSPMD/libSPMD.a 
+
+#test opencl, only works on macosx
+test_cl: test_cl.o cl.hpp
+	$(CXX) -o $@ $^ $(LDFLAGS) toolkits.o -framework OpenCL 
 
 $(OBJS):%.o:%.cc frame.hpp Makefile params
 	$(CXX) -o $@ -c $< $(CFLAGS)
