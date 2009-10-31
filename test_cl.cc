@@ -68,8 +68,12 @@ main(int argc, char * argv[])
 	   ++J) {
 	auto id = J->getInfo<CL_DEVICE_VENDOR_ID>(NULL);
 	auto unit = J->getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>(NULL);
+	auto max_mem = J->getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>(NULL);
+	auto local_mem = J->getInfo<CL_DEVICE_LOCAL_MEM_SIZE>(NULL);
 	cout << "GPU Device # " << j << "\t" << id
 	     << "\n maximal computation unit: " << unit
+	     << "\n maximal allocated memory: " << (max_mem >> 20) << "M"
+	     << "\n local memory size: " << (local_mem >> 10) << "K"
 	     << endl;
       }
     }
