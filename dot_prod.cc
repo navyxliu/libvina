@@ -6,9 +6,11 @@
 
 #include <stdio.h>
 #include <tr1/functional>
+
+#ifdef MKL
 #include <mkl.h>
 #include "mkl_cblas.h"
-
+#endif
 
 using namespace vina;
 
@@ -175,10 +177,11 @@ VEC_TEST_K=%d\n"
   const float * data_x = x.data();
   const float * data_y = y.data();
   prof.eventStart(temp0);
-  //STD_result = dotproduct<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(x, y);
-  //
+#ifndef MKL
+  STD_result = dotproduct<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(x, y);
+#else 
   STD_result = cblas_sdot(VEC_TEST_SIZE_N, data_x, 1, data_y, 1);
-
+#endif
   prof.eventEnd(temp0);  
 
   printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
@@ -198,7 +201,9 @@ VEC_TEST_K=%d\n"
   fflush(stdout);
 */
 
+#ifdef __USE_LIBSPMD
   spmd_initialize();
+#endif
   typedef dotprod<VEC_TEST_TYPE, TestVector, TestVector,
     vecDotProdWrapper, reduce_add, p_simple, VEC_TEST_K, true> TF_MT;
 
@@ -207,7 +212,10 @@ VEC_TEST_K=%d\n"
   TF_MT::doit(x, y, z);
   prof.eventEnd(temp2);
 
+#ifdef __USE_LIBSPMD
   spmd_cleanup();
+#endif
+
   CHECK_RESULT(z);
   printf("elapsed=%d\n", prof.getEvent(temp2)->elapsed());
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed()));

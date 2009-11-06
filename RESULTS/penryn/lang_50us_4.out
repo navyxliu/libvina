@@ -1,0 +1,13 @@
+Start to benchmark loops_per_ms...
+^~~~~lang_pipeline
+final result: hello
+iter # 0 Elapsed 434143 usec
+final result: hello
+iter # 1 Elapsed 560159 usec
+final result: hello
+iter # 2 Elapsed 570117 usec
+final result: hello
+iter # 3 Elapsed 581688 usec
+final result: hello
+iter # 4 Elapsed 587744 usec
+

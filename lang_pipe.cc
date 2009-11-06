@@ -22,7 +22,7 @@
 #ifndef ITER
 #define ITER 5
 #endif
-
+#define LANG_BURN_TIME 500000
 using namespace std;
 using namespace vina;
 
@@ -123,8 +123,8 @@ void translate_impl(P p,
     ((writer_t)(*out))[i] = f[i];
 
   // pretend it is a "tough" task needs to  comsume 1 second.
-  sleep(1);
-   
+  //sleep(1);
+  burn_usecs(LANG_BURN_TIME);
   out->set();
   
   length = f.length();
@@ -239,7 +239,7 @@ main()
   static_assert(false == Eng2Spn::isUnderstand<French>::value
 		,"eng2spn does not know french");
 
-
+  assert( initialize_ck_burning() && "ck-burning failed");
   cout << "^~~~~lang_pipeline\n";
 
   typedef pipeline<translate<Eng2Spn>, 
@@ -255,22 +255,26 @@ main()
 
   typedef pipeline<translate<Eng2Spn, true>,
     translate<Spn2Frn, true>, 
-    translate<Frn2Itn, true>
+    translate<Frn2Itn, true>,
+    translate<Itn2Eng, true>
     > MYPIPE2;
   
   gettimeofday(&tv, NULL);
   for (int i=0; i<ITER; ++i) {
     MYPIPE2::doit(&input2);
-    sleep(1);
+    //sleep(1);
   }
-  sleep(3);
 
+  
+  sleep(3);
+  /*
   gettimeofday(&tv, NULL);
   for (int i=0; i<ITER; ++i) {
     MYPIPE::doit(&input);
     sleep(1);
   }
   sleep(3);
+  */
 }
 
 

@@ -670,7 +670,6 @@ struct mapreduce {
     typedef typename view_trait2<SubResultType>::writer_type SubWViewTemp;
     typedef typename view_trait2<SubResultType>::reader_type SubRViewTemp;
     
-    SubResultType mem[_K][_K][_K];
     static void doit(const typename Instance::Arg0& arg0, 
 		     const typename Instance::Arg1& arg1, 
 		     typename Instance::Result& result, 
@@ -679,14 +678,11 @@ struct mapreduce {
 
       for(int i=0; i<_K; ++i) for(int j=0; j<_K; ++j) {
 	  if (_IsMT && lookahead == 1) { // leaf
-	    /*	    
 #ifndef __USEPOOL
 	    auto submats = new SubResultType[_K];
 #else 
 	    auto submats = new(mapreduce2::mem_pool::get()) SubResultType[_K];
 #endif
-	    */
-	    SubResultType * submats = mem[i][j];
 	    typedef SubWViewTemp * SubWViewTempPtr_t;
 
 	    SubWViewTemp ** subResults = new SubWViewTempPtr_t[_K];
