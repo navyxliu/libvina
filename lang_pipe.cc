@@ -189,6 +189,7 @@ struct translate<P, true>
 };
 
 struct timeval tv, tv2;
+unsigned long ts_last; /*timestamp*/
 
 namespace vina{
 template<>
@@ -209,11 +210,13 @@ struct pipeline<>
       hello[i] = reader[i];
     hello[i] = '\0';
 
-    cout << "final result: " << hello << endl;
     gettimeofday(&tv2, NULL);
+    printf("final result: %s\n", hello);
+    unsigned long ts_this;
     printf("iter #%2d Elapsed %d usec\n", cnt++,
-	   (tv2.tv_sec - tv.tv_sec) * 1000000 + (tv2.tv_usec - tv.tv_usec));
-
+	   ts_this = (tv2.tv_sec - tv.tv_sec) * 1000000 + (tv2.tv_usec - tv.tv_usec));
+    printf("different from last finish %d\n", (ts_this - ts_last));
+    ts_last = ts_this;
   }
   
   template <class T>
