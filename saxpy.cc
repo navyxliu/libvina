@@ -7,7 +7,7 @@
 
 //#include <omp.h>
 using namespace vina;
-#define ITERS 100
+#define ITERS 1
 
 #ifdef __NDEBUG 
 #define CHECK_RESULT(dummy)
@@ -141,8 +141,11 @@ VEC_TEST_K=%d\n"
 
   prof.eventStart(temp0);
   for(int i=0; i<ITERS; ++i)
-  //vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
+#ifndef MKL
+  vina::saxpy<VEC_TEST_TYPE, VEC_TEST_SIZE_N>(7, x, STD_result);
+#else
   cblas_saxpy(VEC_TEST_SIZE_N, 7.0f, data_x, 1, data_y, 1);
+#endif
   prof.eventEnd(temp0);  
 
   printf("elapsed=%d\n", prof.getEvent(temp0)->elapsed());
@@ -163,24 +166,27 @@ VEC_TEST_K=%d\n"
   y.zero();
   typedef ::saxpy<Writer, VEC_TEST_TYPE, TestVector, vecMAddWrapper, p_simple, VEC_TEST_K, true>
     TF_MT;
-
+#ifdef __USE_LIBSPMD
   int nr_pe = _spmd_initialize(VEC_TEST_K);
   assert( nr_pe != -1 && "failed to initialize libSPMD runtime");
   printf("startup libspmd runtime: %d pe is detected\n", nr_pe);
-
+#endif
 
   prof.eventStart(temp2);
   for (int i=0; i<ITERS; ++i) {
     TF_MT::doit(7.0f, x, result);
   }
+#ifdef __USE_LIBSPMD
   while ( !spmd_all_complete() );
+#endif
   prof.eventEnd(temp2);
   CHECK_RESULT(y);
 
   printf("elapsed=%d\n", prof.getEvent(temp2)->elapsed());  
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp2)->elapsed() / ITERS));
-
+#ifdef __USE_LIBSPMD
   spmd_cleanup();
+#endif
 
 #if 0  
   prof.eventStart(temp3);

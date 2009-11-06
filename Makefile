@@ -34,8 +34,8 @@ MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
 	-liomp5 -lpthread
 
 #libSPMD lib
-SPMDPATH=./libSPMD
-SPMDLIB=-L$(SPMDPATH) -lSPMD
+#SPMDPATH=./libSPMD
+#SPMDLIB=-L$(SPMDPATH) -lSPMD
 
 #boost::thread lib
 ifeq ($(SYSTEM), Linux)
@@ -99,8 +99,8 @@ tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 	$(CXX) -o $@ $^ $(LDFLAGS) ./libSPMD/libSPMD.a 
 
 #test opencl, only works on macosx
-test_cl: test_cl.o cl.hpp
-	$(CXX) -o $@ $^ $(LDFLAGS) toolkits.o -framework OpenCL 
+test_cl: test_cl.o
+	$(CXX) -o $@ $^ $(LDFLAGS) toolkits.o -framework OpenCL -I./inc
 
 $(OBJS):%.o:%.cc frame.hpp Makefile params
 	$(CXX) -o $@ -c $< $(CFLAGS)
