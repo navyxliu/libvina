@@ -1,46 +1,59 @@
 This is BibTeX, Version 0.99c (Web2C 7.5.4)
 The top-level auxiliary file: libvina.aux
-I found no \bibdata command---while reading file libvina.aux
-I found no \bibstyle command---while reading file libvina.aux
-You've used 13 entries,
-            0 wiz_defined-function locations,
-            96 strings with 507 characters,
-and the built_in function-call counts, 0 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 0
-:= -- 0
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
-chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 0
-format.name$ -- 0
-if$ -- 0
+The style file: ieeetran.bst
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: libvina.bib
+-- IEEEtran.bst version 1.12 (2007/01/11) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty author in c++03
+Warning--empty journal in c++03
+Warning--empty author in c++0x
+Warning--empty journal in c++0x
+Warning--empty journal in tempturing
+Warning--empty year in tempturing
+Warning--empty journal in opencl
+
+Done.
+You've used 20 entries,
+            4024 wiz_defined-function locations,
+            927 strings with 11009 characters,
+and the built_in function-call counts, 12818 in all, are:
+= -- 905
+> -- 359
+< -- 78
++ -- 190
+- -- 70
+* -- 585
+:= -- 1859
+add.period$ -- 45
+call.type$ -- 20
+change.case$ -- 23
+chr.to.int$ -- 186
+cite$ -- 27
+duplicate$ -- 973
+empty$ -- 1176
+format.name$ -- 83
+if$ -- 2957
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 0
-num.names$ -- 0
-pop$ -- 0
-preamble$ -- 0
+int.to.str$ -- 20
+missing$ -- 194
+newline$ -- 83
+num.names$ -- 22
+pop$ -- 528
+preamble$ -- 1
 purify$ -- 0
-quote$ -- 0
-skip$ -- 0
+quote$ -- 2
+skip$ -- 975
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 451
+swap$ -- 701
+text.length$ -- 16
 text.prefix$ -- 0
-top$ -- 0
-type$ -- 0
-warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 0
-(There were 2 error messages)
+top$ -- 5
+type$ -- 20
+warning$ -- 7
+while$ -- 51
+width$ -- 22
+write$ -- 184
+(There were 7 warnings)
