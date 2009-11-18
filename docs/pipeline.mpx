@@ -187,6 +187,19 @@ string _n[];
 vardef _s(expr _t,_f,_m,_x,_y)(text _c)=
   addto _p also _t infont _f scaled _m shifted (_x,_y) _c; enddef;
 _n0="cmtt12";
+_s("The",_n0,1.00000,0.0000,0.0000,);
+_s("number",_n0,1.00000,24.6077,0.0000,);
+_s("of",_n0,1.00000,67.6713,0.0000,);
+_s("cores",_n0,1.00000,86.1271,0.0000,);
+setbounds _p to (0,0.0000)--(116.8867,0.0000)--
+ (116.8867,7.3059)--(0,7.3059)--cycle;
+_p endgroup
+mpxbreak
+begingroup save _p,_r,_s,_n; picture _p; _p=nullpicture;
+string _n[];
+vardef _s(expr _t,_f,_m,_x,_y)(text _c)=
+  addto _p also _t infont _f scaled _m shifted (_x,_y) _c; enddef;
+_n0="cmtt12";
 _s("5usec",_n0,1.00000,0.0000,0.0000,);
 setbounds _p to (0,0.0000)--(30.7597,0.0000)--
  (30.7597,7.3059)--(0,7.3059)--cycle;

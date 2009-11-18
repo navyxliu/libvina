@@ -2,7 +2,9 @@
 // Jun. 15, 09' - create file
 // Oct. 05, 09' - add new pattern pipe, see pipe.hpp 
 // Oct. 15, 09' - modify examples, refactor the code.
-
+// Nov. 06, 09' - add script test_pipe.sh and cores.sh to test result 
+//                replace sleep with ck-burning to more acurate test 
+//
 #include <unistd.h>  // for sleep
 #include <iostream>
 #include <algorithm>
@@ -20,9 +22,9 @@
 #include "pipe.hpp"
 
 #ifndef ITER
-#define ITER 5
+#define ITER 500
 #endif
-#define LANG_BURN_TIME 500000
+#define LANG_BURN_TIME 20000
 using namespace std;
 using namespace vina;
 
@@ -190,6 +192,8 @@ struct translate<P, true>
 
 struct timeval tv, tv2;
 unsigned long ts_last; /*timestamp*/
+unsigned long time_sum;
+int first;
 
 namespace vina{
 template<>
@@ -243,13 +247,21 @@ main()
 		,"eng2spn does not know french");
 
   assert( initialize_ck_burning() && "ck-burning failed");
-  cout << "^~~~~lang_pipeline\n";
+  cout  << "^~~~~lang_pipeline\n"
+  	<< "LANG_BURN_TIME: " << LANG_BURN_TIME << "usec\n"
+	<< "stages: 4"
+	<< endl;
+  int wait_sec = (LANG_BURN_TIME * ITER * 4) / 1000000;
+  wait_sec = wait_sec + 3;
+
+  cout << "gonna wait " << wait_sec << "seconds\n";
 
   typedef pipeline<translate<Eng2Spn>, 
     translate<Spn2Frn>,
     translate<Frn2Itn>
     > MYPIPE;
   char RawStr[] = "hello";
+
   STRING hello (RawStr, RawStr + 5);
   auto input = hello.subRView();
 
@@ -267,9 +279,11 @@ main()
     MYPIPE2::doit(&input2);
     //sleep(1);
   }
-
   
-  sleep(3);
+  sleep(wait_sec);
+  printf("throughput is %d usec per case\n", 
+	((tv2.tv_sec - tv.tv_sec) * 1000000 
+	+ (tv2.tv_usec - tv.tv_usec)) / ITER);
   /*
   gettimeofday(&tv, NULL);
   for (int i=0; i<ITER; ++i) {
