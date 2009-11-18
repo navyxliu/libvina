@@ -378,11 +378,11 @@
 % of the page, use this alternative format:
 % 
 \author{
-\IEEEauthorblockN{Xin Liu, Daqiang Zhang, Jingyu Zhou, Minyi Guo}
+\IEEEauthorblockN{Xin Liu, Daqiang Zhang, Jingyu Zhou, Minyi Guo, Yao Shen}
 \IEEEauthorblockA{Department of Computer Science\\
 Shanghai Jiao Tong University\\
 No. 800, Dongchuan Road, Shanghai, P.R.China\\
-\{navyliu, zhangdq\}@sjtu.edu.cn, \{guo-my, zhou-jy\}@cs.sjtu.edu.cn}
+\{navyliu, zhangdq\}@sjtu.edu.cn, \{guo-my, zhou-jy, shen\_yao\}@cs.sjtu.edu.cn}
 }
 
 % use for special paper notices
@@ -414,7 +414,7 @@ approach to adapt more than one multicore platform is manageable.
 \end{abstract}
 
 \begin{IEEEkeywords}
-static analysis; source-to-souce transformation; parallelization; multicore; metaprogamming
+static analysis; source-to-souce transformation; parallelization; multicore; metaprogramming
 \end{IEEEkeywords}
 
 
@@ -441,20 +441,20 @@ programmers and hardware vendors.
 
 Traditionally, algorithm experts usually focus on their specific domains and have
 limited insights on diverging computer systems. Writing algorithms in
-sequential code, they expect hardware
-and compiler to guarantee decent performance for their
+sequence, they expect hardwares
+and compilers to guarantee decent performance for their
 programs. The expectation was roughly held until explicit parallel system was
-introduced to computer community. Since frequency of microprocessor
-stops increasing, it has been difficult to obtain free
-performance improvement from hardware's refinement any more. Workloads
+introduced to computer community. Since the frequency of microprocessor
+increases slowly, it has been difficult to obtain free
+performance improvement from hardware's refinement. Workloads
 of application developers surge for parallel computer
-systems. Essentially, it is because plain C/C++ can not fully reflect contemporary
-parallel architectures any more. It is desirable to develop
-methods to adapt diverging multicore architectures.
+systems. In essence, it is because plain C/C++ can not fully reflect contemporary
+parallel architectures. It is desirable to develop
+methods to adapt to diverging multicore architectures.
 
-Although extensive researches on revolutionary
+Although extensive researches on non-traditional
 programming models obtain fruitful achievements, mainstream software development still
-stay at imperative progamming languages and multi-threading.
+stay at imperative programming languages and multi-threading.
 We think the primary reason is software cost. Considering the time span
 which a large computer system serves, hardwares are cheap and become
 cheaper with time elapsing, while software and well-trained personnel are
@@ -494,7 +494,7 @@ are typical examples. One distinct attribute comparing with other
 fancy languages is that they
 support progressive parallelization from original source code, which
 can guarantee to keep software investment. OpenMP transform program regions into fork-join threads based on
-pragma directives. Sequoia attemps to map computaton-intensive functions
+pragma directives. Sequoia attempts to map computation-intensive functions
 on a machine tree describing in configuration file. In those
 extended languages,  a set of language
 constructs are provided to support specific parallel patterns, so they
@@ -532,7 +532,7 @@ beyond this paper.
 \item Portability: Template is part of ISO C++~\cite{c++03, c++0x}. Template-based approach is applicable for every
   platforms with standard C++ compiler. Template metaprogramming is
   widely used in other applications in C++ community and full-blown
-  metaprogamming libraries like
+  metaprogramming libraries like
   MPL~\cite{mpl} is portable. Through good encapsulation of
   platform details, most of code in our template approach can be reused.
 \end{itemize}
@@ -580,14 +580,14 @@ programming in static realm.
 %separation of roles.
 Fig.~\ref{fig:overview} is the diagram of source-to-source
 transformation using template metaprogramming. In our design philosophy, we separate two roles in software
-development. Algorithm programmers are appllication-specific experts,
+development. Algorithm programmers are application-specific experts,
 who are only concerned about efficient algorithms in conventional
 C/C++ form. They provide functions in the form of function wrappers. So
-the encapsulation process is archieved by algorithm programmers. On the other side, system
+the encapsulation process is achieved by algorithm programmers. On the other side, system
 programmer who know underlying computer architectures write C++
 template library to take responsibility for transformation. We extend
 the concept of template specialization to multicore architectures.
-Specializations of a function wrapper for different architectues are
+Specializations of a function wrapper for different architectures are
 achieved by applying a series of template classes. A regular C++ compiler
 can transform source codes according to deployed templates.
 
@@ -595,8 +595,8 @@ can transform source codes according to deployed templates.
 One foundation of our approach is to assume C++
 compiler front-end as a code generator. It actually practices
 source-to-source transformation in the guidance of template
-metaprogramming. Function wrappers are parameteric with respect to
-template arguments intead of function arguments. This enables
+metaprogramming. Function wrappers are parametric with respect to
+template arguments instead of function arguments. This enables
 C++ compiler manipulate  functions at compile time. 
 
 %introduce libvina for cpu and gpu.
@@ -609,7 +609,7 @@ library. Template library such as libvina enables to re-use
 the repetitive efforts of system programmers.  Porting
 from one platform to another usually  only need to adjust
 template arguments or apply another group of template classes. It is not necessary to
-dig into algorithms to explore parallelism again. As despicted in
+dig into algorithms to explore parallelism again. As depicted in
 Fig. ~\ref{fig:overview}, we apply different template classes to
 transform the same function wrappers for CPU and GPU respectively.
 
@@ -655,7 +655,7 @@ this language feature by template function. Our library needs to
 manipulate template functions and instantiate them on demand, which we
 call it \emph{late-instantiation} inspired of
 \emph{late-binding}. Because the entry address of a template function is not available until instantiation, it is desirable to extend function
-polymorphism for different template argumenta  at compile-time. Our
+polymorphism for different template arguments  at compile-time. Our
 approach is to wrap the template function by a template class and pass
 it as \emph{template template class}. A wrapper function acts
 as interface provided by algorithm developers. Fig.~\ref{lst:wrapper} is a wrapper function of vector addition. 
@@ -773,7 +773,7 @@ Modern multicore architectures emphasize on utilization of
 bandwidth and storage-on-chip, therefore we manipulate data in
 bulk. Essentially, a view is an abstract of \emph{stream} and it
 helps programmers build streaming computation. Underneath view
-classes, we can perform specialization based on architectures. \textit{e.g}, it is not neccessary to duplicate
+classes, we can perform specialization based on architectures. \textit{e.g}, it is not necessary to duplicate
 data  on shared memory, or  we can raise asynchronous communication to memory
 hide latency. In addition, a view class is type-safed. Programmers can get
 compilation errors if programs have potential violations of date access rules. Early errors are particularly
@@ -800,7 +800,7 @@ On GPU, we use OpenCL ~\cite{opencl} to obtain platform
 independence. Many accelerators are scheduled or declared to
 implement OpenCL, which might extend our approach to new
 territories in the future.  Although the interfaces of threads
-memtioned before are varying, our library can deal with them well.
+mentioned before are varying, our library can deal with them well.
 
 In libvina, we implement barrier for both CPU and GPU. CPU's
 implementation uses pthread conditional variables, while GPU counterpart
@@ -945,7 +945,7 @@ passing false to \emph{\_IsMT} parameter. Nested block is possible by
 recursively defining \emph{TF classes}.
 
 \subsection{Streaming and pipelining}
-Streaming computation is a computer paradigm to perform massive parallelled computation. It models data set as a \emph{stream}. Operations are usually organized in pipeline way to process in turn, while keeping stream in local storage. It can utilize multicore to perform computation in parallel and reduce external bandwidth.  Imagine~\cite{imagine} is typical architecture for
+Streaming computation is a computer paradigm to perform massive parallel computation. It models data set as a \emph{stream}. Operations are usually organized in pipeline way to process in turn, while keeping stream in local storage. It can utilize multicore to perform computation in parallel and reduce external bandwidth.  Imagine~\cite{imagine} is typical architecture for
 streaming computation.
 
 
@@ -1006,12 +1006,12 @@ struct TF_pipeline<P, Tail...> {
 
 \begin{figure}[htp]
 \includegraphics[width=3.1in]{viewmt}
-\caption{ViewMT in pipeling}\label{fig:viewmt}
+\caption{ViewMT in pipelining}\label{fig:viewmt}
 \end{figure}
 
 %\subsection{Blocking}
 \section{Adaption of TF classes}
-TF classes manipute instance classes. They transform the source code based on properties
+TF classes manipulate instance classes. They transform the source code based on properties
 of instances. \textit{e.g.} TF\_mapreduce utilizes the fact that
 instance is divisible and reducible. TF\_pipeline utilizes the fact
 that instances are combinable.  
@@ -1085,10 +1085,10 @@ Fig.~\ref{lst:adaptersaxpy} is definition of an instance for
 \emph{saxpy}. We will describe the algorithm later. The adapter defines TF\_mappar and call it in entry. 
 The instance class recursively defines its subtask. Essentially, 
 it defines how to divide the instance.
-We evalute the predicate \emph{Pred} in instance class and the value
+We evaluate the predicate \emph{Pred} in instance class and the value
 is used by TF class as initializer of  template argument.
 Type interfaces include Arg0, Arg1 and Result. A static function returns a function object which
-instantiates function wrapper \emph{Func} using paramters in context. Fig.~\ref{lst:callsaxpy}
+instantiates function wrapper \emph{Func} using parameters in context. Fig.~\ref{lst:callsaxpy}
 shows the usage of our adapter. Comparing with original call, new
 entry keeps funciton name and arguments intact. However, inside of
 TF\_MT::saxpy, a cluster of subprocedures are generated and executed
@@ -1225,7 +1225,7 @@ first implementation of OpenCL was shipped by Mac OSX 10.6. The GPU performance 
 A couple of algorithms are evaluated for our template approach.  They
 are typical in image processing and scientific fields. In
 addition, we implemented a psuedo language translation program to
-illustreate pipeline processing. The programs in expriments are listed
+illustrate pipeline processing. The programs in experiments are listed
 as follows:
 
 \begin{itemize}
@@ -1240,7 +1240,7 @@ as follows:
 \end{itemize}
 
 Two multicore platforms are used to conduct experiments. The hardware
-envronments are summaried in Table.~\ref{tbl:mach}
+platforms are summed up in Table.~\ref{tbl:mach}
 
 \begin{table}[hbt]
 \caption{Experimental platforms}\label{tbl:mach}
@@ -1261,17 +1261,17 @@ macbookpro&laptop &x86 dual-core &2G&Mac OSX\\
 \end{tabular} 
 \end{center}
 \end{table}
-On harptown, we link Intel Math kernels to perform BLAS procedures
+On harpertown, we link Intel Math kernels to perform BLAS procedures
 except for conv2d. On macbookpro, we implemented all the algorithms on
 our own. For CPU platform, we link libSPMD thread library to
 perform computation. The library binds CPUs for each SPMD
 thread and switch to realtime scheduler on Linux.  This configuration
 helps eliminate the impact of OS scheduler and other processes in the system.
-\subsection{Evalution}
+\subsection{Evaluation}
 \subsubsection{Speedup of SPMD transformation on CPU}
 \begin{figure}
 \includegraphics{speedupx86.0}
-\caption{Speedup on Hapertown}\label{fig:spdx86}
+\caption{Speedup on Harpertown}\label{fig:spdx86}
 \end{figure}
 
 Fig.~\ref{fig:spdx86} shows the speedup on harpertown. The blade
@@ -1287,7 +1287,7 @@ speedup is about 6.3 times when all the cores are available. It is worth noting 
 observe almost two-fold speedup from sequence to dual core. However,
 the speedup degrates to 3.3 time when execution
 environment change to 4-core. Harpertown consists of  2-way quad-core processors,  Linux
-can not gurantee that 4 subprocedures are executed within a physical
+can not guarantee that 4 subprocedures are executed within a physical
 processor. Therefore, the cost of memory accesses and synchronization
 increases from 2-core to 4-core platform. 
 
@@ -1314,7 +1314,7 @@ functions a little manually.  Algorithms are kept except for sgemm. It is not ea
  to work out sgemm for a laptop, so we added blocking and SIMD
  instruments for CPU.}. As figure depicted,  computation-intensive programs
 \textit{sgemm} and \textit{conv2d} still maintain their speedups. 4.5 to 5 times
-performance boost is archieved for them by migrating to GPU.
+performance boost is achieved for them by migrating to GPU.
 In addition, we observe about 2 times performance boost for
 \textit{saxpy}. Nvidia GPUs execute
 threads in group of warp (32 threads) on hardware and it is
@@ -1342,10 +1342,10 @@ obtain hardware optimization without tweaking the algorithm.
 \end{tabular}
 \end{table}
 
-Table.~\ref{tbl:sgemm} details \textit{sgemm} execution on CPU and GPU. Dense maxtrix
-multiplication is one of  typical prorgrams which have
+Table.~\ref{tbl:sgemm} details \textit{sgemm} execution on CPU and GPU. Dense matrix
+multiplication is one of  typical programs which have
 intensive computation. Problems with this characteristic are the most
-attractive candicators to apply our template-based approach.
+attractive candidates to apply our template-based approach.
 Our template library transforms the \textit{sgemm} for both CPU and 
 GPU. We choose sequential execution on macbookpro's CPU as
 baseline. After mapping the algorithm to GPU, we directly obtains over
@@ -1360,7 +1360,7 @@ maximal performance is roughly 17.6 Gflops.\footnote{$17.6Gflops = 1.1Ghz * 2(SM
   not observe mad hints bring any performance improvement in OpenCL. }
 Although both column 2 and column 4 implement SIMD algorithm for
 \textit{sgemm}, GPU's version is obviously easier and effective. It is
-due to the dynamic SIMD and thread mangagement from GPU
+due to the dynamic SIMD and thread management from GPU
 hardware~\cite{Fatahalian08} can significantly ease vector programming. Programmer can
 implement algorithm in plain C and then replies on template
 transformation for GPU.  Adapting \emph{TF\_mapreduce} template class
@@ -1379,11 +1379,11 @@ Fig.~\ref{fig:pipe} demonstrates pipeline processing using our
 template library. As described before, \textit{langpipe} simulates a
 multilingual scenario. We apply template \emph{TF\_pipeline} listed in
 Fig.~\ref{lst:pipe}. In our case, the program consists of  4 stages,
-which can transively translate English to Chinese\footnote{follow the 
+which can transitively translate English to Chinese\footnote{follow the 
   route: English  $\to$ French $\to$ Spanish $\to$ Italian $\to$
   Chinese}. Only the preceding stages complete,  it can proceed with
 the next stages. The executing scenario is similar to Fig.~\ref{fig:viewmt}. We use bogus loop to consume $t \  \mu s$ on CPU. For each $t$, we iterate 500
-times and then calculate the average comsuptive time on harpertown. For
+times and then calculate the average consumptive time on harpertown. For
 grained-granularity cases (20$\mu s$, 50$\mu s$, 100$\mu s$), we can obtain ideal
 effectiveness in pipelining when 4 cores are exposed to the system.
 \textit{i.e.} our program can roughly output one instance every $t\  \mu
@@ -1457,15 +1457,15 @@ The primary drawback of Sequoia is that its language constructs can not cover co
 parallel patterns such as pipeline or task queue. Besides, sequoia compiler
 ignores type information to select optimal
 implementation. Merge~\cite{merge} features a uniform runtime
-environment for heteogeneous multicore 
+environment for heterogeneous multicore 
 systems in forms of task and variant. However, Merge only
-support \emph{map-reduece} programming model. Its run-time overhead is not neglible for fine-granularity
+support \emph{map-reduce} programming model. Its run-time overhead is not negligible for fine-granularity
 parallelism. Methods mentioned before all need non-trivial efforts to
 modify compilers. As discussed in \cite{sequoia}, the authors of the Sequoia were
 still not clear whether the minimal set of primitives they provided provides can
-sufficiently express dynamic applications. We doubt if it is worthwile to
+sufficiently express dynamic applications. We doubt if it is worthwhile to
 invest a compiler given the fact that template library can also
-archieve the same functionalities.
+achieve the same functionalities.
 
 %Libvina derived the idea of Sequoia to transform source code recursively. However, template metaprogramming utilizes existing mechanism in C++ compiler and is capable to express all the semantics in Sequoia programming language. Moreover, Sequoia can not leverage type system to specialize code. \textit{e.g.} Many modern processors usually provide SIMD instructions. Libvina could generate corresponding source based on predefined vector types. Sequoia compiler ignores this important information and simply relies on native compilers.
 \section{Discussion and Future work}
@@ -1474,8 +1474,8 @@ direction. However, diverging multicore architectures enlarge the gap between al
 computer system developers.  Conventional C/C++ programming language
 can not reflect hardware essence any more.  Existing ad-hoc techniques
 or platform-dependent programming language pose issues of generality
-and portability. Source-to-source transformation can meet the challeng
-and help tailor programs to specifc multcore architectures.
+and portability. Source-to-source transformation can meet the challenge
+and help tailor programs to specific multicore architectures.
 
 %Not only the more processor cores but also
 %elaborated memory hierarchy and exposed communication are adopted by
@@ -1490,7 +1490,7 @@ is extensible. Instead of modifying a compiler to add
 annotations or language constructs, we implement the whole
 functionalities by template mechanism. Template metaprogramming is
 intimate for C++ programmers so they can extend the library to
-facilate proper parallel patterns and new architectural
+facilitate proper parallel patterns and new architectural
 features.  Our approach follows ISO C++ standards, which mean the
 methodology is guaranteed to work across platforms.  Experiments shows
 that our template approach can transform algorithms into SPMD threads
@@ -1522,12 +1522,12 @@ provide memory coalescence for specific access patterns.
 On CPU, source-to-source transformation should go on improving data
 locality of programs. We plan to explore template approach to  generalize
 blocking and tiling techniques.  It is also possible to re-structure
-or prefetch data using template metaprograming accampanying with
+or prefetch data using template metaprograming accompanying with
 runtime library.
 
 General applications also contain a variety of static information to
 optimize.The problem is that their memory footprints are irregular and
-very hard to identify. It is desirable to explores new TF classes to facilate
+very hard to identify. It is desirable to explores new TF classes to facilitate
 transforming source code close to target architectures using the static
 information.
 
