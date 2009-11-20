@@ -12,10 +12,10 @@
 
 #include <tr1/functional>
 using namespace vina;
-#include <pthread.h>
+#ifdef MKL
 #include <mkl.h>
 #include "mkl_cblas.h"
-
+#endif
 #ifdef __NDEBUG
 #define CHECK_RESULT(X) 
 #endif
@@ -31,7 +31,6 @@ using namespace vina;
 	}								\
       }									
 #endif
-pthread_mutex_t mylock = PTHREAD_MUTEX_INITIALIZER;
 
 template <class RESULT, class ARG0, class ARG1,
 	  template <typename, typename, typename> class Func,
@@ -87,9 +86,9 @@ struct matmul_parallel
        const Arg1& arg1,
        Result& result){
 
-    printf("_pred=%d SubTask::_pred=%d\n", _pred, SubTask::_pred);
-    printf("SubTask::RESULT::WRITER_SIZE_X=%d\n", 
-    view_trait2<typename SubTask::Result>::WRITER_SIZE_X);
+    //printf("_pred=%d SubTask::_pred=%d\n", _pred, SubTask::_pred);
+    //printf("SubTask::RESULT::WRITER_SIZE_X=%d\n", 
+    //view_trait2<typename SubTask::Result>::WRITER_SIZE_X);
 
     Map::doit(arg0, arg1, result);
   };
@@ -270,24 +269,28 @@ int main()
   STD_result.zero();
   auto result = z.subWView();
   auto result_v = z_v.subWView();
+
+#ifndef __NDEBUG
+  prof.eventStart(temp0);
+  {
+#ifndef MKL
   /*
    * replace my trivial mm with mkl sgemm procedure
-   */
-  //multiply<MM_TEST_TYPE, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N>
-  //(x, y, z);
-#ifndef __NDEBUG
+   */  
+  multiply<MM_TEST_TYPE, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N>
+  (x, y, STD_result);
+#else 
   float * std_x, * std_y, * std_z;
   std_x = x.data();
   std_y = y.data();
   std_z = STD_result.data();
-  prof.eventStart(temp0);
-  {
-    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N,
-         1.0f/*alpha*/, std_x, MM_TEST_SIZE_N, std_y, MM_TEST_SIZE_N, 0.0f/*beta*/, std_z, MM_TEST_SIZE_N);
+  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, MM_TEST_SIZE_N, MM_TEST_SIZE_N, MM_TEST_SIZE_N,
+	      1.0f/*alpha*/, std_x, MM_TEST_SIZE_N, std_y, MM_TEST_SIZE_N, 0.0f/*beta*/, std_z, MM_TEST_SIZE_N);
+#endif //_DMKL
   }
   prof.eventEnd(temp0); 
   printf("STD gflop=%f\n", Gflops(Comp, prof.getEvent(temp0)->elapsed()));
-#endif
+#endif //_D__NDEBUG
 
 /*  
   typedef matmul_parallel<Writer, TestMatrix, TestMatrix, 
@@ -320,22 +323,29 @@ int main()
   printf("MT gflop=%f\n", Gflops(Comp, prof.getEvent(temp3)->elapsed()));
 */
 
+#ifdef __USE_LIBSPMD
   //_spmd_initialize(MM_TEST_K);
   spmd_initialize();
-  mkl_set_num_threads(1);
+#endif
+  //mkl_set_num_threads(1);
+
   z_v.zero();
   typedef matmul_parallel<Writer_v, TestMatrix_v, TestMatrix_v,
     matMulWrapper, matAddWrapper2, p_simple, MM_TEST_K> TF_PARALLEL_SSE;
-
+  /*
   printf("x_v.data() = %p, y_v.data() = %p result_v = %p\n", 
          x_v.data(), y_v.data(), result_v.data());
-
+  */
   prof.eventStart(temp4);
   TF_PARALLEL_SSE::doit(x_v, y_v, result_v);
+#ifdef __USE_LIBSPMD
   while (!spmd_all_complete());
+#endif
   prof.eventEnd(temp4);
   CHECK_RESULT(z_v);
   printf("MT SSE gflop=%f\n", Gflops(Comp, prof.getEvent(temp4)->elapsed()));
+#ifdef __USE_LIBSPMD
   spmd_cleanup();
+#endif
   prof.dump();
 }
