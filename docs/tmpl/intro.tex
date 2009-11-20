@@ -1,0 +1,120 @@
+%\section{Related work}\label{sec:related}
+%\begin{figure}
+%  % Requires \usepackage{graphicx}
+%  \centering
+%  \includegraphics[width=0.8\linewidth]{../fig/motivation}
+%  \caption{CFSF Motivation}\label{fig:motivation}
+%  \label{fig:algorithm}
+%\end{figure}
+
+
+\section{Introduction}\label{sec:Intro}
+Multicores rely on parallelism and memory
+hierarchy to improve performance. Both duplicated processors and
+elaborated storage-on-chip require programmers to restructure their
+source code and keep tuning binaries for a specific target. Therefore,
+non-trivial knowledge of underlying machine's architectures is
+necessary to write high-performance applications. More worse, various
+implementations of multicores bring many architectural
+features to programmers, which in fact further enlarge the gap between software
+programmers and hardware vendors.
+
+Traditionally, algorithm experts usually focus on their specific domains and have
+limited insights on diverging computer systems. Writing algorithms in
+sequence, they expect hardwares
+and compilers to guarantee decent performance for their
+programs. The expectation was roughly held until explicit parallel system was
+introduced to computer community. Since the frequency of microprocessor
+increases slowly, it has been difficult to obtain free
+performance improvement from hardware's refinement. Workloads
+of application developers surge for parallel computer
+systems. In essence, it is because plain C/C++ can not fully reflect contemporary
+parallel architectures. It is desirable to develop
+methods to adapt to diverging multicore architectures.
+
+Although extensive researches on non-traditional
+programming models obtain fruitful achievements, mainstream software development still
+stay at imperative programming languages and multi-threading.
+We think the primary reason is software cost. Considering the time span
+which a large computer system serves, hardwares are cheap and become
+cheaper with time elapsing, while software and well-trained personnel are
+expensive. Because numerous legacy software systems were designed and
+developed in conventional programming model, vendors usually prefer to
+maintain and update them rather than
+rebuilding from scratch. Nevertheless, exploiting horsepower of
+multicore processors for legacy and new systems is a moderate issue.
+
+Source-to-source transformation can help tailor specific
+architectures. In particular, some transformations can extend
+traditional programming language to support multicore
+architectures. OpenMP~\cite{openmp} and Sequoia~\cite{sequoia, sequoia-compiler}
+are typical examples. One distinct advantage comparing with other
+fancy languages is that they
+support progressive parallelization from original source code, which
+can guarantee to keep software investment. OpenMP transform program
+regions into fork-join threads based on pragma directives. Sequoia attempts to map computation-intensive functions
+on a machine tree describing in configuration file. In those
+extended languages,  a set of language
+constructs are provided to support specific parallel patterns, so they
+need dedicated compilers. However, the ad-hoc approaches of
+source-to-souce transformation can not support general parallel
+patterns. It is not a trivial task to determine how many language
+constructs should be provided by compilers to well support the
+full spectrum of multicores.
+
+%what we do and how
+We present an approach to perform source-to-souce transformation to
+support multicore using C++ template mechanism. We uses \emph{tasks}
+to abstract computation-intensive and side-effect free function. Our
+primary idea is to extend C++ template specialization to task for
+different multicores.  Template
+classes can transform a task into other forms according the parallel
+patterns and then map to threads to execute in parallel. 
+
+The primary limitation is that only static
+information are available at compile time. Therefore, it only works
+for programs which own rich static information. Fortunately,
+applications with this characteristic are pervasive in multimedia,
+digital processing, and scientific computation.  Because template takes effect at compile time, it is possible to avoid
+deploying run-time for transformation, which means that it can incur minimal
+runtime cost. Besides, our template-based approach imposes fewer restricts comparing with other static approaches:
+
+\begin{itemize}
+\item Flexibility: We proposed a way to perform source-to-source transformation by
+metaprogramming. Because it can manipulate source code in metaprograms,  our approach does not bind any parallel models. It is easy to
+change transform to fork-join, or perform computation
+as pipeline. In addition, our approach can deploy any thread
+implementations to support parallelism and concurrency. We experiment
+pthread, low-level threads provided by OS and device driver. As far as we know, no parallel programming language
+declares such flexibility. Theoretically, metaprogramming is
+as expressive as any general-purposed programming languages, so we
+think it is a promising approach to explore more parallel patterns
+beyond this paper.
+
+\item Extendability:  It is extensible to develop new template class to
+  utilize new architectural features  and parallel patterns. Template
+  metaprogramming is intimate for C++ programmers. It is easy to
+  extend new execution models and parallel patterns. Other approaches
+  have to ratify languages and then modify compiler to complete
+  features. The progress is usually a year-old compaign and can not
+  determined by software developers alone.
+
+\item Portability: Template is part of ISO C++~\cite{c++03, c++0x}. Template-based approach is applicable for every
+  platforms with standard C++ compiler. Template metaprogramming is
+  widely used in other applications in C++ community and full-blown
+  metaprogramming libraries like
+  MPL~\cite{mpl} is portable. Through good encapsulation of
+  platform details, most of code in our template approach can be reused.
+\end{itemize}
+
+%organization structure
+The remaining parts of this paper are structured as follows.
+ Section 2 shows techniques to perform
+transforms by template metaprogramming. Audiences with C++ template
+programming experiences or functional programming language concepts
+are helpful but not prerequisites. Then Section 3 presents some
+typical transformations by our template library. Experiments are in
+Section 4 to evaluate performance on both CPU and GPU.
+Section 5 summarizes some related works on library-based approach and
+language extension to support multicore architectures.  The last section is conclusion and future work.
+

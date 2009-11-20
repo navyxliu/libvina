@@ -1,0 +1,20 @@
+\section{Conclusions}\label{sec:conclusion}
+%Collaborative filtering assists recommender systems in learning user profiles and in suggesting potential preferences for users, but is limited by two problems - data sparsity and limited scalability.
+
+In this paper, we have proposed an efficient Collaborative Filtering
+approach using Smoothing and Fusing (CFSF) to solve two primary
+problems of CF - data sparsity and limited scalability. The
+contributions of CFSF are two-fold. First, it offers a mechanism to
+formulate the CF problem as a local prediction problem, by mapping CF
+problem from the entire large-scale item-user matrix to a locally
+reduced item-user matrix. This mechanism significantly decreases the
+scale of CF problem. Second, for the locally reduced item-user matrix,
+CFSF presents smoothing and fusing strategies that enable it to achieve
+high levels of accuracy and scalability.
+
+Currently, CFSF could be further improved. We will capture more aspects
+of the data for improvement in accuracy, such as dates associated with
+the ratings and attributes of items and users, which may reflect shifts
+of user preferences. Moreover, we will study how CFSF can improve its
+scalability in a parallel manner, as well as how it can keep $GIS$
+up-to-date.
