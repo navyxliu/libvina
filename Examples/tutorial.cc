@@ -59,7 +59,7 @@ template <int L, template<int> class Pred,
 struct Seq
 {
   static void apply() {
-    Seq<L+1, Pred, Pred<L+1>::value>::apply(); 
+    Seq<L+1, Pred/*, Pred<L+1>::value*/>::apply(); 
     cout << "Fib(" << L << "):" << Fib<L>::value << endl;
   }
 };

@@ -1,9 +1,6 @@
 #include "../matrix2.hpp"
 #include <assert.h>
 #include <stdio.h>
-
-
-
 using namespace vina;
 
 int main()
@@ -17,15 +14,17 @@ int main()
   for (int i=0; i<10; ++i)
     A[i][i] = i;
 
-typedef vina::Matrix<float , 
-		    1024, 
-		    1024>
-ImageBuffer;
+  //WARNing: too big class can crash stack silently
+  typedef vina::Matrix<float , 
+    128, 
+    128>ImageBuffer;
 
-  ImageBuffer in, STD_out;
-  for (int i=0; i<1024; ++i) for (int j=0; j<1024; ++j) 
-    STD_out[i][j] = in[i][j];
+  float  c;
+  ImageBuffer STD_out, in;
 
+  for (int i=0; i<128; ++i) for (int j=0; j<128; ++j) 
+			      STD_out[i][j] = in[i][j];
+		      
 
   // test iterator
   /*
@@ -86,11 +85,24 @@ ImageBuffer;
   writer[0][0] = writer[0][1] = writer[1][0] = writer[1][1] = 9;
   assert( writer[0][0] == 9 && writer[0][1] == 9
 	  && writer[1][0] && writer[1][1] == 9);
-
+  
   //read from reader, (1,1) element
   auto reader = A.subRView<2, 2>(0, 0);
   assert( reader[0][0] == 9 && reader[0][1] == 9
 	  && reader[1][0] && reader[1][1] == 9);
+
+
+  auto sub1 = A[1];
+  int cc = 0;
+  for (int i=0; i<10; ++i) cc += sub1[i];
+  auto sub10 = sub1.subRView<5>(0);
+  auto sub11 = sub1.subRView<5>(5);
+  for ( int i=0; i<5; ++i) assert( sub10[i] == A[1][i] && "error subsub view");
+  for ( int i=0; i<5; ++i) assert( sub11[i] == A[1][5+i] && "error subsub view");
+
+  //==============================================//
+  //==               frame TEST                 ==//
+  //==============================================//
 
   int kernelInt[25] = { 1,  4,  6,  4, 1,
 			4, 16, 24, 16, 4,
@@ -133,7 +145,6 @@ ImageBuffer;
   //==============================================//
   //==              ALGORITHMS TEST             ==//
   //==============================================//
-
 
   printf("test passed.\n");
 }

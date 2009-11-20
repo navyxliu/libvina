@@ -60,7 +60,7 @@ namespace vina {
 
   namespace __aux{
 /*
- * To abridge the gap between libvina (modern c++ template library and   \
+ * To bridge the gap between libvina (modern c++ template library and   \
  * libSPMD (general purpose c library), a couple of function conversion  \  
  * stab is neccessary. two aims of these convertors:   
  * 1) convert from function object to pure function pointer, i.e. any 
@@ -704,6 +704,7 @@ struct mapreduce {
 	      }
 
 	    Profiler::getInstance().eventStart(__frm_kernel_par);
+
 #endif
 
 #ifndef __USE_LIBSPMD
