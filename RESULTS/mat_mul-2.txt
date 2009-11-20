@@ -1,0 +1,8 @@
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 256
+  see Makefile TEST_INFO to set parameters
+ST gflop=1.081782
+ST SSE gflop=7.129145
+MT gflop=1.758802
+MT SSE gflop=11.133954

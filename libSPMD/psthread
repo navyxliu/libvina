@@ -1,0 +1,11 @@
+#! /bin/bash
+#thread ls
+if [ $# > 1 ] 
+then 
+  cmd=-C$1
+else
+  cmd=-e
+fi
+
+ps $cmd -m -o pid,tid,ppid,cls,%cpu,wchan:18,pending,blocked,caught,s,ni,comm
+

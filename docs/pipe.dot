@@ -1,0 +1,20 @@
+digraph G_pipe {
+	rankdir=LR
+	compound=true
+        lhs[label="(F,G,H,I)", shape=box];
+	map[label="map class"];
+
+subgraph cluster0{
+rhs0[label="F"]
+rhs1[label="G"]
+rhs2[label="H"]
+rhs3[label="I"]
+rhs0 -> rhs1;
+rhs1 -> rhs2;
+rhs2 -> rhs3
+}
+
+lhs -> map;
+map -> rhs0[lhead=cluster0]
+
+}

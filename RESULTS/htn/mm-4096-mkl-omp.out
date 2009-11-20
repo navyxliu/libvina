@@ -1,0 +1,9 @@
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=1024
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+OMP gflop=111.680876
+Profile info
+======================================================================
+# 0                   OMP MM    1  1230640usec            100.0%

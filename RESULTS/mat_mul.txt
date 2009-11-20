@@ -1,0 +1,99 @@
+float 1024X1024, granularity = 128, which is the gran
+ST gflop=1.070477
+MT gflop=1.645721
+MT_V gflop=10.668394
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    1  2006099usec            57.1%
+# 2                       MT    1  1304889usec            37.2%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1   201294usec            5.7%
+# 5         Algorithm kernel  512  2,004,081usec          57.1% //128X8X(128,128)MM, 11,520usec per unit, 
+# 6                   MM mul  128  1,474,670usec          42.0%
+# 7                   MM add  128    29,317usec            0.8%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses 116072                           
+#10  MT llcache misses 1675243                           
+#11 MT SSE llcache misses 467308                           
+
+float 2048X2048
+
+[liu@biology3 distro]$ ./mat_mul
+raw pointers : x_v=0x2612a00, y_v=0x1612a00, z_v=0x612a00
+ST gflop=1.001091
+MT gflop=1.437158
+MT_V gflop=9.111465
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    1 17161140usec            55.4%
+# 2                       MT    1 11954059usec            38.6%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1  1885522usec            6.1%
+# 5         Algorithm kernel 4096 17,145,509usec          55.3%
+# 6                   MM mul  512 13,585,967usec          43.8%  //512 X 16 X (128,128)MM, 13,267 usec per unit. over threaded
+# 7                   MM add  512   243,711usec            0.8%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses 15504045                           
+#10  MT llcache misses 57054957                           
+#11 MT SSE llcache misses 8768598                           
+
+[liu@biology3 distro]$ ./mat_mul
+raw pointers : x_v=0x2611a40, y_v=0x1611a40, z_v=0x611a40
+MT_V gflop=7.390549
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1  2324573usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul 1024  2264389usec            97.4%  // 1024X4X(128,128)MM, strength is not enough.
+# 7                   MM add 1024    47011usec            2.0%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 7423460                           
+
+
+[liu@biology3 distro]$ ./mat_mul
+raw pointers : x_v=0x2611a00, y_v=0x1611a00, z_v=0x611a00
+MT_V gflop=10.323827
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1                       ST    0        0usec            0.0%
+# 2                       MT    0        0usec            0.0%
+# 3                      MT2    0        0usec            0.0%
+# 4                   MT SSE    1  1664099usec            100.0%
+# 5         Algorithm kernel    0        0usec            0.0%
+# 6                   MM mul  512  1613878usec            97.0% //512X8X(128,128)MM
+# 7                   MM add  512    42730usec            2.6%
+# 8 STD llcache misses    0                           
+# 9  ST llcache misses    0                           
+#10  MT llcache misses    0                           
+#11 MT SSE llcache misses 2996729                           
+
+
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.152757
+ST gflop=0.460406
+ST SSE gflop=3.447004
+MT gflop=1.472268
+MT SSE gflop=8.292019
+
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 32
+  see Makefile TEST_INFO to set parameters
+STD gflop=0.142213
+ST gflop=0.184327
+ST SSE gflop=1.371070
+MT gflop=0.262943
+MT SSE gflop=2.372018
+

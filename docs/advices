@@ -1,0 +1,11 @@
+Plain C/C++ can not fully reflect paralleled architecture any more. A source-to-source compilation assists programs in adapting to contemporary multicore hardwares. 
+
+In this paper, we proposed a template-based approach to achieve transformation for problems with rich static information. 
+
+In our approach, parallelization and optimization of memory hierarchy are conducted by a group of C++ template classes. we enable programmers with little knowledge of template meta-programming to extend library.
+
+Our approach takes effect in compile-time, so it incurs minimal runtime cost. 
+
+Finally, We evaluate our approach on commodity x86 and GPU platforms by a variety of typical applications in multimedia and scientific computation. The experimental results show that our approach is flexible and extensible.
+
+We implemented libvina -- a template library designed to specialize programs for different architectures. 
