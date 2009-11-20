@@ -1,0 +1,245 @@
+\section{Evaluation}\label{sec:evaluation}
+%\begin{figure*}
+%   \centering
+%    \begin{minipage}{0.3\linewidth}
+%        \centering
+%        \includegraphics[width=1.0\textwidth]{../fig/m_300}
+%        \vspace{-4.5ex} \caption{Accuracy with $M$ similar items over ML\_300}
+%        \label{fig:m}
+%    \end{minipage}
+%    \begin{minipage}{0.3\linewidth}
+%        \centering
+%        \includegraphics[width=1.0\textwidth]{../fig/k_100}
+%        \vspace{-4.5ex}\caption{Accuracy with $K$ like-minded users over ML\_100}
+%        \label{fig:k}
+%    \end{minipage}
+%    \begin{minipage}{0.3\linewidth}
+%        \centering
+%        \includegraphics[width=1.0\textwidth]{../fig/c}
+%        \vspace{-4.5ex}\caption{Accuracy with $C$ user clusters over ML\_300}
+%        \label{fig:c}
+%    \end{minipage}
+%\end{figure*}
+
+In order to evaluate our proposed approach, we carried out a series of experiments. In particular, we tried to answer the following questions:
+
+\begin{itemize}
+  \item What is the overall performance of CFSF? Does it work better than traditional item-based, user-based CF approaches, and the state-of-the-art CF approaches?
+  \item How do the two fundamental problems of CF (sparsity and scalability) affect the performance of CFSF?
+  \item How do the parameters influence the performance of CFSF? Several parameters are involved such as similarity fusion parameters $\lambda$ and $\delta$.
+\end{itemize}
+
+\subsection{Dataset}
+The proposed approach is evaluated with MovieLens dataset~\footnote{G. Lab. MovieLens. http://www.grouplens.org/}. This dataset is from the University of Minnesota, which is one of the most well-respected datasets for collaborative filtering. Most existing work is evaluated across it.
+
+We randomly extracted 500 users from MovieLens, where each user rated at least 40 movies. We changed the size of the training set by selecting the first 100, 200 and 300 users, denoted as ML$\_$100, ML$\_$200 and ML$\_$300. We selected the last 200 users as the testset. We varied the number of items rated by active users from 5, 10 to 20, denoted as Give5, Given10 and Given20. Table~\ref{tbl:dataset MovieLens} summarizes the statistical features of the datasets used in our experiments.
+\begin{table}[h]
+    \centering
+    \caption{Statistics of the datasets}\vspace{-2ex}
+    \begin{tabular}{|l|l|}
+    \hline
+                        &MovieLens     \\ \hline
+    No. of Users     &500            \\ \hline
+    No. of Items     &1000           \\ \hline
+    Average no. of rated items per user   &94.4  \\ \hline
+    Density of data     &9.44\%         \\ \hline
+    No. of ratings      &5              \\ \hline
+    \end{tabular}
+    \label{tbl:dataset MovieLens}
+\end{table}
+
+\subsection{Metrics}
+In order to maintain consistency with experiments reported in the literature~\cite{Xuegr:CF@2005, wangjun:CF@2006, Sarwar:WWW01@2001, Jonathan:ACM@2004, Rong:SIGIR@2004}, we chose the same MAE as the evaluation metric, defined as:
+\begin{equation}\label{equ:MAE}
+  MAE = \frac{\sum_{u \in T}|r_{u, i}-\overline{r_{u, i}}|}{|T|},
+\end{equation}
+where $r_{u, i}$ denotes the rating that user $u$ rates item $i$, $T$ represents the testset and $\left|T\right|$ is the test size. The smaller the value of MAE, the better the performance.
+
+
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+\subsection{Accuracy}
+\subsubsection{Overall performance}
+We carried out experiments from two aspects to evaluate the performance of CFSF. One aspect is to compare CFSF with traditional memory-based CF approaches: an item-based approach using PCC (SIR) and a user-based approach using PCC (SUR). For MovieLens, the parameters of CFSF are set as follows: $C=30$,  $\lambda=0.8$, $\delta=0.1$, $K=25$, $M=95$ and $w$=0.35. Table~\ref{tbl:MAESIRSURCFSF} illustrates the results, showing that CFSF considerably outperforms the SUR and SIR with respect to prediction accuracy.
+
+\begin{table}[t]
+\centering
+\caption{MAE on MovieLens for the SIR, SUR and CFSF}  \vspace{-2ex}
+\begin{tabular}{|l|l|l|l|l|}
+    \hline
+        Training set                  &Methods            &Given5     &Given10        &Given20\\ \hline
+        \multirow{3}*{ML$\_$300}        &CFSF               &\textbf{0.743}   &\textbf{0.721}   &\textbf{0.705}\\
+                                        &SUR                &0.838      &0.814          &0.802\\
+                                        &SIR                &0.870      &0.838          &0.813\\
+        \hline
+        \multirow{3}*{ML$\_$200}        &CFSF               &\textbf{0.769}   &\textbf{0.734}   &\textbf{0.713}\\
+                                        &SUR                &0.843      &0.822          &0.807\\
+                                        &SIR                &0.855      &0.834          &0.812\\
+        \hline
+        \multirow{3}*{ML$\_$100}        &CFSF               &\textbf{0.781}   &\textbf{0.758}   &\textbf{0.746}\\
+                                        &SUR                &0.876      &0.847          &0.811\\
+                                        &SIR                &0.890      &0.801          &0.824\\
+
+        \hline
+\end{tabular}
+\label{tbl:MAESIRSURCFSF}
+\end{table}
+
+\begin{figure}[htb]
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.81\linewidth]{../fig/m_300}\\
+  \vspace{-2ex}\caption{Accuracy with $M$ similar items over ML\_300}
+  \label{fig:m}
+\end{figure}
+
+The other aspect is to compare CFSF with the other state-of-the-art CF approaches, i.e., AM~\cite{HOFMANN@TOIS2004}, EMDP~\cite{Ma2007@SIGIR}, PD\cite{Pennock:Personality@2000}, SCBPCC~\cite{Xuegr:CF@2005} and SF~\cite{wangjun:CF@2006}. We varied the item number that each user was required to rate on all the testsets for MovieLens dataset. The result is shown as Table~\ref{tbl:MAEOther}. As the testset increases, the MAEs of all approaches show a downward trend. As the number of rated items for each user increases from 5 to 20, a similar trend is observed. Among them, CFSF achieves the best accuracy. This is because CFSF can select the most similar items and like-minded users.
+
+\begin{table}[t]
+\centering
+\caption{MAE on MovieLens for the state-of-the-art CF approaches}  \vspace{-2ex}
+\begin{tabular}{|l|l|l|l|l|}
+    \hline
+        Training set                  &Methods            &Given5     &Given10        &Given20\\ \hline
+        \multirow{3}*{ML$\_$300}        &CFSF               &\textbf{0.743}   &\textbf{0.721}   &\textbf{0.705}\\
+                                        &AM                 &0.820      &0.822          &0.796\\
+                                        &EMDP               &0.788      &0.754          &0.746\\
+                                        &SCBPCC             &0.822      &0.810          &0.778\\
+                                        &SF                 &0.804      &0.761          &0.769\\
+                                        &PD                 &0.827      &0.815          &0.789\\
+        \hline
+        \multirow{3}*{ML$\_$200}        &CFSF               &\textbf{0.769}   &\textbf{0.734}   &\textbf{0.713}\\
+                                        &AM                 &0.849      &0.837          &0.815\\
+                                        &EMDP               &0.793      &0.760          &0.751\\
+                                        &SCBPCC             &0.831      &0.813          &0.784\\
+                                        &SF                 &0.827      &0.773          &0.783\\
+                                        &PD                 &0.836      &0.815          &0.792\\
+        \hline
+        \multirow{3}*{ML$\_$100}        &CFSF               &\textbf{0.781}   &\textbf{0.758}   &\textbf{0.746}\\
+                                        &AM                 &0.963      &0.922          &0.887\\
+                                        &EMDP               &0.807      &0.769          &0.765\\
+                                        &SCBPCC             &0.848      &0.819          &0.789\\
+                                        &SF                 &0.847      &0.774          &0.792\\
+                                        &PD                 &0.849      &0.817          &0.808\\
+        \hline
+\end{tabular}
+\label{tbl:MAEOther}
+\end{table}
+
+
+%===========================================================================
+
+%===========================================================================
+
+
+
+\begin{figure}[htb]
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.81\linewidth]{../fig/k_100}\\
+  \caption{Accuracy with $K$ similar items over ML\_300}
+  \label{fig:k}
+\end{figure}
+
+
+
+\subsubsection{Accuracy with $M$ similar items}\label{sec:M}
+The similar items $M$, the like-minded users $K$ and the user clusters $C$ conspicuously affect the accuracy of CFSF. In order to figure out their influence on CFSF, we conducted experiments over Given5, Given10 and Given20 on all the training sets for all datasets.
+
+Fig.~\ref{fig:m} shows the accuracy of CFSF with $M$ over ML\_300. CFSF achieves higher scalability as $M$ increases. When $M$ is less than 50, the similar items to the active item are not many, leading to a high MAE. When $M$ is greater than 60, CFSF collects enough ratings so that it achieves a low MAE.
+
+\subsubsection{Accuracy with $K$ like-minded users}\label{sec:K}
+In order to check the accuracy with $K$ like-minded users, we did experiments over all the training sets with varying the value of $K$ from 10 to 100 at Given5, Given10 and Given20 for all datasets.
+
+Fig.~\ref{fig:k} shows the results. When $K$ is between 20 and 40, CFSF gets a low MAE. When $K$ is larger than 40, it gets a high MAE. This is because the ratings from less related users are considered too much for recommendation.
+
+\subsubsection{Accuracy with $C$ user clusters}\label{sec:c}
+CFSF uses the smoothing strategy within user clusters to eliminate the diversity in user ratings. Therefore, the number of user clusters affects the performance of CFSF. We conducted experiments for all the training sets by varying $C$ from 10 to 100.
+
+\begin{figure}[htb]
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.81\linewidth]{../fig/c}\\
+  \vspace{-2ex}\caption{Accuracy with $C$ similar items over ML\_300}
+  \label{fig:c}
+\end{figure}
+
+Fig.~\ref{fig:c} illustrates the accuracy with the user clusters $C$ for ML\_300. When $C$ is less than 30, CFSF is incapable of getting a low MAE due to the diversity in user ratings. When $C$ is larger than 90, CFSF cannot properly eliminate the diversity due to too many user clusters. Note that the MAE of CFSF at Given20 increases much faster due to the large possibility of coincidence ratings among users.
+
+\begin{figure}[htb]
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.81\linewidth]{../fig/ScalabilityTimes}
+  \vspace{-2ex}\caption{Response time at Given20 on MovieLens}
+  \label{fig:scaMovieLens}
+\end{figure}
+
+\subsection{Support for scalability}
+Scalability is extremely important for CF approaches that are used in larger-scale recommender systems. In this section, we conducted experiments to check the scalability of CFSF by varying the testset and training sets over the MovieLens dataset. We randomly selected 10\%, 20\% and up to 100\% of the last 200 users as testsets, and selected ML\_100, ML\_200 and ML\_300 as training sets. We selected response time as a metric of scalability and ran our program with Windows XP with 1 GB RAM and 2.4 GHz CPU.
+
+Fig.~\ref{fig:scaMovieLens} shows the response time of CFSF for online prediction. As the testset grows, the response time increases in a linear fashion, indicating that CFSF is highly scalable. The maximum response time for ML\_300 with 100\% percentage of the testset is 110 seconds, while SCBPCC spent around 260 seconds. CFSF achieves this by using the locally reduced item-user matrix and caching intermediate results.
+
+
+
+\subsection{Sensitivity of parameters}
+CFSF involves several parameters, such as $\lambda$, $\delta$ and $w$. To evaluate their influence, we conducted a series of experiments.
+
+\begin{figure}[h]
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.81\linewidth]{../fig/lam_300}
+  \vspace{-2ex}\caption{Sensitivity of $\lambda$ over ML\_300}\label{fig:lambda}
+\end{figure}
+
+
+%\begin{figure*}
+%   \centering
+%    \begin{minipage}{0.3\linewidth}
+%        \centering
+%        \includegraphics[width=1.0\textwidth]{../fig/lam_300}
+%        \vspace{-4.5ex}\caption{Sensitivity of $\lambda$ over ML\_300}
+%        \label{fig:lambda}
+%    \end{minipage}
+%    \begin{minipage}{0.3\linewidth}
+%        \centering
+%        \includegraphics[width=1.0\textwidth]{../fig/delta_300}
+%        \vspace{-4.5ex}\caption{Sensitivity of $\delta$ over ML\_300}
+%        \label{fig:delta}
+%    \end{minipage}
+%    \begin{minipage}{0.3\linewidth}
+%        \centering
+%        \includegraphics[width=1.0\textwidth]{../fig/w_300}
+%        \vspace{-4.5ex}\caption{Sensitivity of $w$ over ML\_300}
+%        \label{fig:w}
+%    \end{minipage}
+%\end{figure*}
+
+\subsubsection{Sensitivity of $\lambda$}
+CFSF incorporates $SIR'$ and $SUR'$ for high accuracy, which have different influence on the prediction accuracy. Therefore, CFSF introduces $\lambda$ to differentiate them. When $\lambda$ is set to 0, $SUR'$ does not influence the prediction; while $\lambda$ is set to 1, $SIR'$ is not considered at all. We evaluated $\lambda$ for all the training sets on MovieLens.
+
+Fig.~\ref{fig:lambda} shows the sensitivity of $\lambda$. As $\lambda$ increases from 0.1 to 1, the MAE for CFSF first decreases and later increases for ML\_300. The minimum MAE is obtained when $\lambda$ equals to 0.8, which is the default value of $\lambda$ in our experiments, which means $SUR'$ is more important than $SIR'$.
+
+\subsubsection{Sensitivity of $\delta$}
+CFSF incorporates the $SUIR'$ that exerts a lesser influence on prediction than $SIR'$ and $SUR'$. Consequently, CFSF introduces $\delta$ to differentiate $SUIR'$ from $SIR'$ and $SUR'$. When $\delta$ is set to 0, $SUIR'$ has no impact on the prediction accuracy; while $\delta$ is set to 1, $SUIR'$ solely controls the prediction accuracy.
+
+\begin{figure}[h]
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.81\linewidth]{../fig/delta_300}
+  \vspace{-2ex}\caption{Sensitivity of $\delta$ over ML\_300}\label{fig:delta}
+\end{figure}
+
+Fig.~\ref{fig:delta} illustrates the sensitivity of $\delta$. The MAE of CFSF continuously rises when $\delta$ increases from 0.1 to 1. Its minimum for ML\_300 is obtained when $\delta$ is 0.1. This denotes that $SUIR'$ improves the MAE for CFSF, but not significantly.
+
+\subsubsection{Sensitivity of $w$}
+CFSF introduces $w$ to differentiate smoothed ratings and original ratings. We conducted experiments to check how much parameter $w$ affects the CFSF.
+
+Fig.~\ref{fig:w} shows the sensitivity of $w$. When the value of $w$ is between 0.2 and 0.4, CFSF achieves a high level of accuracy. Otherwise, CFSF achieves poor accuracy because it considers either original or smoothed ratings too much.
+
+\begin{figure}[bt]
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.81\linewidth]{../fig/w_300}
+  \vspace{-2ex}\caption{Sensitivity of $w$ over ML\_300}\label{fig:w}
+\end{figure}
+

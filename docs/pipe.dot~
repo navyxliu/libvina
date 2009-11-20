@@ -1,4 +1,0 @@
-digraph G_pipe {
-	rankdir=LR
-	lhs[label="(F,G,H,I)"]
-}

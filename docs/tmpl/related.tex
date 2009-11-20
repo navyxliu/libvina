@@ -1,0 +1,70 @@
+\section{Related work}\label{sec:related}
+In this section, we briefly review previous work, including
+memory-based, model-based and other CF approaches.
+
+\subsection{Memory-based CF approaches}
+Memory-based CF approaches can be further classified into item-based,
+user-based and UI-based approaches according to the rating source used
+in prediction~\cite{Xuegr:CF@2005, Sarwar:WWW01@2001}. Item-based CF
+approaches predict user preferences from the ratings made on similar
+items by the same user~\cite{Linden:Amazon@2003}. User-based CF
+approaches exploit the idea that like-minded users may go for the same
+item. Alternatively, UI-based CF approaches predict user preferences
+not only from the ratings used by item-based and user-based CF
+approaches, but also from the ratings that the like-minded users make
+on similar items.
+
+Representative memory-based CF approaches are SF~\cite{wangjun:CF@2006}
+and EMDP~\cite{Ma2007@SIGIR}. SF is one type of UI-based CF approach
+that unifies the item-based and user-based approaches. SF considerably
+improves prediction accuracy, but it is slow due to a search on similar
+items and like-minded users over the whole item-user matrix. SF
+predicts user preferences without capturing the diversity in user
+ratings. This diversity is incorporated in EMDP, which calculates the
+items and users whose similarities exceed certain thresholds. Thus,
+EMDP improves the accuracy and returns exact results. EMDP is based on
+a set of different thresholds for each item and user. This is a
+computer-intensive job, due to the large quantity of items and users in
+recommender systems. Moreover, inappropriate thresholds may lead to few
+results, leaving users expectant to receive suggestions from the
+feedback system. EMDP tends to select the most similar items and
+like-minded users for prediction, which is easily achieved using CFSF.
+
+\subsection{Model-based CF approaches}
+Model-based CF approaches learn a model of user ratings in an item-user
+matrix, and then use it to predict the scores of unrated items for an
+active user. They use a variety of techniques to create the model, such
+as Bayesian network~\cite{Zhang:Bayes@2007}, linear
+classifiers~\cite{Tong@JMLR2002} and Principal Component Analysis
+(PCA)~\cite{Linden:Amazon@2003}. Typical examples for model-based CF
+approaches are clustering~\cite{Connor:SIGIR@01} and aspect
+model~\cite{cheung:extendedLSM@2004}.
+
+Usually, model-based CF approaches are fast to predict user preferences
+because they narrow down the search space for identifying similar items
+and like-minded users. They tend, however, to suffer from
+time-consuming training and updating processes. Furthermore, most of
+them do not consider the ratings made on similar items by like-minded
+users~\cite{Xuegr:CF@2005, HOFMANN@TOIS2004}.
+
+\subsection{Other CF work}
+Several other types of CF approaches have also been
+proposed~\cite{Koren@2008KDD, Klein@JCSS, jin2006smm, Robert@2007ICDM,
+Pennock:Personality@2000}. In~\cite{Rennie@ICML05, Robert@KDD07},
+matrix factorization is explored to improve prediction accuracy of CF.
+In~\cite{Xuegr:CF@2005}, SCBPCC is a cluster-based CF approach that
+introduces a smoothing strategy among user clusters and efficiently
+solves the data sparsity problem. It achieves high levels of accuracy,
+but doesn't capture the ratings of like-minded users on similar items.
+Moreover, SCBPCC could be further improved in scalability because it
+identifies the similar items over the entire item-user matrix each
+time.
+
+In contrast, content-based CF approaches, used in Google and Yahoo!,
+predict user preferences based on the classifications of item contents,
+rather than item sources or other criteria~\cite{Gediminas:TKDE@2005,
+Raymond:BookRecom@2000}. They are, however, limited by two assumptions:
+1) users are able to express their particular preferences or
+information requirements with respect to intrinsic features of items,
+and 2) systems are capable of thoroughly comprehending item contents
+and accurately extracting their features~\cite{HOFMANN@TOIS2004}.
