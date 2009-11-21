@@ -12,12 +12,13 @@
 #include <tr1/type_traits>
 
 namespace vina{
+
   // no implementation in purpose
   struct seq_func_undefined;
 
   template <class SURR,      /*surrounding seq*/ 
-	    class FUNC,
-	    uint32_t ITER = 1
+	    uint32_t ITER = 1,
+	    class FUNC = seq_func_undefined
             >
   struct seq{
     const static unsigned int _itr = ITER;
@@ -28,8 +29,8 @@ namespace vina{
     const static uint32_t _itr_j = ITER_SURR::value;
 
     // iterator for surrounding's surrounding' loop
-    typedef typename boost::mpl::if_<std::tr1::is_same<SURR, seq<void, seq_func_undefined> >,
-				     seq<void, seq_func_undefined>,
+    typedef typename boost::mpl::if_<std::tr1::is_same<SURR, seq<void, 1, seq_func_undefined> >,
+				     seq<void, 1, seq_func_undefined>,
 				     typename SURR::_surr>::type
     SURR_SURR;
     const static uint32_t _itr_i = SURR_SURR::_itr;
@@ -54,48 +55,55 @@ namespace vina{
   };
 
   template<>
-  struct seq<void, seq_func_undefined>{
+  struct seq<void, 1, seq_func_undefined>{
     const static uint32_t _itr = 1;
     typedef seq_func_undefined _func;
     typedef void _surr;
   };
 
-  typedef seq<void, seq_func_undefined> seq_init;
+  typedef seq<void, 1, seq_func_undefined> seq_init;
+
+  template <class T>
+  struct seq_handler_base {
+    static int cnt_;
+    static void 
+    reset() { cnt_ = 0; }
+  };
 
   /* seq_handler functions are used to bind loop-variables(LV).
-   * becuse \emph{seq} is hierarchy-awareless, we need to reason 
+   * because \emph{seq} is hierarchy-awareless, we need to reason 
    * LV by handler.
    * gcc supports C++0x lambda since 4.5.0, it is possible to replace handler
    * functions with lambda expression.
    */
   template<class F>
-  struct seq_handler_f{
+  struct seq_handler_f : seq_handler_base<seq_handler_f<F>> {
+    typedef seq_handler_base<seq_handler_f<F>> BASE;
+
     void
     operator() () {
-      F()(cnt_);
-
-      ++ cnt_;
+      F()( BASE::cnt_ );
+      ++ BASE::cnt_;
     }
-    static  int cnt_;
   };
 
-  /*this function objection is used in two-level iteration, which is 
+  /*This function is used in two-level iteration, which is 
    *for (i=0; i<I; ++i) for(j=0; j<J; ++j) ..
    *invariance: i * J  + j == cnt;
    */
   template <class F, int J>
-  struct seq_handler_g{
-    static int cnt_;
-    
+  struct seq_handler_g : seq_handler_base<seq_handler_g<F, J>> {
+    typedef seq_handler_base<seq_handler_g<F, J>> BASE;
+
     void 
     operator() () {
-      int j = cnt_ % J;
-      int i = (cnt_ - j) / J ;
+      int j = BASE::cnt_ % J;
+      int i = (BASE::cnt_ - j) / J ;
       // increament iteration counter; 
       // the most-nested iterator is the fastest one
       F()(i, j);
-      ++ cnt_; 
 
+      ++ BASE::cnt_; 
     }
   };
 
@@ -103,49 +111,42 @@ namespace vina{
    *invariance: i * (K*J) + j * K + k == cnt
    */
   template<class F, int K, int J>
-  struct seq_handler_h{
-    static int cnt_;
-    
+  struct seq_handler_h : seq_handler_base<seq_handler_h<F, K, J>> {
+    typedef seq_handler_base<seq_handler_h<F, K, J>> BASE; 
+
     void 
     operator() () {
-      int k = cnt_ % K;
-      int j = (cnt_ % (K * J) - k) / K;
-      int i = (cnt_ - j * K - k) / (K*J);
+      int k = BASE::cnt_ % K;
+      int j = (BASE::cnt_ % (K * J) - k) / K;
+      int i = (BASE::cnt_ - j * K - k) / (K*J);
 
       F()(i, j, k);
 
       // increament iteration counter; 
       // the most-nested iterator is the fastest one
-      ++ cnt_; 
+      ++ BASE::cnt_; 
     }
   };
-  template <class F>
-  int seq_handler_f<F>::cnt_ = 0;
-  
-  template <class F, int J>
-  int seq_handler_g<F, J>::cnt_ = 0;
 
-  template <class F, int K, int J>
-  int seq_handler_h<F, K, J>::cnt_ = 0;
+  template <class T>
+  int seq_handler_base<T>::cnt_ = 0;
 
   /////////////////////////////////////////////////////////////////////
   //run in Sequence 
   /////////////////////////////////////////////////////////////////////
-
-  
   template <int L, template<int> class Pred, 
 	    template<int> class Func,
 	    bool __SENTINEL__/*never used*/ = Pred<L>::value >
-  struct Seq
+  struct SEQ
   {
     static void apply() {
       Func<L>() ();
-      Seq<L+1, Pred, Func/*, Pred<L+1>::value*/>::apply(); 
+      SEQ<L+1, Pred, Func/*, Pred<L+1>::value*/>::apply(); 
     }
   };
   //tail do 
   template<int L, template<int> class Pred, template<int> class Func>
-  struct Seq<L, Pred, Func, true>
+  struct SEQ<L, Pred, Func, true>
     : _Trail {};
 }//end of NS
 #endif //SEQ_HPP_
