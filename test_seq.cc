@@ -1,6 +1,10 @@
+//This file is not supposed to be distribued.
+// Test file for seq.hpp
+// command: g++ -o test_seq test_seq.cc -I. -std=c++0x
+
 #include <iostream>
 #include <stdio.h>
-#include "seq-new.hpp"
+#include "seq.hpp"
 using namespace vina;
 
 #if 0
