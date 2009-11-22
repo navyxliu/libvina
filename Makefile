@@ -41,11 +41,17 @@ MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
 #boost::thread lib
 ifeq ($(SYSTEM), Linux)
 ISSUE=$(shell cat /etc/issue)
-ifeq ($(word 1, $(ISSUE)), Ubuntu) #Ubuntu, nhm, jw's 
+#comment out
+#ifeq ($(word 1, $(ISSUE)), Ubuntu) #Ubuntu, nhm, jw's 
+#MKLPATH=/opt/intel/mkl/10.2.2.025
+#BOOSTPATH=/root/source/boost_1_40_0
+#BOOSTLIB=-L$(BOOSTPATH)/stage/lib -lboost_thread
+#BOOSTINC=/usr/local/include/boost
+ifeq ($(word 1, $(ISSUE)), Ubuntu) #ubuntu, epcc, xliu's
 MKLPATH=/opt/intel/mkl/10.2.2.025
-BOOSTPATH=/root/source/boost_1_40_0
-BOOSTLIB=-L$(BOOSTPATH)/stage/lib -lboost_thread
-BOOSTINC=/usr/local/include/boost
+#BOOSTPATH=/
+BOOSTLIB=-L/usr/lib/ -lboost_thread
+BOOSTINC=/usr/include/boost
 else                            #fedora, xliu's
 MKLPATH=/opt/intel/mkl/10.2.1.017
 BOOSTLIB=-L/usr/lib64 -lboost_thread-mt
