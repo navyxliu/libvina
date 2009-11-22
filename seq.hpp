@@ -1,6 +1,7 @@
 //This file is not supposed to be distributed.
 //History:
-//Nov.11. 09'  create
+//Nov. 11. 09'  create, we hardwired 3 loop to support max-3 recursion.
+//Nov. 22. 09'  use new algorithm: forward recursion.
 
 #ifndef SEQ_HPP_
 #define SEQ_HPP_
@@ -16,58 +17,56 @@ namespace vina{
   // no implementation in purpose
   struct seq_func_undefined;
 
-  template <class SURR,      /*surrounding seq*/ 
+  template <class SURR,      /*surrounding seq, i.e. the nested loop. it can NOT be a seq_tail, or a usage error. */ 
 	    uint32_t ITER = 1,
 	    class FUNC = seq_func_undefined
             >
   struct seq{
     const static unsigned int _itr = ITER;
-    typedef SURR _surr;
-    
-    // iterator for directly surrounding loop
-    typedef boost::mpl::int_<SURR::_itr> ITER_SURR;
-    const static uint32_t _itr_j = ITER_SURR::value;
 
-    // iterator for surrounding's surrounding' loop
-    typedef typename boost::mpl::if_<std::tr1::is_same<SURR, seq<void, 1, seq_func_undefined> >,
-				     seq<void, 1, seq_func_undefined>,
-				     typename SURR::_surr>::type
-    SURR_SURR;
-    const static uint32_t _itr_i = SURR_SURR::_itr;
-
-    /*if FUNC is non-trivia, override surrounding _func
-     */
+    //if FUNC is non-trivia, override surrounding _func
     typedef typename  boost::mpl::if_<std::tr1::is_same<FUNC, seq_func_undefined>, 
 				      typename SURR::_func,  
 				      FUNC>::type
-    _func;
+    _surr_func;
+    typedef seq<typename SURR::_surr, SURR::_itr, _surr_func>  _surr;
+    typedef _surr_func _func;
 
-    /*entry point:
-     *currently, we only implement 3-level nested loop
-     */
+    //entry point:
     static void 
     apply() {
-      for (int i=0; i<_itr_i; ++i) for (int j=0; j<_itr_j; ++j)
-	for (int k=0; k<ITER; ++k) {
-	  _func()();
+	for (int k=0; k<_itr; ++k) {
+	  _surr::apply();
 	}
     }
   };
 
+  /* A full specialization, indicated the tail of the sequence.
+   */
   template<>
   struct seq<void, 1, seq_func_undefined>{
     const static uint32_t _itr = 1;
     typedef seq_func_undefined _func;
     typedef void _surr;
+
+    // no implementation in purpose. It is erroneous to call this function.
+    static void apply();
   };
 
-  typedef seq<void, 1, seq_func_undefined> seq_init;
+  typedef seq<void, 1, seq_func_undefined> seq_tail;
+  /* A parial specialization, indicate that the last "practical" level of loop"
+   */
+  template<uint32_t ITER, class FUNC>
+  struct seq<seq_tail, ITER, FUNC>{
+    const static uint32_t _itr = ITER;
+    typedef FUNC _func;
+    typedef seq_tail _surr;
 
-  template <class T>
-  struct seq_handler_base {
-    static int cnt_;
     static void 
-    reset() { cnt_ = 0; }
+    apply() {
+      FUNC f;
+      for (int i=0; i<_itr; ++i) f();
+    }
   };
 
   /* seq_handler functions are used to bind loop-variables(LV).
@@ -76,6 +75,13 @@ namespace vina{
    * gcc supports C++0x lambda since 4.5.0, it is possible to replace handler
    * functions with lambda expression.
    */
+  template <class T>
+  struct seq_handler_base {
+    static int cnt_;
+    static void 
+    reset() { cnt_ = 0; }
+  };
+
   template<class F>
   struct seq_handler_f : seq_handler_base<seq_handler_f<F>> {
     typedef seq_handler_base<seq_handler_f<F>> BASE;

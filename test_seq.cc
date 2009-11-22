@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdio.h>
-#include "seq.hpp"
+#include "seq-new.hpp"
 using namespace vina;
 
 #if 0
@@ -80,32 +80,32 @@ test_Seq()
   */
 }
 #endif
-
 void
 test_seq()
 {
-  typedef seq<seq_init, 5> S5;
+  typedef seq<seq_tail, 5, seq_func_undefined> S5;
   //S5::apply(); //compiler error: no definition of type seq_func_undefined
   
   seq_handler_f<echo>::reset();
   std::cout << "S5\n";
-  typedef seq<seq_init, 5, seq_handler_f<echo>> S5_func;
+  typedef seq<seq_tail, 5, seq_handler_f<echo>> S5_func;
   S5_func::apply();
 
-  seq_handler_g<echo, 2>::reset(); 
+  seq_handler_g<echo, 5>::reset(); 
   std::cout << "S5_2\n";
-  typedef seq<S5, 2, seq_handler_g<echo, 2>> S5_2;
+  typedef seq<S5, 2/*the most-outer*/, seq_handler_g<echo, 5/*the most-nested*/>> S5_2;
   S5_2::apply();
 
-  seq_handler_h<echo, 3, 2>::reset();
+  seq_handler_h<echo, 5, 2>::reset();
   std::cout << "S5_2_3\n";
-  typedef seq<S5_2, 3, seq_handler_h<echo, 3, 2>> S5_2_3;
+  typedef seq<S5_2, 3, seq_handler_h<echo, 5, 2>> S5_2_3;
   S5_2_3::apply();
 
-  std::cout << "BLOCK:\n";
-  typedef seq<seq<seq<seq_init, 3>, 2>, 5, seq_handler_h<echo, 5, 2>> blk;
+  std::cout << "BLOCK: (3, 2, 5)\n";
+  typedef seq<seq<seq<seq_tail, 3>, 2>, 5, seq_handler_h<echo, 5, 2>> blk;
   blk::apply(); 
 }
+
 /*a case study of seq using bubble sort algorithm*/
 int A[] = {2, 3, 1, 19, 0};
 
@@ -121,7 +121,6 @@ struct BubbleFunc
       }
   }
 };
-
 int 
 main()
 {
@@ -132,9 +131,8 @@ main()
   test_seq();
 
   std::cout << "\n\nBubble sort for 5 elements\n";
-  seq<seq_init, 5, seq_handler_f<BubbleFunc>>::apply();
+  seq<seq_tail, 5, seq_handler_f<BubbleFunc>>::apply();
   
   for(int i=0; i<5; ++i) printf("%2d ", A[i]);
   printf("\n\n");
-  
 }
