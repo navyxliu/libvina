@@ -8,7 +8,7 @@ SYSTEM := $(shell uname -s)
 
 #compiler conf.
 CXX=g++
-CFLAGS=-g -std=c++0x $(TEST_INFO) $(OPT) 
+CFLAGS=-g -std=c++0x $(TEST_INFO) $(OPT) -I.
 OPT= -O3 -msse
 #Linux system support additional features, such as
 # 1.PMC counter
@@ -50,7 +50,7 @@ ISSUE=$(shell cat /etc/issue)
 ifeq ($(word 1, $(ISSUE)), Ubuntu) #ubuntu, epcc, xliu's
 MKLPATH=/opt/intel/mkl/10.2.2.025
 #BOOSTPATH=/
-BOOSTLIB=-L/usr/lib/ -lboost_thread
+#BOOSTLIB=-L/usr/lib/ -lboost_thread
 BOOSTINC=/usr/include/boost
 else                            #fedora, xliu's
 MKLPATH=/opt/intel/mkl/10.2.1.017
@@ -117,7 +117,8 @@ $(OBJS):%.o:%.cc frame.hpp Makefile PARAMS
 ###################################################
 #                   TEST                          #
 ###################################################
-TEST_SET = test_profiler test_toolkits test_trait test_img test_seq
+#TEST_SET = test_profiler test_toolkits test_trait test_img test_seq
+TEST_SET = test_seq
 TEST_OBJS = $(addsuffix .o, $(TEST_SET))
 
 test: $(TEST_SET)
@@ -127,8 +128,8 @@ test: $(TEST_SET)
 		./$$i;\
 	done
 
-$(TEST_SET):%:%.cc $(AUX_OBJS)
-	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $(AUX_OBJS)  $<
+$(TEST_SET):%:%.cc #$(AUX_OBJS)
+	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $< #$(AUX_OBJS)
 
 
 ###################################################
