@@ -19,7 +19,7 @@ LDFLAGS+=-lrt -lm
 endif
 
 #include TEST parameters 
-include params 
+include PARAMS 
 
 #intel Math kernel library
 MKLLIB=-L$(MKLPATH)/lib/em64t  \
@@ -27,6 +27,7 @@ MKLLIB=-L$(MKLPATH)/lib/em64t  \
 	$(MKLPATH)/lib/em64t/libmkl_sequential.a \
 	$(MKLPATH)/lib/em64t/libmkl_core.a -Wl,--end-group \
 	-lpthread
+#MKL library, link the parallel version
 MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
 	-Wl,--start-group $(MKLPATH)/lib/em64t/libmkl_intel_lp64.a\
 	$(MKLPATH)/lib/em64t/libmkl_intel_thread.a \
@@ -40,11 +41,17 @@ MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
 #boost::thread lib
 ifeq ($(SYSTEM), Linux)
 ISSUE=$(shell cat /etc/issue)
-ifeq ($(word 1, $(ISSUE)), Ubuntu) #Ubuntu, nhm, jw's 
+#comment out
+#ifeq ($(word 1, $(ISSUE)), Ubuntu) #Ubuntu, nhm, jw's 
+#MKLPATH=/opt/intel/mkl/10.2.2.025
+#BOOSTPATH=/root/source/boost_1_40_0
+#BOOSTLIB=-L$(BOOSTPATH)/stage/lib -lboost_thread
+#BOOSTINC=/usr/local/include/boost
+ifeq ($(word 1, $(ISSUE)), Ubuntu) #ubuntu, epcc, xliu's
 MKLPATH=/opt/intel/mkl/10.2.2.025
-BOOSTPATH=/root/source/boost_1_40_0
-BOOSTLIB=-L$(BOOSTPATH)/stage/lib -lboost_thread
-BOOSTINC=/usr/local/include/boost
+#BOOSTPATH=/
+BOOSTLIB=-L/usr/lib/ -lboost_thread
+BOOSTINC=/usr/include/boost
 else                            #fedora, xliu's
 MKLPATH=/opt/intel/mkl/10.2.1.017
 BOOSTLIB=-L/usr/lib64 -lboost_thread-mt
@@ -102,7 +109,7 @@ tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 test_cl: test_cl.o
 	$(CXX) -o $@ $^ $(LDFLAGS) toolkits.o -framework OpenCL -I./inc
 
-$(OBJS):%.o:%.cc frame.hpp Makefile params
+$(OBJS):%.o:%.cc frame.hpp Makefile PARAMS
 	$(CXX) -o $@ -c $< $(CFLAGS)
 
 
@@ -110,7 +117,7 @@ $(OBJS):%.o:%.cc frame.hpp Makefile params
 ###################################################
 #                   TEST                          #
 ###################################################
-TEST_SET = test_profiler test_toolkits test_trait test_img
+TEST_SET = test_profiler test_toolkits test_trait test_img test_seq
 TEST_OBJS = $(addsuffix .o, $(TEST_SET))
 
 test: $(TEST_SET)
