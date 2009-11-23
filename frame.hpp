@@ -12,12 +12,6 @@
 //Oct. 10, function wrapper
 #ifndef VINA_FRAMEWORK
 #define VINA_FRAMEWORK
-#include "vector.hpp"
-#include "mtsupport.hpp"
-#include "threadpool.hpp"
-#include "profiler.hpp"
-#include "toolkits.hpp"
-#include "libSPMD/warp.h"
 
 #include <tr1/type_traits>
 #include <tr1/functional>
@@ -29,6 +23,15 @@
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/identity.hpp>
 #include <sstream>
+#include "trait.hpp"
+#include "vector.hpp"
+#include "matrix2.hpp"
+
+#include "mtsupport.hpp"
+#include "threadpool.hpp"
+#include "profiler.hpp"
+#include "toolkits.hpp"
+#include "libSPMD/warp.h"
 
 
 using namespace boost;

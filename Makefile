@@ -9,7 +9,7 @@ SYSTEM := $(shell uname -s)
 #compiler conf.
 CXX=g++
 CFLAGS=-g -std=c++0x $(TEST_INFO) $(OPT) -I.
-OPT= -O3 -msse
+OPT= -O3 -msse2
 #Linux system support additional features, such as
 # 1.PMC counter
 # 2.high-resolution timer
@@ -35,8 +35,8 @@ MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
 	-liomp5 -lpthread
 
 #libSPMD lib
-#SPMDPATH=./libSPMD
-#SPMDLIB=-L$(SPMDPATH) -lSPMD
+SPMDPATH=./libSPMD
+SPMDLIB=-L$(SPMDPATH) -lSPMD
 
 #boost::thread lib
 ifeq ($(SYSTEM), Linux)
@@ -50,7 +50,7 @@ ISSUE=$(shell cat /etc/issue)
 ifeq ($(word 1, $(ISSUE)), Ubuntu) #ubuntu, epcc, xliu's
 MKLPATH=/opt/intel/mkl/10.2.2.025
 #BOOSTPATH=/
-#BOOSTLIB=-L/usr/lib/ -lboost_thread
+BOOSTLIB=-L/usr/lib/ -lboost_thread
 BOOSTINC=/usr/include/boost
 else                            #fedora, xliu's
 MKLPATH=/opt/intel/mkl/10.2.1.017
@@ -100,7 +100,7 @@ saxpy: saxpy.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 
 conv2d: conv2d.o $(AUX_OBJS)
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) imgsupport.o -lpng
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) 
 
 tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 	$(CXX) -o $@ $^ $(LDFLAGS) ./libSPMD/libSPMD.a 
@@ -109,7 +109,7 @@ tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 test_cl: test_cl.o
 	$(CXX) -o $@ $^ $(LDFLAGS) toolkits.o -framework OpenCL -I./inc
 
-$(OBJS):%.o:%.cc frame.hpp Makefile PARAMS
+$(OBJS):%.o:%.cc Makefile PARAMS
 	$(CXX) -o $@ -c $< $(CFLAGS)
 
 

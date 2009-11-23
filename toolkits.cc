@@ -47,9 +47,9 @@ namespace vina {
   void CallsiteOutput::leaveMT() {
     (*os_) << "}\n";
   }
-  // call after callsite(D) to link dependences
+  // link last node to all dependences
   // side-effect: clear out dep_
-  void CallsiteOutput::depend() {
+  void CallsiteOutput::linkdep() {
     for (auto i=dep_.begin(); i != dep_.end(); ++i)
       {
 	(*os_) << *i << " -> " << temp_
@@ -58,6 +58,14 @@ namespace vina {
     dep_.clear();
   }
   void CallsiteOutput::callsite(const string& target)
+  {
+    this->callsiteN(target);
+
+    if ( stack_.size() != 0 ){
+      (*os_) << stack_.top() << " -> " << temp_ << "\n";
+    }
+  }
+  void CallsiteOutput::callsiteN(const string& target)
   {
     std::ostringstream oss;
     std::string tar;
@@ -68,22 +76,17 @@ namespace vina {
     
     (*os_) << tar << "[label=\""
 	   << target << "\"]\n";
-    
-    if ( stack_.size() != 0 ){
-      (*os_) << stack_.top() << " -> " << tar << "\n";
-    }
-    
+ 
     temp_ = tar;
-    }
-  void CallsiteOutput::callsiteD(const string& target)
-  {
-    callsite(target);
-    dep_.push_back(temp_);
   }
-  void CallsiteOutput::root(const string& root)
+  void CallsiteOutput::cluster(const string& tag)
   {
-    (*os_) << "subgraph cluster_root {\nlabel=\"\"";
-    callsite(root);
+    std::ostringstream oss;
+
+    oss << "\nsubgraph cluster_" << tag << cnt_ <<  "{\nlabel=\"\"";
+    oss << "\nstyle=invis\n";
+    (*os_) << oss.str();
+    callsite(tag);
     (*os_) << "}\n";
   }  
 

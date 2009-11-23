@@ -10,7 +10,6 @@
 #include <cstring>
 #include <cstdlib>
 #include "matrix2.hpp"
-#include "imgsupport.hpp"
 #include "toolkits.hpp"
 #include "frame.hpp"
 #define ITER 1
@@ -198,20 +197,28 @@ main(int argc, char **argv)
 #endif
   //dump_m(kerl, "kernel after");
   //
+#ifdef __USE_LIBSPMD
   _spmd_initialize(IMG_TEST_K);
-
+#endif
   typedef conv2d_map<ImageBuffer, ImageBuffer, KernelBuffer, 
     matConv2dWrapper, p_simple, 2> TF;
   prof.eventStart(temp1);
 
   for ( int i=0; i<ITER; ++i) 
     TF::doit(in, kerl, out);
+#ifdef __USE_LIBSPMD
   while (! spmd_all_complete() );
+#endif
   prof.eventEnd(temp1); 
 
   printf("MT gflop=%f\n", Gflops(Comp, 
-    prof.getEvent(temp1)->elapsed()/ITER));
+  prof.getEvent(temp1)->elapsed()/ITER));
+
+#ifdef __USE_LIBSPMD
   spmd_cleanup();
+#else//need join before checking result
+  sleep(1); 
+#endif
 
   CHECK_RESULT(out);
  /* 

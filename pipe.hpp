@@ -25,7 +25,6 @@ namespace vina {
   struct pipeline<P, Tail...> {
     typedef typename P::input_type in_t;
     typedef typename P::output_type out_t;
-    //typedef typename P::computation_type comp_t;
     
     static const bool _IsTail = false;
 

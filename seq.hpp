@@ -41,6 +41,11 @@ namespace vina{
 	  _surr::apply();
 	}
     }
+    static void
+    apply(FUNC f) {
+        for (int k=0; k<_itr; ++k) 
+          _surr::apply(f); 
+    }
   };
 
   /* A full specialization, indicated the tail of the sequence.
@@ -71,6 +76,11 @@ namespace vina{
       FUNC f;
       for (int i=0; i<_itr; ++i) f();
     }
+    static void 
+    apply(FUNC f)
+    {
+      for (int i=0; i<_itr; ++i) f();
+    }
   };
 
   /* seq_handler functions are used to bind loop-variables(LV).
@@ -96,7 +106,19 @@ namespace vina{
       ++ BASE::cnt_;
     }
   };
+  template<class F>
+  struct seq_handler_f<F&> : seq_handler_base<seq_handler_f<F&>>{ 
+    typedef seq_handler_base<seq_handler_f<F&>> BASE;
 
+    seq_handler_f(F& func) : f_(func) {}
+
+    void
+    operator() () {
+      f_( BASE::cnt_ );
+      ++ BASE::cnt_;
+    }
+    F& f_;
+  };
   /*This function is used in two-level iteration, which is 
    *for (i=0; i<I; ++i) for(j=0; j<J; ++j) ..
    *invariance: i * J  + j == cnt;
