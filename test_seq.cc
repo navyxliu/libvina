@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 #include "seq.hpp"
+#include <boost/ref.hpp>
 using namespace vina;
 
 #if 0
@@ -124,7 +125,40 @@ struct BubbleFunc
 	A[j+1] = h;
       }
   }
-};
+
+}; 
+// GCC supports c++0x lambda since 4.5
+void
+test_lambda()
+{
+#if (__GNUC__ > 4) || ( __GNUC__ == 4 && __GNUC_MINOR__ >=5 )
+   const char hello[] = "hello, world";
+   std::cout << "hello length = " << sizeof(hello) << "\n";
+
+   auto func = [&](int i) mutable {
+     std::cout << "hello[" << i << "] = " << hello[i] << std::endl;
+     const char * p = hello; // nested lambda can NOT access outer variables and references. we have to store as a reference here; 
+     [&]() {
+        std::cout << "\tnested: " << p << "\n";
+     }();
+   };
+
+   func(1);
+   typedef decltype(func)& closure_t;
+   closure_t f = func;
+   closure_t ff = f; /*rvalue*/
+   f(2);
+
+   seq_handler_f<closure_t> wrapper(func);  
+   //wrapper();
+
+   seq<seq_tail, sizeof(hello), seq_handler_f<echo>/*end handler*/>::apply();
+   seq<seq_tail, sizeof(hello)-1, seq_handler_f<closure_t>/*end handler*/>::apply(wrapper);
+#else
+   std::cout << "the compiler has not implemented lambda yet." << std::endl;
+#endif
+}
+
 int 
 main()
 {
@@ -139,4 +173,7 @@ main()
   
   for(int i=0; i<5; ++i) printf("%2d ", A[i]);
   printf("\n\n");
+  
+  std::cout << "TEST lambda\n";
+  test_lambda(); 
 }
