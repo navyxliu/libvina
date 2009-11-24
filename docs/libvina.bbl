@@ -47,6 +47,9 @@ D.~Abrahams and A.~Gurtovoy, \emph{C++ Template Metaprogramming: Concepts,
 \bibitem{c++0x}
 ``So/iec n2960, standard for programming language c++, working draft,'' 2009.
 
+\bibitem{mpl}
+D.~A. Aleksey~Gurtovoy. The boost c++ meta-programming library.
+
 \bibitem{tempturing}
 T.~L. Veldhuizen, ``C++ templates are turing complete.''
 
@@ -59,9 +62,6 @@ A.~Alexandrescu, \emph{Modern C++ design: generic programming and design
 B.~Stroustrup, \emph{The C++ Programming Language (Special 3rd Edition)}.\hskip
   1em plus 0.5em minus 0.4em\relax {Addison-Wesley Professional}, February
   2000.
-
-\bibitem{mpl}
-D.~A. Aleksey~Gurtovoy. The boost c++ meta-programming library.
 
 \bibitem{opencl}
 A.~Munshi, ``The opencl specification version 1.0,'' 2009.

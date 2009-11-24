@@ -1,12 +1,34 @@
+\RequirePackage{lineno}
 \documentclass[conference]{IEEEtran}
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 % ===============================================================
-\usepackage{subfigure, graphicx, booktabs}
+%\usepackage{subfigure, graphicx, booktabs}
 %\usepackage{algpseudocode, algorithmicx, algorithm}
 \usepackage{multirow, amsmath, amsthm, listings, booktabs}
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+   \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+   \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+   \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+   \DeclareGraphicsRule{*}{mps}{*}{}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+   \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+   \graphicspath{{./}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+   \DeclareGraphicsExtensions{.png, .pdf, .eps}
+\fi
 
 % ===============================================================
 \newtheorem{theorem}{Theorem}[section]
@@ -19,7 +41,8 @@
 
 
 \begin{document}
-\title{An Efficient Collaborative Filtering Approach Using Smoothing and Fusing}
+\title{A Template Metaprogramming approach to Support Parallel
+  Programs for Multicores}
 
 
 % author names and affiliations
@@ -41,9 +64,9 @@ No. 800, Dongchuan Road, Shanghai, P.R.China\\
 In advent of multicore era, plain C/C++ programming language can not
 fully reflect computer architectures. Source-to-source
 transformation helps tailor programs close to contemporary
-hardwares. In this paper, we propose a template-based approach to perform 
+hardwares. In this paper, we propose a template metaprogramming approach to perform 
 transformation for programs with rich static information.
-The template metaprogramming techniques we present can conduct
+C++ template metaprogramming techniques we present can conduct
 parallelization and memory hierarchical optimization for specific multicores. They enable
 programmers to utilize new architectural
 features and parallel patterns by extending template library. 
@@ -54,7 +77,7 @@ in multimedia and scientific fields. In experiments, we show that our
 approach is flexible to support multiple parallel models and capable
 of transforming sequential code to parallel equivalence  according to
 specific multicore architectures. Moreover, the cost of programmability using our
-approach to adapt more than one multicore platform is manageable.
+approach to adapt to more than one multicore platform is manageable.
 \end{abstract}
 
 % For peerreview papers, this IEEEtran command inserts a page break and
@@ -63,11 +86,11 @@ approach to adapt more than one multicore platform is manageable.
 
 
 \input{intro.tex}
-%\input{related.tex}
 %\input{background.tex}
 \input{method.tex}
-%\input{evaluation.tex}
-%\input{conclusion.tex}
+\input{evaluation.tex}
+\input{related.tex}
+\input{conclusion.tex}
 %\input{acknowledge.tex}
 
 \bibliographystyle{ieeetran}

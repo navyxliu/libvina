@@ -9,40 +9,40 @@
 
 
 \section{Introduction}\label{sec:Intro}
-Multicores rely on parallelism and memory
+%multicore problem
+Modern computer architectures rely on parallelism and memory
 hierarchy to improve performance. Both duplicated processors and
-elaborated storage-on-chip require programmers to restructure their
-source code and keep tuning binaries for a specific target. Therefore,
-non-trivial knowledge of underlying machine's architectures is
-necessary to write high-performance applications. More worse, various
-implementations of multicores bring many architectural
-features to programmers, which in fact further enlarge the gap between software
-programmers and hardware vendors.
+elaborated storage-on-chip require programmers to aware of underlying
+machines' knowledge when they write programs. More worse,
+multicore technologies have brough various architectural features for
+different implementations. Therefore, it is challenge to develop
+efficient applications which can take advantage of various multicores.
+%need new programming model
+In essence, we think it is because plain C/C++ programming language
+can not reflect comtemporary architecture. Traditionally, programmers
+describe algorithms in seqential logics, and then reply on compiler
+and hardware optimization to deliver modest performance in terms of
+their machines. In muticore era, this classic prorgramming model gain
+little. It is desireable to develop alternatives to utilize powerhorse
+of multicores while hiding architectural features.
+% to aggresssive is not feasible
+Although researches on revolutionary programming models have otained
+fruitful achievements, there still are critical issues to prohibit
+changing. First, it is still unsolved problem what a general purpose programming
+languages is. Considering the wide specrum of parallel computers, we
+doubt it really exists. Second, the cost of hardware in large systems
+is relative low than software and personnels. The ratio lowers along time
+pass. It is risky to drop up existing efforts and build software from
+scratch using new programming models.
 
-Traditionally, algorithm experts usually focus on their specific domains and have
-limited insights on diverging computer systems. Writing algorithms in
-sequence, they expect hardwares
-and compilers to guarantee decent performance for their
-programs. The expectation was roughly held until explicit parallel system was
-introduced to computer community. Since the frequency of microprocessor
-increases slowly, it has been difficult to obtain free
-performance improvement from hardware's refinement. Workloads
-of application developers surge for parallel computer
-systems. In essence, it is because plain C/C++ can not fully reflect contemporary
-parallel architectures. It is desirable to develop
-methods to adapt to diverging multicore architectures.
-
-Although extensive researches on non-traditional
-programming models obtain fruitful achievements, mainstream software development still
-stay at imperative programming languages and multi-threading.
-We think the primary reason is software cost. Considering the time span
-which a large computer system serves, hardwares are cheap and become
-cheaper with time elapsing, while software and well-trained personnel are
-expensive. Because numerous legacy software systems were designed and
-developed in conventional programming model, vendors usually prefer to
-maintain and update them rather than
-rebuilding from scratch. Nevertheless, exploiting horsepower of
-multicore processors for legacy and new systems is a moderate issue.
+An acceptable tradeoff is to extend traditional programming
+languages to utilize proved achievements. The obvious advantage of
+this approach is that it can exploit multicores progressively. The knowldges and
+experiences of tranditional programmers are still useful and legancy
+software are saved. In industry, OpenMP~\cite{openmp}  and
+TBB~\cite{tbb} are successful cases.OpenMP provides parallel
+programming API in the form of compiler directives for shared memory
+systems. TBB consists of containers and iterations.
 
 Source-to-source transformation can help tailor specific
 architectures. In particular, some transformations can extend
