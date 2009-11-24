@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+
+\bibitem{c++metaprog}
+David Abrahams and Aleksey Gurtovoy.
+\newblock {\em C++ Template Metaprogramming: Concepts, Tools, and Techniques
+  from Boost and Beyond (C++ in Depth Series)}.
+\newblock Addison-Wesley Professional, 2004.
+
+\bibitem{dragonbook2e}
+Alfred~V. Aho, Ravi Sethi, and Jeffrey~D. Ullman.
+\newblock {\em Compilers: principles, techniques, and tools}.
+\newblock Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 1986.
+
+\bibitem{modernc++}
+Andrei Alexandrescu.
+\newblock {\em Modern C++ design: generic programming and design patterns
+  applied}.
+\newblock Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 2001.
+
+\bibitem{DBLP:conf/sc/FatahalianHKLHPERADH06}
+Kayvon Fatahalian, Daniel~Reiter Horn, Timothy~J. Knight, Larkhoon Leem, Mike
+  Houston, Ji~Young Park, Mattan Erez, Manman Ren, Alex Aiken, William~J.
+  Dally, and Pat Hanrahan.
+\newblock Memory - sequoia: programming the memory hierarchy.
+\newblock In {\em SC}, page~83. ACM Press, 2006.
+
+\bibitem{todd-temp}
+Todd~L. Veldhuizen.
+\newblock C++ templates are turing complete.
+\newblock Technical report.
+
+\end{thebibliography}

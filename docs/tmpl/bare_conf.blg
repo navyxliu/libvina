@@ -1,0 +1,59 @@
+This is BibTeX, Version 0.99c (Web2C 7.5.4)
+The top-level auxiliary file: bare_conf.aux
+The style file: ieeetran.bst
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: instructions.bib
+Warning--I didn't find a database entry for "cell"
+Warning--I didn't find a database entry for "modernc++"
+Warning--I didn't find a database entry for "cpplambda"
+-- IEEEtran.bst version 1.12 (2007/01/11) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty author in c++03
+Warning--empty journal in c++03
+Warning--empty author in c++0x
+Warning--empty journal in c++0x
+
+Done.
+You've used 11 entries,
+            4024 wiz_defined-function locations,
+            883 strings with 9629 characters,
+and the built_in function-call counts, 7176 in all, are:
+= -- 495
+> -- 202
+< -- 42
++ -- 107
+- -- 39
+* -- 329
+:= -- 1025
+add.period$ -- 25
+call.type$ -- 11
+change.case$ -- 17
+chr.to.int$ -- 102
+cite$ -- 15
+duplicate$ -- 547
+empty$ -- 656
+format.name$ -- 47
+if$ -- 1651
+int.to.chr$ -- 0
+int.to.str$ -- 11
+missing$ -- 112
+newline$ -- 56
+num.names$ -- 13
+pop$ -- 308
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 545
+stack$ -- 0
+substring$ -- 250
+swap$ -- 390
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 11
+warning$ -- 4
+while$ -- 27
+width$ -- 13
+write$ -- 110
+(There were 7 warnings)

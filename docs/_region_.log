@@ -1,0 +1,1376 @@
+This is pdfeTeX, Version 3.141592-1.21a-2.2 (Web2C 7.5.4) (format=prv_libvina 2009.11.12)  14 NOV 2009 23:30
+entering extended mode
+**&prv_libvina _region_.tex
+(./_region_.tex
+LaTeX2e <2003/12/01>
+Babel <v3.8d> and hyphenation patterns for american, french, german, ngerman, b
+ahasa, basque, bulgarian, catalan, croatian, czech, danish, dutch, esperanto, e
+stonian, finnish, greek, icelandic, irish, italian, latin, magyar, norsk, polis
+h, portuges, romanian, russian, serbian, slovak, slovene, spanish, swedish, tur
+kish, ukrainian, nohyphenation, loaded.
+CUSTOMISED FORMAT. Preloaded files:
+        .
+IEEEtran.cls    2007/03/05 V1.7a by Michael Shell
+  ot1ptm.fd    2001/06/04 font definitions for OT1/ptm.
+    cite.sty    2003/11/04  v 4.01
+graphicx.sty    1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+  keyval.sty    1999/03/16 v1.13 key=value parser (DPC)
+graphics.sty    2001/07/07 v1.0n Standard LaTeX Graphics (DPC,SPQR)
+    trig.sty    1999/03/16 v1.09 sin cos tan (DPC)
+graphics.cfg    2005/02/03 v1.3 graphics configuration of teTeX/TeXLive
+  pdftex.def    2002/06/19 v0.03k graphics/color for pdftex
+  ot1pcr.fd    2001/06/04 font definitions for OT1/pcr.
+  ot1phv.fd    2001/06/04 scalable font definitions for OT1/phv.
+        .
+
+LaTeX Warning: Unused global option(s):
+    [compsocconf].
+
+No file _region_.aux.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 350.
+LaTeX Font Info:    ... okay on input line 350.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 350.
+LaTeX Font Info:    ... okay on input line 350.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 350.
+LaTeX Font Info:    ... okay on input line 350.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 350.
+LaTeX Font Info:    ... okay on input line 350.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 350.
+LaTeX Font Info:    ... okay on input line 350.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 350.
+LaTeX Font Info:    ... okay on input line 350.
+
+(/Applications/Aquamacs Emacs.app/Contents/Resources/site-lisp/edit-modes/aucte
+x/latex/preview.sty
+Package: preview 2008/02/03 11.85 (AUCTeX/preview-latex)
+
+(/Applications/Aquamacs Emacs.app/Contents/Resources/site-lisp/edit-modes/aucte
+x/latex/prtightpage.def
+\PreviewBorder=\dimen119
+)
+(/Applications/Aquamacs Emacs.app/Contents/Resources/site-lisp/edit-modes/aucte
+x/latex/prauctex.def
+No auxiliary output files.
+
+
+\hbadness=\count92
+\hfuzz=\dimen120
+
+(/Applications/Aquamacs Emacs.app/Contents/Resources/site-lisp/edit-modes/aucte
+x/latex/prauctex.cfg))
+(/Applications/Aquamacs Emacs.app/Contents/Resources/site-lisp/edit-modes/aucte
+x/latex/prfootnotes.def)
+\pr@snippet=\count93
+\pr@box=\box27
+\pr@output=\toks16
+
+Preview: Fontsize 10pt
+Preview: PDFoutput 1
+) (/opt/local/share/texmf-dist/tex/context/base/supp-pdf.tex
+(/opt/local/share/texmf-dist/tex/context/base/supp-mis.tex
+loading : Context Support Macros / Miscellaneous (2004.10.26)
+\protectiondepth=\count94
+\scratchcounter=\count95
+\scratchtoks=\toks17
+\scratchdimen=\dimen121
+\scratchskip=\skip44
+\scratchmuskip=\muskip10
+\scratchbox=\box28
+\scratchread=\read1
+\scratchwrite=\write3
+\zeropoint=\dimen122
+\onepoint=\dimen123
+\onebasepoint=\dimen124
+\minusone=\count96
+\thousandpoint=\dimen125
+\onerealpoint=\dimen126
+\emptytoks=\toks18
+\nextbox=\box29
+\nextdepth=\dimen127
+\everyline=\toks19
+\!!counta=\count97
+\!!countb=\count98
+\recursecounter=\count99
+)
+loading : Context Support Macros / PDF (2004.03.26)
+\nofMPsegments=\count100
+\nofMParguments=\count101
+\MPscratchCnt=\count102
+\MPscratchDim=\dimen128
+\MPnumerator=\count103
+\everyMPtoPDFconversion=\toks20
+)  !name(libvina.tex) !offset(-3) 
+! Misplaced \crcr.
+\IEEEauthorblockN ...lockNinterlinespace }#1\crcr 
+                                                  
+l.384 ...u, Daqiang Zhang, Jingyu Zhou, Minyi Guo}
+                                                  
+I can't figure out why you would want to use a tab mark
+or \cr or \span just now. If something like a right brace
+up above has ended a previous alignment prematurely,
+you're probably due for more error messages, and you
+might try typing `S' now just to see what is salvageable.
+
+! Misplaced \cr.
+\@IEEEauthorblockAtopspaceline ->\cr 
+                                     \noalign {\vskip \@IEEEauthorblockAtops...
+l.388 ...u.cn, \{guo-my, zhou-jy\}@cs.sjtu.edu.cn}
+                                                  
+I can't figure out why you would want to use a tab mark
+or \cr or \span just now. If something like a right brace
+up above has ended a previous alignment prematurely,
+you're probably due for more error messages, and you
+might try typing `S' now just to see what is salvageable.
+
+! Misplaced \noalign.
+\@IEEEauthorblockAtopspaceline ->\cr \noalign 
+                                              {\vskip \@IEEEauthorblockAtops...
+l.388 ...u.cn, \{guo-my, zhou-jy\}@cs.sjtu.edu.cn}
+                                                  
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 388.
+
+(/opt/local/share/texmf-dist/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 388.
+
+! Misplaced \crcr.
+\IEEEauthorblockA ...lockAinterlinespace }#1\crcr 
+                                                  
+l.388 ...u.cn, \{guo-my, zhou-jy\}@cs.sjtu.edu.cn}
+                                                  
+I can't figure out why you would want to use a tab mark
+or \cr or \span just now. If something like a right brace
+up above has ended a previous alignment prematurely,
+you're probably due for more error messages, and you
+might try typing `S' now just to see what is salvageable.
+
+! Preview: Snippet 1 started.
+<-><->
+      
+l.437 \section
+              {Introduction}
+Not a real error.
+
+Preview: Tightpage -32891 -32891 32891 32891
+! Preview: Snippet 1 ended.(435811+8188x16515072).
+<-><->
+      
+l.437 \section{Introduction}
+                            
+Not a real error.
+
+[1{/opt/local/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+]
+
+LaTeX Warning: Citation `openmp' on page 2 undefined on input line 474.
+
+
+LaTeX Warning: Citation `upc' on page 2 undefined on input line 474.
+
+
+LaTeX Warning: Citation `cudaref' on page 2 undefined on input line 474.
+
+
+LaTeX Warning: Citation `brookgpu' on page 2 undefined on input line 475.
+
+
+LaTeX Warning: Citation `saha09' on page 2 undefined on input line 476.
+
+
+LaTeX Warning: Citation `sequoia' on page 2 undefined on input line 477.
+
+
+LaTeX Warning: Citation `sequoia-compiler' on page 2 undefined on input line 47
+7.
+
+
+LaTeX Warning: Citation `merge' on page 2 undefined on input line 483.
+
+
+LaTeX Warning: Citation `tempmetaprog' on page 2 undefined on input line 487.
+
+
+LaTeX Warning: Citation `c++03' on page 3 undefined on input line 514.
+
+
+LaTeX Warning: Citation `c++0x' on page 3 undefined on input line 514.
+
+! Preview: Snippet 2 started.
+<-><->
+      
+l.529 \section
+              {Template Metaprogramming Approach}
+Not a real error.
+
+! Preview: Snippet 2 ended.(444988+8188x16515072).
+<-><->
+      
+l.529 \section{Template Metaprogramming Approach}
+                                                 
+Not a real error.
+
+[2
+
+]
+! Preview: Snippet 3 started.
+<-><->
+      
+l.530 \subsection
+                 {Background}
+Not a real error.
+
+! Preview: Snippet 3 ended.(448587+135328x16515072).
+<-><->
+      
+l.530 \subsection{Background}
+                             
+Not a real error.
+
+[3
+
+]
+
+LaTeX Warning: Citation `tempturing' on page 3 undefined on input line 535.
+
+
+LaTeX Warning: Citation `moderncpp' on page 3 undefined on input line 536.
+
+
+LaTeX Warning: Citation `tcpl' on page 3 undefined on input line 539.
+
+
+LaTeX Warning: Citation `mpl' on page 3 undefined on input line 548.
+
+! Preview: Snippet 4 started.
+<-><->
+      
+l.554 \subsection
+                 {Overview}
+Not a real error.
+
+! Preview: Snippet 4 ended.(439084+11791x16515072).
+<-><->
+      
+l.554 \subsection{Overview}
+                           
+Not a real error.
+
+[4
+
+]
+! Preview: Snippet 5 started.
+<-><->
+      
+l.555 \begin{figure}
+                    [htp]
+Not a real error.
+
+
+Warning: pdflatex (file overview.pdf): pdf inclusion: found pdf version <1.5>, 
+but at most version <1.4> allowed
+<overview.pdf, id=20, 350.87286pt x 166.54219pt>
+File: overview.pdf Graphic file (type pdf)
+ <use overview.pdf>
+! Preview: Snippet 5 ended.(8598584+113504x16515072).
+<-><->
+      
+l.558 \end{figure}
+                  
+Not a real error.
+
+[5
+
+
+ <./overview.pdf>]
+
+LaTeX Warning: Reference `fig:overview' on page 3 undefined on input line 560.
+
+
+LaTeX Warning: Reference `fig:overview' on page 3 undefined on input line 591.
+
+! Preview: Snippet 6 started.
+<-><->
+      
+l.603 \subsection
+                 {Components}
+Not a real error.
+
+! Preview: Snippet 6 ended.(439084+135328x16515072).
+<-><->
+      
+l.603 \subsection{Components}
+                             
+Not a real error.
+
+[6
+
+]
+! Preview: Snippet 7 started.
+<-><->
+      
+l.604 \subsubsection
+                    {TF class}
+Not a real error.
+
+! Preview: Snippet 7 ended.(448587+118616x3735309).
+<-><->
+      
+l.604 \subsubsection{TF class}
+                              
+Not a real error.
+
+[7
+
+]
+
+LaTeX Warning: Reference `fig:tfcls' on page 3 undefined on input line 617.
+
+! Preview: Snippet 8 started.
+<-><->
+      
+l.623 \begin{figure}
+                    
+Not a real error.
+
+<map-class.pdf, id=41, 363.3575pt x 116.435pt>
+File: map-class.pdf Graphic file (type pdf)
+ <use map-class.pdf>
+! Preview: Snippet 8 ended.(5884658+113504x16515072).
+<-><->
+      
+l.627 \end{figure}
+                  
+Not a real error.
+
+[8
+
+
+ <./map-class.pdf>]
+! Preview: Snippet 9 started.
+<-><->
+      
+l.629 \subsubsection
+                    {Function wrapper}\label{section:interface}
+Not a real error.
+
+! Preview: Snippet 9 ended.(439084+135328x6237468).
+<-><->
+      
+l.629 \subsubsection{Function wrapper}
+                                      \label{section:interface}
+Not a real error.
+
+[9
+
+]
+
+LaTeX Warning: Reference `lst:wrapper' on page 3 undefined on input line 639.
+
+
+LaTeX Warning: Reference `fig:mm' on page 3 undefined on input line 643.
+
+! Preview: Snippet 10 started.
+<-><->
+      
+l.648 \begin{figure}
+                    [!htp]
+Not a real error.
+
+! Preview: Snippet 10 ended.(20044572+113504x16515072).
+<-><->
+      
+l.685 \end{figure}
+                  
+Not a real error.
+
+[10
+
+
+]
+! Preview: Snippet 11 started.
+<-><->
+      
+l.688 \subsubsection
+                    {Predicate}
+Not a real error.
+
+! Preview: Snippet 11 ended.(448587+118616x3954191).
+<-><->
+      
+l.688 \subsubsection{Predicate}
+                               
+Not a real error.
+
+[11
+
+]
+
+LaTeX Warning: Reference `lst:pred' on page 4 undefined on input line 693.
+
+! Preview: Snippet 12 started.
+<-><->
+      
+l.695 \begin{figure}
+                    [!htp]
+Not a real error.
+
+! Preview: Snippet 12 ended.(9919261+113504x16515072).
+<-><->
+      
+l.717 \end{figure}
+                  
+Not a real error.
+
+[12
+
+
+]
+! Preview: Snippet 13 started.
+<-><->
+      
+l.719 \subsubsection
+                    {Sentinel}
+Not a real error.
+
+! Preview: Snippet 13 ended.(448587+118616x3541975).
+<-><->
+      
+l.719 \subsubsection{Sentinel}
+                              
+Not a real error.
+
+[13
+
+]
+! Preview: Snippet 14 started.
+<-><->
+      
+l.731 \subsection
+                 {Supporting data structures}
+Not a real error.
+
+! Preview: Snippet 14 ended.(448587+135328x16515072).
+<-><->
+      
+l.731 \subsection{Supporting data structures}
+                                             
+Not a real error.
+
+[14
+
+]
+
+LaTeX Warning: Reference `fig:view' on page 4 undefined on input line 743.
+
+! Preview: Snippet 15 started.
+<-><->
+      
+l.760 \begin{figure}
+                    
+Not a real error.
+
+<view_concept.png, id=84, 525.965pt x 471.7625pt>
+File: view_concept.png Graphic file (type png)
+ <use view_concept.png>
+! Preview: Snippet 15 ended.(15198979+113504x16515072).
+<-><->
+      
+l.764 \end{figure}
+                  
+Not a real error.
+
+[15
+
+
+ <./view_concept.png>]
+! Preview: Snippet 16 started.
+<-><->
+      
+l.766 \section
+              {Runtime supports}
+Not a real error.
+
+! Preview: Snippet 16 ended.(435811+8188x16515072).
+<-><->
+      
+l.766 \section{Runtime supports}
+                                
+Not a real error.
+
+[16
+
+]
+
+LaTeX Warning: Citation `opencl' on page 4 undefined on input line 777.
+
+
+LaTeX Warning: Citation `cellnetwork' on page 4 undefined on input line 790.
+
+! Preview: Snippet 17 started.
+<-><->
+      
+l.794 \section
+              {Source Transformations by Template}
+Not a real error.
+
+! Preview: Snippet 17 ended.(444988+8188x16515072).
+<-><->
+      
+l.794 \section{Source Transformations by Template}
+                                                  
+Not a real error.
+
+[17
+
+]
+! Preview: Snippet 18 started.
+<-><->
+      
+l.802 \subsection
+                 {SPMD}
+Not a real error.
+
+! Preview: Snippet 18 ended.(439084+11791x16515072).
+<-><->
+      
+l.802 \subsection{SPMD}
+                       
+Not a real error.
+
+[18
+
+]
+
+LaTeX Warning: Reference `lst:mappar' on page 4 undefined on input line 810.
+
+
+LaTeX Warning: Reference `lst:mappar' on page 4 undefined on input line 820.
+
+! Preview: Snippet 19 started.
+<-><->
+      
+l.823 \begin{figure}
+                    [!htp]
+Not a real error.
+
+! Preview: Snippet 19 ended.(46029599+113504x16515072).
+<-><->
+      
+l.901 \end{figure}
+                  
+Not a real error.
+
+[19
+
+
+]
+! Preview: Snippet 20 started.
+<-><->
+      
+l.903 \begin{figure}
+                    
+Not a real error.
+
+<test_matrix.png, id=104, 1120.185pt x 317.185pt>
+File: test_matrix.png Graphic file (type png)
+ <use test_matrix.png>
+! Preview: Snippet 20 ended.(5605319+113504x16515072).
+<-><->
+      
+l.907 \end{figure}
+                  
+Not a real error.
+
+[20
+
+
+ <./test_matrix.png>]
+
+LaTeX Warning: Reference `fig:mm' on page 5 undefined on input line 911.
+
+! Preview: Snippet 21 started.
+<-><->
+      
+l.925 \subsection
+                 {Streaming and pipelining}
+Not a real error.
+
+! Preview: Snippet 21 ended.(448587+135328x16515072).
+<-><->
+      
+l.925 \subsection{Streaming and pipelining}
+                                           
+Not a real error.
+
+[21
+
+]
+
+LaTeX Warning: Citation `imagine' on page 5 undefined on input line 926.
+
+
+LaTeX Warning: Citation `cellbe' on page 5 undefined on input line 932.
+
+
+LaTeX Warning: Citation `larrabee' on page 5 undefined on input line 932.
+
+
+LaTeX Warning: Reference `fig:view' on page 5 undefined on input line 942.
+
+
+LaTeX Warning: Reference `lst:pipe' on page 5 undefined on input line 945.
+
+
+LaTeX Warning: Reference `fig:viewmt' on page 5 undefined on input line 947.
+
+! Preview: Snippet 22 started.
+<-><->
+      
+l.955 \begin{figure}
+                    [!htp]
+Not a real error.
+
+! Preview: Snippet 22 ended.(13851421+113504x16515072).
+<-><->
+      
+l.983 \end{figure}
+                  
+Not a real error.
+
+[22
+
+
+]
+! Preview: Snippet 23 started.
+<-><->
+      
+l.985 \begin{figure}
+                    [htp]
+Not a real error.
+
+
+Warning: pdflatex (file viewmt.pdf): pdf inclusion: found pdf version <1.5>, bu
+t at most version <1.4> allowed
+<viewmt.pdf, id=114, 417.30403pt x 122.2146pt>
+File: viewmt.pdf Graphic file (type pdf)
+ <use viewmt.pdf>
+! Preview: Snippet 23 ended.(5479635+113504x16515072).
+<-><->
+      
+l.988 \end{figure}
+                  
+Not a real error.
+
+[23
+
+
+ <./viewmt.pdf, page is rotated 90 degrees>]
+! Preview: Snippet 24 started.
+<-><->
+      
+l.991 \section
+              {Adaption of TF classes}
+Not a real error.
+
+! Preview: Snippet 24 ended.(444988+8188x16515072).
+<-><->
+      
+l.991 \section{Adaption of TF classes}
+                                      
+Not a real error.
+
+[24
+
+]
+! Preview: Snippet 25 started.
+<-><->
+      
+l.1003 \begin{figure}
+                     [!htp]
+Not a real error.
+
+! Preview: Snippet 25 ended.(33512221+113504x16515072).
+<-><->
+      
+l.1061 \end{figure}
+                   
+Not a real error.
+
+[25
+
+
+]
+
+LaTeX Warning: Reference `lst:adaptersaxpy' on page 5 undefined on input line 1
+062.
+
+
+LaTeX Warning: Reference `lst:callsaxpy' on page 5 undefined on input line 1069
+.
+
+! Preview: Snippet 26 started.
+<-><->
+      
+l.1075 \begin{figure}
+                     [!htp]
+Not a real error.
+
+! Preview: Snippet 26 ended.(9919261+113504x16515072).
+<-><->
+      
+l.1097 \end{figure}
+                   
+Not a real error.
+
+[26
+
+
+]
+
+LaTeX Warning: Reference `lst:callpipe' on page 5 undefined on input line 1098.
+
+
+
+LaTeX Warning: Reference `lst:pipe' on page 5 undefined on input line 1099.
+
+
+LaTeX Warning: Citation `vartemp' on page 5 undefined on input line 1099.
+
+
+LaTeX Warning: Reference `lst:callpipe' on page 5 undefined on input line 1101.
+
+
+
+LaTeX Warning: Reference `fig:viewmt' on page 5 undefined on input line 1106.
+
+! Preview: Snippet 27 started.
+<-><->
+      
+l.1112 \begin{figure}
+                     [!htp]
+Not a real error.
+
+! Preview: Snippet 27 ended.(34167581+113504x16515072).
+<-><->
+      
+l.1171 \end{figure}
+                   
+Not a real error.
+
+[27
+
+
+]
+! Preview: Snippet 28 started.
+<-><->
+      
+l.1189 \section
+               {Experiments and evalution}
+Not a real error.
+
+! Preview: Snippet 28 ended.(435811+8188x16515072).
+<-><->
+      
+l.1189 \section{Experiments and evalution}
+                                          
+Not a real error.
+
+[28
+
+]
+! Preview: Snippet 29 started.
+<-><->
+      
+l.1190 \subsection
+                  {Methodology}\label{sectn:method}
+Not a real error.
+
+! Preview: Snippet 29 ended.(448587+135328x16515072).
+<-><->
+      
+l.1190 \subsection{Methodology}
+                               \label{sectn:method}
+Not a real error.
+
+[29
+
+]
+
+LaTeX Warning: Reference `tbl:mach' on page 6 undefined on input line 1221.
+
+! Preview: Snippet 30 started.
+<-><->
+      
+l.1223 \begin{table}
+                    [hbt]
+Not a real error.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 1226.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 1226.
+! Preview: Snippet 30 ended.(4374130+1985740x16515072).
+<-><->
+      
+l.1241 \end{table}
+                  
+Not a real error.
+
+[30
+
+
+]
+! Preview: Snippet 31 started.
+<-><->
+      
+l.1248 \subsection
+                  {Evalution}
+Not a real error.
+
+! Preview: Snippet 31 ended.(448587+11791x16515072).
+<-><->
+      
+l.1248 \subsection{Evalution}
+                             
+Not a real error.
+
+[31
+
+]
+! Preview: Snippet 32 started.
+<-><->
+      
+l.1249 \subsubsection
+                     {Speedup of SPMD transformation on CPU}
+Not a real error.
+
+! Preview: Snippet 32 ended.(448587+135328x12943745).
+<-><->
+      
+l.1249 ...n{Speedup of SPMD transformation on CPU}
+                                                  
+Not a real error.
+
+[32
+
+]
+! Preview: Snippet 33 started.
+<-><->
+      
+l.1250 \begin{figure}
+                     
+Not a real error.
+
+File: speedupx86.0 Graphic file (type mps)
+[MP to PDF] (./speedupx86.0)
+! Preview: Snippet 33 ended.(12362548+113504x16515072).
+<-><->
+      
+l.1253 \end{figure}
+                   
+Not a real error.
+
+[33
+
+
+]
+
+LaTeX Warning: Reference `fig:spdx86' on page 6 undefined on input line 1255.
+
+! Preview: Snippet 34 started.
+<-><->
+      
+l.1278 \subsubsection
+                     {Speedup of SPMD transformation on GPU}
+Not a real error.
+
+! Preview: Snippet 34 ended.(448587+135328x12979793).
+<-><->
+      
+l.1278 ...n{Speedup of SPMD transformation on GPU}
+                                                  
+Not a real error.
+
+[34
+
+]
+! Preview: Snippet 35 started.
+<-><->
+      
+l.1279 \begin{figure}
+                     
+Not a real error.
+
+File: speedupgpu.0 Graphic file (type mps)
+[MP to PDF] (./speedupgpu.0)
+! Preview: Snippet 35 ended.(10783785+113504x16515072).
+<-><->
+      
+l.1282 \end{figure}
+                   
+Not a real error.
+
+[35
+
+
+]
+
+LaTeX Warning: Reference `fig:spdgpu' on page 6 undefined on input line 1284.
+
+! Preview: Snippet 36 started.
+<-><->
+      
+l.1287 SMs\footnote
+                   {Streaming Multiprocessor, each SM consists of 8 scalar p...
+
+Not a real error.
+
+! Preview: Snippet 36 ended.(550688+0x262144).
+<-><->
+      
+l.1287 ... SM consists of 8 scalar processors(SP)}
+                                                  .
+Not a real error.
+
+[36]
+! Preview: Snippet 37 started.
+<-><->
+      
+l.1289 ... while keeping algorithms same \footnote
+                                                  {
+Not a real error.
+
+! Preview: Snippet 37 ended.(550688+0x262144).
+<-><->
+      
+l.1293  instruments for CPU.}
+                             . As figure depicted,  computation-intensive pr...
+
+Not a real error.
+
+[37]
+! Preview: Snippet 38 started.
+<-><->
+      
+l.1305 \subsubsection
+                     {Comparison between different multicores}
+Not a real error.
+
+! Preview: Snippet 38 ended.(448587+135328x12434460).
+<-><->
+      
+l.1305 ...Comparison between different multicores}
+                                                  
+Not a real error.
+
+[38
+
+]
+! Preview: Snippet 39 started.
+<-><->
+      
+l.1306 \begin{table}
+                    [hbt]
+Not a real error.
+
+! Preview: Snippet 39 ended.(3417304+1422130x16515072).
+<-><->
+      
+l.1321 \end{table}
+                  
+Not a real error.
+
+[39
+
+
+]
+
+LaTeX Warning: Reference `tbl:sgemm' on page 6 undefined on input line 1323.
+
+! Preview: Snippet 40 started.
+<-><->
+      
+l.1335 ...ormance is roughly 17.6 Gflops.\footnote
+                                                  {$17.6Gflops = 1.1Ghz * 2(...
+
+Not a real error.
+
+! Preview: Snippet 40 ended.(550688+0x262144).
+<-><->
+      
+l.1338 ...any performance improvement in OpenCL. }
+                                                  
+Not a real error.
+
+[40]
+
+LaTeX Warning: Citation `Fatahalian08' on page 6 undefined on input line 1342.
+
+! Preview: Snippet 41 started.
+<-><->
+      
+l.1349 \subsubsection
+                     {Support streaming computation}
+Not a real error.
+
+! Preview: Snippet 41 ended.(439084+135328x9838635).
+<-><->
+      
+l.1349 ...ubsection{Support streaming computation}
+                                                  
+Not a real error.
+
+[41
+
+]
+! Preview: Snippet 42 started.
+<-><->
+      
+l.1350 \begin{figure}
+                     [htp]
+Not a real error.
+
+File: pipeline.0 Graphic file (type mps)
+[MP to PDF] (./pipeline.0)
+! Preview: Snippet 42 ended.(12362548+113504x16515072).
+<-><->
+      
+l.1353 \end{figure}
+                   
+Not a real error.
+
+[42
+
+
+]
+
+LaTeX Warning: Reference `fig:pipe' on page 6 undefined on input line 1355.
+
+
+LaTeX Warning: Reference `lst:pipe' on page 6 undefined on input line 1358.
+
+! Preview: Snippet 43 started.
+<-><->
+      
+l.1359 ...ly translate English to Chinese\footnote
+                                                  {follow the
+Not a real error.
+
+! Preview: Snippet 43 ended.(550688+0x262144).
+<-><->
+      
+l.1361   Chinese}
+                 . Only the preceding stages complete,  it can proceed with
+Not a real error.
+
+[43]
+
+LaTeX Warning: Reference `fig:viewmt' on page 6 undefined on input line 1362.
+
+! Preview: Snippet 44 started.
+<-><->
+      
+l.1362 ...:viewmt}. We use bogus loop to consume $
+                                                  t \  \mu s$ on CPU. For ea...
+
+Not a real error.
+
+! Preview: Snippet 44 ended.(403098+127431x1168124).
+<-><->
+      
+l.1362 ...e use bogus loop to consume $t \  \mu s$
+                                                   on CPU. For each $t$, we ...
+
+Not a real error.
+
+[44]
+! Preview: Snippet 45 started.
+<-><->
+      
+l.1362 ... consume $t \  \mu s$ on CPU. For each $
+                                                  t$, we iterate 500
+Not a real error.
+
+! Preview: Snippet 45 ended.(403098+0x236658).
+<-><->
+      
+l.1362 ...onsume $t \  \mu s$ on CPU. For each $t$
+                                                  , we iterate 500
+Not a real error.
+
+[45]
+! Preview: Snippet 46 started.
+<-><->
+      
+l.1364 grained-granularity cases (20$
+                                     \mu s$, 50$\mu s$, 100$\mu s$), we can ...
+
+Not a real error.
+
+! Preview: Snippet 46 ended.(282168+127431x702086).
+<-><->
+      
+l.1364 grained-granularity cases (20$\mu s$
+                                           , 50$\mu s$, 100$\mu s$), we can ...
+
+Not a real error.
+
+[46]
+! Preview: Snippet 47 started.
+<-><->
+      
+l.1364 grained-granularity cases (20$\mu s$, 50$
+                                                \mu s$, 100$\mu s$), we can ...
+
+Not a real error.
+
+! Preview: Snippet 47 ended.(282168+127431x702086).
+<-><->
+      
+l.1364 ...-granularity cases (20$\mu s$, 50$\mu s$
+                                                  , 100$\mu s$), we can obta...
+
+Not a real error.
+
+[47]
+! Preview: Snippet 48 started.
+<-><->
+      
+l.1364 ...larity cases (20$\mu s$, 50$\mu s$, 100$
+                                                  \mu s$), we can obtain ideal
+Not a real error.
+
+! Preview: Snippet 48 ended.(282168+127431x702086).
+<-><->
+      
+l.1364 ... cases (20$\mu s$, 50$\mu s$, 100$\mu s$
+                                                  ), we can obtain ideal
+Not a real error.
+
+[48]
+! Preview: Snippet 49 started.
+<-><->
+      
+l.1366 ... program can output one instance every $
+                                                  t\  \mu
+Not a real error.
+
+! Preview: Snippet 49 ended.(403098+127431x1168124).
+<-><->
+      
+l.1367 s$
+         . The bigger $t$, the speedup is easier to maintain. 100 $\mu s$ ca...
+
+Not a real error.
+
+[49]
+! Preview: Snippet 50 started.
+<-><->
+      
+l.1367 s$. The bigger $
+                       t$, the speedup is easier to maintain. 100 $\mu s$ ca...
+
+Not a real error.
+
+! Preview: Snippet 50 ended.(403098+0x236658).
+<-><->
+      
+l.1367 s$. The bigger $t$
+                         , the speedup is easier to maintain. 100 $\mu s$ ca...
+
+Not a real error.
+
+[50]
+! Preview: Snippet 51 started.
+<-><->
+      
+l.1367 ...the speedup is easier to maintain. 100 $
+                                                  \mu s$ case ends up 54 $\m...
+
+Not a real error.
+
+! Preview: Snippet 51 ended.(282168+127431x702086).
+<-><->
+      
+l.1367 ...eedup is easier to maintain. 100 $\mu s$
+                                                   case ends up 54 $\mu s$ f...
+
+Not a real error.
+
+[51]
+! Preview: Snippet 52 started.
+<-><->
+      
+l.1367 ... maintain. 100 $\mu s$ case ends up 54 $
+                                                  \mu s$ for each instance f...
+
+Not a real error.
+
+! Preview: Snippet 52 ended.(282168+127431x702086).
+<-><->
+      
+l.1367 ...ain. 100 $\mu s$ case ends up 54 $\mu s$
+                                                   for each instance for 8 c...
+
+Not a real error.
+
+[52]
+! Preview: Snippet 53 started.
+<-><->
+      
+l.1367 ... s$ for each instance for 8 cores. 50  $
+                                                  \mu s$ case
+Not a real error.
+
+! Preview: Snippet 53 ended.(282168+127431x702086).
+<-><->
+      
+l.1367 ...r each instance for 8 cores. 50  $\mu s$
+                                                   case
+Not a real error.
+
+[53]
+! Preview: Snippet 54 started.
+<-><->
+      
+l.1369 $
+        \mu s$ case has similiar trend as first two cases. 5 $\mu s$ case is
+Not a real error.
+
+! Preview: Snippet 54 ended.(282168+127431x702086).
+<-><->
+      
+l.1369 $\mu s$
+               case has similiar trend as first two cases. 5 $\mu s$ case is
+Not a real error.
+
+[54]
+! Preview: Snippet 55 started.
+<-><->
+      
+l.1369 ...s similiar trend as first two cases. 5 $
+                                                  \mu s$ case is
+Not a real error.
+
+! Preview: Snippet 55 ended.(282168+127431x702086).
+<-><->
+      
+l.1369 ...liar trend as first two cases. 5 $\mu s$
+                                                   case is
+Not a real error.
+
+[55]
+! Preview: Snippet 56 started.
+<-><->
+      
+l.1372 $
+        \mu s$ in default. We thought that the very fine granular tasks cont...
+
+Not a real error.
+
+! Preview: Snippet 56 ended.(282168+127431x702086).
+<-><->
+      
+l.1372 $\mu s$
+               in default. We thought that the very fine granular tasks cont...
+
+Not a real error.
+
+[56]
+! Preview: Snippet 57 started.
+<-><->
+      
+l.1375 \section
+               {Related work}
+Not a real error.
+
+! Preview: Snippet 57 ended.(435811+8188x16515072).
+<-><->
+      
+l.1375 \section{Related work}
+                             
+Not a real error.
+
+[57
+
+]
+
+LaTeX Warning: Citation `Boehm05' on page 7 undefined on input line 1385.
+
+
+LaTeX Warning: Citation `Loveman77' on page 7 undefined on input line 1403.
+
+! Preview: Snippet 58 started.
+<-><->
+      
+l.1410 \textit{task}\footnote
+                             {task is first class function in sequoia, which
+Not a real error.
+
+! Preview: Snippet 58 ended.(550688+0x262144).
+<-><->
+      
+l.1411   is like a side-effect-free function in C}
+                                                   into a
+Not a real error.
+
+[58]
+! Preview: Snippet 59 started.
+<-><->
+      
+l.1432 \section
+               {Discussion and Future work}
+Not a real error.
+
+! Preview: Snippet 59 ended.(435811+8188x16515072).
+<-><->
+      
+l.1432 \section{Discussion and Future work}
+                                           
+Not a real error.
+
+[59
+
+]
+No file _region_.bbl.
+
+** Conference Paper **
+Before submitting the final camera ready copy, remember to:
+
+ 1. Manually equalize the lengths of two columns on the last page
+ of your paper;
+
+ 2. Ensure that any PostScript and/or PDF output post-processing
+ uses only Type 1 fonts and that every step in the generation
+ process uses the appropriate paper size.
+
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 715 strings out of 93118
+ 9259 string characters out of 1152832
+ 88492 words of memory out of 1000000
+ 5239 multiletter control sequences out of 10000+50000
+ 38035 words of font info for 76 fonts, out of 500000 for 2000
+ 583 hyphenation exceptions out of 1000
+ 23i,10n,22p,795b,392s stack positions out of 1500i,500n,5000p,200000b,5000s
+PDF statistics:
+ 277 PDF objects out of 300000
+ 0 named destinations out of 131072
+ 26 words of extra memory for PDF output out of 65536
+</opt/local/share/texmf-dist/fonts/type1/bluesky/cm/cmmi10.pfb></opt/local/sh
+are/texmf-dist/fonts/type1/bluesky/cm/cmtt12.pfb>{/opt/local/share/texmf-dist/f
+onts/enc/dvips/psnfss/8r.enc}</opt/local/share/texmf-dist/fonts/type1/urw/times
+/utmb8a.pfb></opt/local/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt
+/local/share/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></opt/local/share/te
+xmf-dist/fonts/type1/urw/times/utmri8a.pfb></opt/local/share/texmf-dist/fonts/t
+ype1/urw/times/utmr8a.pfb>
+Output written on _region_.pdf (59 pages, 245511 bytes).

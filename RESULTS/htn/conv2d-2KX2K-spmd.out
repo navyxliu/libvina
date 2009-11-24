@@ -1,0 +1,24 @@
+[xliu@harpertown libvina]$ sudo ./conv2d 
+2-dimentional Convolution test program
+IMG_TEST_SIZE_M=2048
+IMG_TEST_SIZE_N=2048
+IMG_TEST_GRANULARITY= 512
+IMG_TEST_K=   2
+thread: LIBSPMD
+see Makefile TEST_INFO to set parameters
+DIM_A=2048, DIM_B=2048, KEREL_A= 5 KERNEL_B= 5
+STD gflop=0.017879
+_pred = 0, SubTask::_pred=0
+MT gflop=0.130711
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%	
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7               STD conv2d    1 11729387usec            88.0%
+# 8                       MT    1  1604425usec            12.0%
+

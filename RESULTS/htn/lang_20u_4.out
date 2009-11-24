@@ -1,0 +1,17 @@
+
+current cpus:  0-7
+throughput is 14650 usec per case
+current cpus:  0-6
+throughput is 17468 usec per case
+current cpus:  0-5
+throughput is 18967 usec per case
+current cpus:  0-4
+throughput is 22542 usec per case
+current cpus:  0-3
+throughput is 28690 usec per case
+current cpus:  0-2
+throughput is 37094 usec per case
+current cpus:  0-1
+throughput is 52532 usec per case
+run in sequence:
+throughput is 80992 usec per case

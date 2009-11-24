@@ -1,0 +1,240 @@
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+ST gflop=1.071681
+ST SSE gflop=7.070580
+MT gflop=1.633008
+MT SSE gflop=7.512125
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  2003845usec            51.3%
+# 2                   ST SSE    1   303721usec            7.8%
+# 3          mulmat_parallel    1  1315048usec            33.6%
+# 4      mulmat_parallel SSE    1   285869usec            7.3%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+ST gflop=1.071019
+ST SSE gflop=7.072885
+MT gflop=1.482948
+MT SSE gflop=7.936565
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  2005084usec            49.8%
+# 2                   ST SSE    1   303622usec            7.5%
+# 3          mulmat_parallel    1  1448118usec            36.0%
+# 4      mulmat_parallel SSE    1   270581usec            6.7%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.446517
+ST SSE gflop=4.375525
+MT gflop=0.252825
+MT SSE gflop=2.331969
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1 307802520usec            32.7%
+# 2                   ST SSE    1 31410853usec            3.3%
+# 3          mulmat_parallel    1 543613582usec            57.7%
+# 4      mulmat_parallel SSE    1 58936877usec            6.3%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+ST gflop=1.072276
+ST SSE gflop=7.075053
+MT gflop=1.616313
+MT SSE gflop=7.782796
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  2002733usec            51.2%
+# 2                   ST SSE    1   303529usec            7.8%
+# 3          mulmat_parallel    1  1328631usec            34.0%
+# 4      mulmat_parallel SSE    1   275927usec            7.1%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY=  64
+  MM_TEST_K=  32
+  see Makefile TEST_INFO to set parameters
+ST gflop=1.026408
+ST SSE gflop=6.789373
+MT gflop=1.624890
+MT SSE gflop=6.278389
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1 16737850usec            51.4%
+# 2                   ST SSE    1  2530406usec            7.8%
+# 3          mulmat_parallel    1 10572945usec            32.5%
+# 4      mulmat_parallel SSE    1  2736350usec            8.4%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+ST gflop=1.075609
+ST SSE gflop=6.987664
+MT gflop=1.524645
+MT SSE gflop=8.390673
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  1996528usec            50.3%
+# 2                   ST SSE    1   307325usec            7.7%
+# 3          mulmat_parallel    1  1408514usec            35.5%
+# 4      mulmat_parallel SSE    1   255937usec            6.4%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.523661
+ST SSE gflop=6.035461
+MT gflop=0.451193
+MT SSE gflop=2.843082
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1 32807223usec            41.1%
+# 2                   ST SSE    1  2846488usec            3.6%
+# 3          mulmat_parallel    1 38076511usec            47.7%
+# 4      mulmat_parallel SSE    1  6042692usec            7.6%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+ST gflop=1.079773
+ST SSE gflop=7.130636
+MT gflop=1.753811
+MT SSE gflop=10.416435
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  1,988,828usec            53.5%
+# 2                   ST SSE    1   301163usec            8.1%
+# 3          mulmat_parallel    1  1,224,467usec            32.9%
+# 4      mulmat_parallel SSE    1   206163usec            5.5%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.529302
+ST SSE gflop=6.217814
+MT gflop=1.686463
+MT SSE gflop=11.162841
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1 32457566usec            69.1%
+# 2                   ST SSE    1  2763008usec            5.9%
+# 3          mulmat_parallel    1 10186926usec            21.7%
+# 4      mulmat_parallel SSE    1  1539023usec            3.3%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY= 128
+  MM_TEST_K=  32
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.342298
+ST SSE gflop=2.681205
+MT gflop=0.840506
+MT SSE gflop=2.115662
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1 401518929usec            58.9%
+# 2                   ST SSE    1 51260137usec            7.5%
+# 3          mulmat_parallel    1 163519326usec            24.0%
+# 4      mulmat_parallel SSE    1 64962633usec            9.5%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.536056
+ST SSE gflop=6.148632
+MT gflop=0.943971
+MT SSE gflop=6.080268
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  4006078usec            57.4%
+# 2                   ST SSE    1   349262usec            5.0%
+# 3          mulmat_parallel    1  2274947usec            32.6%
+# 4      mulmat_parallel SSE    1   353189usec            5.1%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   4
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.539486
+ST SSE gflop=6.340502
+MT gflop=1.752067
+MT SSE gflop=11.765035
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  3980609usec            69.5%
+# 2                   ST SSE    1   338693usec            5.9%
+# 3          mulmat_parallel    1  1225686usec            21.4%
+# 4      mulmat_parallel SSE    1   182531usec            3.2%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=2048
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=   8
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.334324
+ST SSE gflop=2.435159
+MT gflop=0.926859
+MT SSE gflop=7.177608
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1 51386857usec            64.7%
+# 2                   ST SSE    1  7054926usec            8.9%
+# 3          mulmat_parallel    1 18535577usec            23.4%
+# 4      mulmat_parallel SSE    1  2393537usec            3.0%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY= 256
+  MM_TEST_K=  16
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.191423
+ST SSE gflop=1.420253
+MT gflop=0.539778
+MT SSE gflop=3.559135
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1 717984732usec            64.8%
+# 2                   ST SSE    1 96770768usec            8.7%
+# 3          mulmat_parallel    1 254621040usec            23.0%
+# 4      mulmat_parallel SSE    1 38615827usec            3.5%
+Matrix Multiplication teest program
+  MM_TEST_SIZE_N=1024
+  MM_TEST_GRANULARITY= 512
+  MM_TEST_K=   2
+  see Makefile TEST_INFO to set parameters
+ST gflop=0.531862
+ST SSE gflop=6.342468
+MT gflop=0.923067
+MT SSE gflop=6.342843
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    1  4037670usec            57.3%
+# 2                   ST SSE    1   338588usec            4.8%
+# 3          mulmat_parallel    1  2326465usec            33.0%
+# 4      mulmat_parallel SSE    1   338568usec            4.8%

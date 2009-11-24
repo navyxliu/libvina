@@ -1,0 +1,52 @@
+[harpertown libvina]$ sudo ./dot_prod
+Vector DotProduction program
+VEC_TEST_SIZE_N=128000000
+VEC_TEST_GRANULARITY=64000000
+VEC_TEST_K=2
+thread: libspmdSee Makefile TEST_INFO to set parameters
+elapsed=333212
+STD gflop=0.768280
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+elapsed=196253
+MT gflop=1.304439
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7                      STD    1   333212usec            62.9%
+# 8                       ST    0        0usec            0.0%
+
+
+[xliu@harpertown libvina]$ sudo ./dot_prod
+Vector DotProduction program
+VEC_TEST_SIZE_N=32000000
+VEC_TEST_GRANULARITY=16000000
+VEC_TEST_K=2
+thread: libspmdSee Makefile TEST_INFO to set parameters
+elapsed=150091
+STD gflop=0.426408
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+elapsed=49581
+MT gflop=1.290817
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation    0                           
+# 7                      STD    1   150091usec            75.2%
+# 8                       ST    0        0usec            0.0%
+# 9                       MT    1    49581usec            24.8%
+

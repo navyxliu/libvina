@@ -1,0 +1,17 @@
+[xliu@harpertown libvina]$ sudo ./conv2d
+2-dimentional Convolution test program
+IMG_TEST_SIZE_M=2048
+IMG_TEST_SIZE_N=2048
+IMG_TEST_GRANULARITY= 512
+IMG_TEST_K=   4
+thread: LIBSPMD	
+see Makefile TEST_INFO to set parameters
+MT gflop=0.062747
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+Profile info
+======================================================================
+	# 0               STD conv2d    0        0usec            0.0%
+	# 1                       MT    1 167111970usec            100.0%
+

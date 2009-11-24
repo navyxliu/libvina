@@ -1,0 +1,102 @@
+root@siv-desktop:~/source/libvina# ./mat_mul 
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=1024
+  MM_TEST_K=   4
+thread: LIBSPMD
+see Makefile TEST_INFO to set parameters
+STD gflop=21.136016
+x_v.data() = 0x86a26e0, y_v.data() = 0x46a26e0 result_v = 0x6a26e0
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=1024
+MT SSE gflop=69.314123
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+Profile info
+======================================================================
+# 0        #frame kernel seq    0        0usec            0.0%
+# 1        #frame kernel par    0        0usec            0.0%
+# 2          #frame mem cost    0        0usec            0.0%
+# 3       #frame thread cost    0        0usec            0.0%
+# 4 #thread creation counters    0                           
+# 5 #thread pool enqueue counters    0                           
+# 6 #libspmd thread creation   64                           
+# 7             STD multiply    1  6502595usec            76.6%
+# 8          Single-threaded    0        0usec            0.0%
+# 9                   ST SSE    0        0usec            0.0%
+#10          mulmat_parallel    0        0usec            0.0%
+#11      mulmat_parallel SSE    1  1982842usec            23.4%
+#12          mulmat_smallset    0        0usec            0.0%
+
+
+root@siv-desktop:~/source/libvina# ./mat_mul
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=1024
+  MM_TEST_K=   4
+thread: LIBSPMD
+see Makefile TEST_INFO to set parameters
+x_v.data() = 0x86a22c0, y_v.data() = 0x46a22c0 result_v = 0x6a22c0
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=1024
+MT SSE gflop=75.834580
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    0        0usec            0.0%
+# 2                   ST SSE    0        0usec            0.0%
+# 3          mulmat_parallel    0        0usec            0.0%
+# 4      mulmat_parallel SSE    1  1812352usec            100.0%
+# 5          mulmat_smallset    0        0usec            0.0%
+
+root@siv-desktop:~/source/libvina# ./mat_mul
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=1024
+  MM_TEST_K=   4
+thread: LIBSPMD
+see Makefile TEST_INFO to set parameters
+x_v.data() = 0x86a22c0, y_v.data() = 0x46a22c0 result_v = 0x6a22c0
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=1024
+MT SSE gflop=76.324021
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    0        0usec            0.0%
+# 2                   ST SSE    0        0usec            0.0%
+# 3          mulmat_parallel    0        0usec            0.0%
+# 4      mulmat_parallel SSE    1  1800730usec            100.0%
+# 5          mulmat_smallset    0        0usec            0.0%
+
+
+root@siv-desktop:~/source/libvina# ./mat_mul
+Matrix Multiplication test program
+  MM_TEST_SIZE_N=4096
+  MM_TEST_GRANULARITY=1024
+  MM_TEST_K=   4
+thread: LIBSPMD
+see Makefile TEST_INFO to set parameters
+x_v.data() = 0x86a22c0, y_v.data() = 0x46a22c0 result_v = 0x6a22c0
+_pred=0 SubTask::_pred=1
+SubTask::RESULT::WRITER_SIZE_X=1024
+MT SSE gflop=76.491980
+time_on_fly =  0
+time_in_reduce =  0
+time_in_wait =  0
+Profile info
+======================================================================
+# 0             STD multiply    0        0usec            0.0%
+# 1          Single-threaded    0        0usec            0.0%
+# 2                   ST SSE    0        0usec            0.0%
+# 3          mulmat_parallel    0        0usec            0.0%
+# 4      mulmat_parallel SSE    1  1796776usec            100.0%
+# 5          mulmat_smallset    0        0usec            0.0%
+
