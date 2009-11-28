@@ -12,7 +12,6 @@
 #include <tr1/type_traits>
 #include <boost/shared_ptr.hpp>
 
-#include "matrix2.hpp"
 #include "trait.hpp"
 #include "profiler.hpp"
 
@@ -29,7 +28,7 @@
   __builtin_expect(!!(x), 0)
 
 namespace vina {
-  /// a very simple random number generator
+  // a very simple random number generator
   template<class T>
   struct NumRandGen {
     explicit NumRandGen(unsigned s){ seed(s); } 
@@ -48,12 +47,14 @@ namespace vina {
 
     float operator() () { return (double)(rand() - RAND_MAX/2) / (double)(RAND_MAX); }
   };
-  ///FIXME: Need a thread-safe log stream
+
+  //FIXME: Need a thread-safe log stream
   class Log : public std::ostream{
 
   };
 
-  ///visualize callsites
+  // Visualize callsites using DOT language.
+  // this class is NOT thread-safe and re-entranable.
   class CallsiteOutput {
     struct _dummy_deleter {
       void operator()(void const *) const{}
@@ -83,19 +84,25 @@ namespace vina {
     void enterMT();
     void leaveMT();
 
-    // call after callsite(D) to link dependences
-    // side-effect: clear the dependent cache
-    void depend();
+    // declare the last pushed node is a dependent. 
+    inline void depend(){
+      dep_.push_back(temp_);
+    }
+    // link the last node to all dependences.
+    // side-effect: clear the dependence cache
+    void linkdep();
 
     void callsite(const std::string& target);
-    // same as callsite, except put node into dependent cache
-    void callsiteD(const std::string& target);
+    //new node , do NOT draw edge from stack top to new node
+    void callsiteN(const std::string& target);
 
     // same as callsite, except parenthesize the node in a standalone
     // cluster, work around the dot, who mistakenly puts root node
     // in first thread region.
-    void root(const std::string& root);
-
+    // rootD is same as root, in addition, put itself on dependent list 
+    void cluster(const std::string& root);
+    
+    //factor method:
     static CallsiteOutput createFileOutput(const char * fname) {
       return CallsiteOutput(boost::shared_ptr<std::ostream>
 			    (new std::ofstream(fname)));
@@ -155,7 +162,9 @@ namespace vina {
 
   void set_normal(int pid);
 #endif
-
+//FIXME: move this function to matrix-related file, I don't have dependence to matrix2.hpp file
+#if 0
+//#include "matrix2.hpp"
   template<class T, int M, int N>
   inline void dump_m(const Matrix<T, M, N>& m, const std::string& verbose = "")
   {
@@ -168,7 +177,7 @@ namespace vina {
       for (int j=0, J=N; j != J; ++j)
 	std::cout << *iter++ << " ";
   }
-  
+#endif 
   template <class T>
   struct Identity{
     typedef T type;

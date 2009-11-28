@@ -1,11 +1,10 @@
 //author: ydf
-
 ///HISTORY:
 // 2009.7.15  fix a bug when buffer size smaller than thread number, dead lock happen.
 
 #ifndef __BST_THREAD_POOL__
 #define __BST_THREAD_POOL__
-
+#include <boost/function.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>

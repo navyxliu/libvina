@@ -8,8 +8,8 @@ SYSTEM := $(shell uname -s)
 
 #compiler conf.
 CXX=g++
-CFLAGS=-g -std=c++0x $(TEST_INFO) $(OPT) 
-OPT= -O3 -msse
+CFLAGS=-g -std=c++0x $(TEST_INFO) $(OPT) -I.
+OPT= -O3 -msse2
 #Linux system support additional features, such as
 # 1.PMC counter
 # 2.high-resolution timer
@@ -35,8 +35,8 @@ MKLLIB_P=-L$(MKLPATH)/lib/em64t  \
 	-liomp5 -lpthread
 
 #libSPMD lib
-#SPMDPATH=./libSPMD
-#SPMDLIB=-L$(SPMDPATH) -lSPMD
+SPMDPATH=./libSPMD
+SPMDLIB=-L$(SPMDPATH) -lSPMD
 
 #boost::thread lib
 ifeq ($(SYSTEM), Linux)
@@ -100,7 +100,7 @@ saxpy: saxpy.o $(AUX_OBJS)
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 
 conv2d: conv2d.o $(AUX_OBJS)
-	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) imgsupport.o -lpng
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS) 
 
 tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 	$(CXX) -o $@ $^ $(LDFLAGS) ./libSPMD/libSPMD.a 
@@ -109,7 +109,7 @@ tpbench: tpbench.o $(AUX_OBJS) ./libSPMD/libSPMD.a
 test_cl: test_cl.o
 	$(CXX) -o $@ $^ $(LDFLAGS) toolkits.o -framework OpenCL -I./inc
 
-$(OBJS):%.o:%.cc frame.hpp Makefile PARAMS
+$(OBJS):%.o:%.cc Makefile PARAMS
 	$(CXX) -o $@ -c $< $(CFLAGS)
 
 
@@ -117,7 +117,8 @@ $(OBJS):%.o:%.cc frame.hpp Makefile PARAMS
 ###################################################
 #                   TEST                          #
 ###################################################
-TEST_SET = test_profiler test_toolkits test_trait test_img test_seq
+#TEST_SET = test_profiler test_toolkits test_trait test_img test_seq
+TEST_SET = test_seq
 TEST_OBJS = $(addsuffix .o, $(TEST_SET))
 
 test: $(TEST_SET)
@@ -127,8 +128,8 @@ test: $(TEST_SET)
 		./$$i;\
 	done
 
-$(TEST_SET):%:%.cc $(AUX_OBJS)
-	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $(AUX_OBJS)  $<
+$(TEST_SET):%:%.cc #$(AUX_OBJS)
+	$(CXX) -o $@  $(CFLAGS) $(LDFLAGS) $< #$(AUX_OBJS)
 
 
 ###################################################
