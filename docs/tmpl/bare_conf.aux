@@ -35,7 +35,7 @@
 \citation{imagine}
 \citation{tempmetaprog}
 \@LN@col{1}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces View classes in libvina}}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces View classes in libvina: A view represents subset of underlying constrainers. A ReadView is read-only. A WriteView can write back as well. Edges are conversions. A concrete line is implicit conversion from head to tail, while a dashed line represents a conversion needs explicit function call. ViewMTs are used for multithreaded programs. A signal in ViewMT is a handler of dependence.}}{4}}
 \newlabel{fig:view}{{3}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {III-B}}Buiding block class}{4}}
 \@LN@col{2}
@@ -43,7 +43,6 @@
 \newlabel{tbl:bb}{{I}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {III-C}}TF class}{4}}
 \citation{moderncpp}
-\citation{cpplambda}
 \citation{opencl}
 \citation{merge}
 \@LN@col{1}
@@ -51,12 +50,12 @@
 \newlabel{sec:adaption}{{IV}{5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-A}}Function Wrapper}{5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-B}}Adaption for TF\_hierarchy}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Instantiation process of TF\_hierarchy}}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Instantiation process of TF\_hierarchy: The predicate is a template class, which is evaluted using TASK' parameters.}}{5}}
 \newlabel{fig:hierarchy}{{4}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-C}}Adaption for TF\_pipeline}{5}}
 \@LN@col{2}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pipelining functions using ViewMTs}}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pipeline process using ViewMTs: Access of a ViewMT is blocking until it is signaled. A stage sets its signal of WriteViewMT after processing.}}{5}}
 \newlabel{fig:viewmt}{{5}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-C}}Adaption for TF\_pipeline}{5}}
 \@writefile{toc}{\contentsline {section}{\numberline {V}Implementation details}{5}}
 \newlabel{sec:details}{{V}{5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-A}}buiding block}{5}}
@@ -71,7 +70,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {VI-A}}Methodology}{6}}
 \newlabel{sectn:method}{{\unhbox \voidb@x \hbox {VI-A}}{6}}
 \@LN@col{2}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Speedup on Harpertown}}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Speedup of hierarchical transformation on Harpertown: We utilize TF\_hierarchy class to divide tasks until they meet LLC.}}{6}}
 \newlabel{fig:spdx86}{{6}{6}}
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Experimental platforms}}{6}}
 \newlabel{tbl:mach}{{II}{6}}
@@ -79,14 +78,14 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\unhbox \voidb@x \hbox {VI-B}1}Speedup of Hierarchical transformation on CPU}{6}}
 \citation{Fatahalian08}
 \@LN@col{1}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Speedup Comparing GPU with CPU}}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Speedup Comparing GPU with CPU: We exploit the same set of template classes to transform tasks for different mulitcores}}{7}}
 \newlabel{fig:spdgpu}{{7}{7}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\unhbox \voidb@x \hbox {VI-B}2}Speedup of SPMD transformation on GPU}{7}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\unhbox \voidb@x \hbox {VI-B}3}Comparison between different multicores}{7}}
 \@LN@col{2}
 \@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Comparison of sgemm on CPU and GPU}}{7}}
 \newlabel{tbl:sgemm}{{III}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Pipeline Processing for Psuedo Language Translation}}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Pipeline Processing for Psuedo Language Translation: improvement of 4-stage pipeline on CPU.}}{7}}
 \newlabel{fig:pipe}{{8}{7}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\unhbox \voidb@x \hbox {VI-B}4}Pipeline Transformation for CPU}{7}}
 \citation{openmp}
@@ -118,11 +117,10 @@
 \bibcite{imagine}{15}
 \bibcite{tempmetaprog}{16}
 \bibcite{moderncpp}{17}
-\bibcite{cpplambda}{18}
-\bibcite{opencl}{19}
-\bibcite{vartemp}{20}
-\bibcite{Fatahalian08}{21}
-\bibcite{sequoia-compiler}{22}
+\bibcite{opencl}{18}
+\bibcite{vartemp}{19}
+\bibcite{Fatahalian08}{20}
+\bibcite{sequoia-compiler}{21}
 \@LN@col{1}
 \@writefile{toc}{\contentsline {section}{References}{9}}
 \@LN@col{2}

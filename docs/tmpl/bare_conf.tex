@@ -75,26 +75,27 @@ u_int32_t, FILE}}
 % use a multiple column layout for up to three different
 % affiliations
 \author{
-\IEEEauthorblockN{Xin Liu, Daqiang Zhang, Jingyu Zhou, Minyi Guo, Yao Shen}
+\IEEEauthorblockN{Xin Liu, Minyi Guo, Daqiang Zhang, Jingyu Zhou, Yao Shen}
 \IEEEauthorblockA{Department of Computer Science\\
 Shanghai Jiao Tong University\\
 No. 800, Dongchuan Road, Shanghai, P.R.China\\
-\{navyliu, zhangdq\}@sjtu.edu.cn, \{guo-my, zhou-jy, shen\_yao\}@cs.sjtu.edu.cn}
+navyliu@sjtu.edu.cn}
 }
-
+%\{guo-my\}@cs.sjtu.edu.cn,
+%\{zhangdq\}@sjtu.edu.cn, \{zhou-jy, shen\_yao\}@cs.sjtu.edu.cn
 % make the title area
 \maketitle
 
 
 \begin{abstract}
-In advent of multicore era, plain C/C++ programming language can not
+In advent of multicore era, plain C/C++ programming languages can not
 fully reflect computer architectures. Source-to-source
-transformation helps tailor programs close to contemporary
+transformations help tailor programs close to contemporary
 hardwares. In this paper, we propose template-based approach to perform 
-transformation for programs with rich static information.
+transformations for programs with rich static information.
 We present C++ template metaprogramming techniques to conduct
 parallelization for specific
-multicores. Parallel pattern and execution model are provided in the form of
+multicores. Parallel patterns and executions are provided in the form of
 template classes and oraganized as library. We implement a prototype
 template library -- libvina, to demonstrate the idea. It enables
 programmers to utilize new architectural
@@ -103,9 +104,9 @@ Finally, we evaluate our template library on
 commodity x86 and GPU platforms by a variety of typical procedures
 in multimedia and scientific fields. In experiments, we show that our
 approach is flexible to support multiple parallel models and capable
-of transforming sequential code to parallel equivalence  according to
+of transforming sequential codes to parallel equivalences according to
 specific multicore architectures. Moreover, the cost of programmability using our
-approach to adapt to more than one multicore platform is manageable.
+approach to adapt to more than one multicore is manageable.
 \end{abstract}
 
 % For peerreview papers, this IEEEtran command inserts a page break and
