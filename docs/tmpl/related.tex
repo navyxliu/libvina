@@ -4,8 +4,8 @@
 Programming models to support parallel programs for muticores can be
 broadly categorized into directions:
 \begin{enumerate}
-\item providing library to support programming for concurrency
-\item extending language constructs to extend parallel semantics
+\item providing library to support programming for parallelism.
+\item extending language constructs to extend parallel semantics.
 \end{enumerate}
 
 Library is a common method to extend language capability
@@ -16,13 +16,13 @@ of pthread are far away from expressing parallelism naturally. The same problem 
 libraries for GPUs. Libvina is a metaprogramming library instead of
 system library. We provides high-level parallel patterns
 and executions as template classes. Implementations take
-responsibility for binding tasks on specific muticore platforms. C++
+responsibility for binding tasks to threads on specific platforms. C++
 community intends to develop parallel libraries while bearing generic programming in mind. TBB  has a plenty of
 containers and building blocks to support loop-parallism and
 task-level parallelism.  Inspired by TBB's approach, we enable the
 same effects in static domain. We aim at utilizing static information
 to perform source
-transformations for different architectures at compile time. Besides, template-based approach we propose is orthogonal to runtime parallel
+transformations for different architectures. Besides, template-based approach we propose is orthogonal to runtime parallel
 library TBB. We only explore parallelism which can be resolved by compilers, developers feel free to deploy TBB to
 farther improve programs.
 
@@ -73,7 +73,7 @@ different architectures. Merge~\cite{merge} is a map/reduce programming
 framework for heterogeneous multicore 
 systems in the forms of task and variant. It relies on hierarchical division of task and predicate-based
 dispatch system to assign subtasks on matched multicore target at
-runtime. Each approach mentioned above can complete a kind of parallel pattern.
+runtime. Each approach mentioned above can complete one kind of parallel pattern.
 We demonstrate our template-based approach can achieve the same
 functionalities using template metaprogramming if parameters are
 available at compile time. 
@@ -101,3 +101,4 @@ portability for mulitcores.
 %invest a compiler given the fact that template library can also
 %achieve the same functionalities.
 
+%end of section.

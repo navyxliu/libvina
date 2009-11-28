@@ -111,9 +111,6 @@ A.~Alexandrescu, \emph{Modern C++ design: generic programming and design
   patterns applied}.\hskip 1em plus 0.5em minus 0.4em\relax Boston, MA, USA:
   Addison-Wesley Longman Publishing Co., Inc., 2001.
 
-\bibitem{cpplambda}
-D.~Vandevoorde, ``So/iec n2927, new wording for c++0x lambdas,'' 2009.
-
 \bibitem{opencl}
 A.~Munshi, ``The opencl specification version 1.0,'' 2009.
 
