@@ -1,13 +1,39 @@
 \RequirePackage{lineno}
 \documentclass[conference]{IEEEtran}
-
+%\documentclass[draft, onecolumn]{IEEEtran}
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
-% ===============================================================
+% =============+s\\==================================================
 %\usepackage{subfigure, graphicx, booktabs}
 %\usepackage{algpseudocode, algorithmicx, algorithm}
 \usepackage{multirow, amsmath, amsthm, listings, booktabs}
+
+%Code environment
+\newcommand{\code}[1]{{\tt#1}}
+\newcommand\inputsrc[1]{{\tt \lstinputlisting[]{source/#1} }}
+\long\def\comment#1{}
+
+\def\ssp{\def\baselinestretch{0.99}\large\normalsize}
+
+%\addtolength{\columnsep}{-3mm}
+
+% setup listing parameters
+%\lstloadlanguages{c++,c}
+\lstset{language=c++,basicstyle=\scriptsize}
+\lstset{numbers=left,numberstyle=\tiny,stepnumber=1}
+%%\lstset{labelstep=1}
+%\lstset{stepnumber=1}
+%\lstset{stringspaces=false}
+\lstset{stringstyle=\tt}
+%\lstset{singlecomment={/*}{*/}}
+%\lstset{commentline=/*}
+\lstset{commentstyle=\it}
+\lstset{morekeywords={new, exit, entry, Function, At, pid_t, u_int,
+u_int32_t, FILE}} 
+%%\lstset{indent=6mm}
+\lstset{xleftmargin=4mm}
+
 % *** GRAPHICS RELATED PACKAGES ***
 %
 \ifCLASSINFOpdf
@@ -64,15 +90,17 @@ No. 800, Dongchuan Road, Shanghai, P.R.China\\
 In advent of multicore era, plain C/C++ programming language can not
 fully reflect computer architectures. Source-to-source
 transformation helps tailor programs close to contemporary
-hardwares. In this paper, we propose a template metaprogramming approach to perform 
+hardwares. In this paper, we propose template-based approach to perform 
 transformation for programs with rich static information.
-C++ template metaprogramming techniques we present can conduct
-parallelization and memory hierarchical optimization for specific multicores. They enable
+We present C++ template metaprogramming techniques to conduct
+parallelization for specific
+multicores. Parallel pattern and execution model are provided in the form of
+template classes and oraganized as library. We implement a prototype
+template library -- libvina, to demonstrate the idea. It enables
 programmers to utilize new architectural
-features and parallel patterns by extending template library. 
-We implement a prototype template library -- libvina
-to demonstrate the idea. Finally, We evaluate our template library on
-commodity x86 and GPU platforms by a variety of typical applications
+features and add parallelization strategies by extending template library. 
+Finally, we evaluate our template library on
+commodity x86 and GPU platforms by a variety of typical procedures
 in multimedia and scientific fields. In experiments, we show that our
 approach is flexible to support multiple parallel models and capable
 of transforming sequential code to parallel equivalence  according to
@@ -88,13 +116,14 @@ approach to adapt to more than one multicore platform is manageable.
 \input{intro.tex}
 %\input{background.tex}
 \input{method.tex}
+\input{library.tex}
+\input{details.tex}
 \input{evaluation.tex}
 \input{related.tex}
 \input{conclusion.tex}
 %\input{acknowledge.tex}
-
 \bibliographystyle{ieeetran}
-\bibliography{instructions}
+\bibliography{../libvina}
 
 
 

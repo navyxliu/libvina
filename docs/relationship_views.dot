@@ -1,9 +1,9 @@
 digraph G_VIEWS {
 
 	edge [fontsize=8, fontname="Times-Italic"]
-	label="Relationship of entities and views"
+	//label="Relationship of entities and views"
 
-        Entity[label="Vector or Matrix",
+        Entity[label="Vector or Matrix, etc.",
 	       shape=box];
 	
 	{
@@ -12,15 +12,15 @@ digraph G_VIEWS {
 		ReadView;
 		WriteView;
 	}
-	Entity -> ReadView[label="N>=SZ"];
-	Entity -> WriteView [label="N>=SZ", style=dashed];
+	Entity -> ReadView[label="size--"];
+	Entity -> WriteView [label="size--", style=dashed];
 
-	ReadView -> ReadView[label="SZ--"];
-	WriteView : nw-> WriteView : sw[label="SZ--", style=dashed];
-	WriteView -> ReadView[label="writer.sz>=reader.size"]
+	ReadView -> ReadView[label="size--"];
+	WriteView : sw-> WriteView : nw [label="size--", style=dashed];
+	WriteView -> ReadView[label="writer's size >= reader's size"]
 
 	subgraph cluster0 {
-		label="other_thread_space"
+		label="other thread space"
 		labeljust="r"
 		style=filled
 		color=lightgray
@@ -30,14 +30,14 @@ digraph G_VIEWS {
 			WriteViewMT;
 		}
 		
-			WriteView -> WriteViewMT[label="writer.sz>=writerMT.sz,\nwriterMT.signal:=writer", labelfloat=false, style=dashed]
-
+		WriteView -> WriteViewMT[label="writer's size >= writerMT's size,\nwriterMT.signal:=writer", labelfloat=false, style=dashed]
+                ReadView  -> ReadViewMT[label="reader's size >= readerMT's size", labelfloat=false, style=dashed]
 		
 
-			ReadViewMT->WriteView[label="writer.sz>=readerMT.sz,\nreaderMT.signal:=writer", labelfloat=false, dir=back, style=dashed]
+		ReadViewMT->WriteView[label="writer's size >= readerMT's size,\nreaderMT.signal:=writer", labelfloat=false, dir=back, style=dashed]
 
 
-			WriteViewMT -> ReadViewMT[label="writerMT.sz>=readerMT.sz,\nreaderMT.signal:=writerMT.signal", constraint=false]
+		WriteViewMT -> ReadViewMT[label="writerMT's size >= readerMT's size,\nreaderMT.signal:=writerMT.signal", constraint=false]
 
 	}
 }

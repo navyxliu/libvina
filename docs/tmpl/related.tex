@@ -1,4 +1,4 @@
-\section{Related work}
+\section{Related works}\label{sec:related}
 As mentioned before, it is desirable to extend conventional programming languages to reflects new hardwares. Researches in the field have two major directions:
 \begin{enumerate}
 \item providing new library to support programming for concurrency
@@ -13,8 +13,8 @@ of pthread is far away from expressing parallelism and concurrency
 naturally. Furthermore, the implementation of thread on hardware is
 undefined in the standard, so it can not guarantee performance or even
 correctness on some architectures \cite{Boehm05}. C++ community intend to develop parallel library while bearing
-generic programming in mind. TBB~\cite{tbb} has a plenty of
-containers and execution rules. Entities including partitioner and
+generic programming in mind. TBB  has a plenty of
+containers and building blocks similar to the components in libvina. Entities including partitioner and
 scheduler in TBB are created at run time. In that case, key data
 structures have to be thread-safe. Although TBB exploits task
 parallelism or other sophisticated concurrency on general purpose
@@ -39,28 +39,27 @@ farther improve programs.
 
 The second choice for language community is to extend language constructs by
 modifying compiler. They add directive or annotation to help compiler
-transform source code. OpenMP compilers transform sequential code into
+transform source code. OpenMP~\cite{openmp} compilers transform sequential code into
 multi-threaded equivalence. The run-time is usually provides in the form of dynamic link library. Although it is simple and
 portable, the performance is not optimal in most cases. Moreover, a
-handful of directives in OpenMP leave small room for further improving
+handful of directives in OpenMP leave little room for further improving
 performance or scaling up to larger systems. Hybrid OpenMP with MPI is
-possible though, difficulties surge. Sequoia supports
+possible though, difficulties surge. Sequoia~\cite{sequoia-compiler} supports
 programming memory hierarchy. First of all, It targets execution
 environment as a tree of machines, which an individual machine owns
 its storage and computation unit. Second, it transforms a
 \textit{task} into a
 cluster of \emph{variants}. Target machine
-is described in XML files. \cite{sequoia, sequoia-compiler} report  that Sequoia can transform programs
+is described in XML files. \cite{sequoia} reports that Sequoia can transform programs
 for CellBE, cluster while keeping competitive performance. That
 is at expense of implementing one compiler for each platforms.
 The primary drawback of Sequoia is that its language constructs can not cover common
-parallel patterns such as pipeline or task queue. Besides, sequoia compiler
-ignores type information to select optimal
-implementation. Merge~\cite{merge} features a uniform runtime
+parallel patterns such as pipeline or task queue. Merge~\cite{merge} features a uniform runtime
 environment for heterogeneous multicore 
-systems in forms of task and variant. However, Merge only
-support \emph{map-reduce} programming model. Its run-time overhead is not negligible for fine-granularity
-parallelism. Methods mentioned before all need non-trivial efforts to
+systems in forms of task and variant. It relies on hierarchical division of task and predicate-based
+dispatch system to assign subtasks on matched multicore target at
+runtime. However, Merge only
+supports \emph{map-reduce} programming model. Methods mentioned before all need non-trivial efforts to
 modify compilers. As discussed in \cite{sequoia}, the authors of the Sequoia were
 still not clear whether the minimal set of primitives they provided provides can
 sufficiently express dynamic applications. We doubt if it is worthwhile to
