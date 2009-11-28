@@ -7,15 +7,12 @@
 #define SEQ_HPP_
 #include <vina.hpp>
 
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/mpl/int.hpp>
-#include <tr1/type_traits>
-
 namespace vina{
-
-  // no implementation in purpose
-  struct seq_func_undefined;
+  template<class S, uint32_t I, class F>
+  struct select_surrounding<VINA_TYPE_SEQ, S, I, F> 
+  {
+     typedef seq<S, I, F> type; 
+  };
 
   template <class SURR,      /*surrounding seq, i.e. the nested loop. it can NOT be a seq_tail, or a usage error. */ 
 	    uint32_t ITER = 1,
@@ -23,21 +20,31 @@ namespace vina{
             >
   struct seq{
     const static unsigned int _itr = ITER;
+    const static int _ty = VINA_TYPE_SEQ;
 
     //if FUNC is non-trivia, override surrounding _func
     typedef typename  boost::mpl::if_<std::tr1::is_same<FUNC, seq_func_undefined>, 
 				      typename SURR::_func,  
 				      FUNC>::type
     _surr_func;
-    typedef seq<typename SURR::_surr, SURR::_itr, _surr_func>  _surr;
+
+    typedef typename select_surrounding<SURR::_ty, typename SURR::_surr, SURR::_itr, _surr_func>::type
+    _surr;
+
     typedef _surr_func _func;
 
     //entry point:
     static void 
     apply() {
+
 	for (int k=0; k<_itr; ++k) {
 	  _surr::apply();
 	}
+    }
+    static void
+    apply(FUNC f) {
+        for (int k=0; k<_itr; ++k) 
+          _surr::apply(f); 
     }
   };
 
@@ -46,6 +53,7 @@ namespace vina{
   template<>
   struct seq<void, 1, seq_func_undefined>{
     const static uint32_t _itr = 1;
+    const static int _ty = VINA_TYPE_SEQ;
     typedef seq_func_undefined _func;
     typedef void _surr;
 
@@ -59,12 +67,18 @@ namespace vina{
   template<uint32_t ITER, class FUNC>
   struct seq<seq_tail, ITER, FUNC>{
     const static uint32_t _itr = ITER;
+    const static int _ty = VINA_TYPE_SEQ;
     typedef FUNC _func;
     typedef seq_tail _surr;
 
     static void 
     apply() {
       FUNC f;
+      for (int i=0; i<_itr; ++i) f();
+    }
+    static void 
+    apply(FUNC f)
+    {
       for (int i=0; i<_itr; ++i) f();
     }
   };
@@ -92,7 +106,19 @@ namespace vina{
       ++ BASE::cnt_;
     }
   };
+  template<class F>
+  struct seq_handler_f<F&> : seq_handler_base<seq_handler_f<F&>>{ 
+    typedef seq_handler_base<seq_handler_f<F&>> BASE;
 
+    seq_handler_f(F& func) : f_(func) {}
+
+    void
+    operator() () {
+      f_( BASE::cnt_ );
+      ++ BASE::cnt_;
+    }
+    F& f_;
+  };
   /*This function is used in two-level iteration, which is 
    *for (i=0; i<I; ++i) for(j=0; j<J; ++j) ..
    *invariance: i * J  + j == cnt;

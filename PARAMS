@@ -18,7 +18,7 @@ TEST_INFO+=#-D__NDEBUG #-DVIZ_CALLSITE
 #1) libSPMD: customized thread for libvina
 #TEST_INFO+=-D__USE_LIBSPMD
 #2) threadpool:
-TEST_INFO+=-D__USEPOOL
+#TEST_INFO+=-D__USEPOOL
 #3) if we both comment out previous two defines, we use plain pthread.
 
 #computation model

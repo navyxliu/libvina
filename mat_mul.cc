@@ -10,8 +10,11 @@
 #include "toolkits.hpp"
 #include "profiler.hpp"
 
+#include "tf.h" // TF class header
+
 #include <tr1/functional>
 using namespace vina;
+
 #ifdef MKL
 #include <mkl.h>
 #include "mkl_cblas.h"
@@ -214,6 +217,15 @@ printm(const T& M)
   for (int i=0; i<T::DIM_M; ++i, putc('\n', stdout)) for (int j=0; j<T::DIM_N; ++j) 
     printf("%.4f ", M[i][j]);
 }
+
+//define new style
+template<class ARG0, class ARG1, class RESULT, 
+         template<ARG0, ARG1> PRED, 
+         int K>
+struct SGEMM
+{
+};
+
 int main()
 {  
 
