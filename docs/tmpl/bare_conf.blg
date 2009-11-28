@@ -6,6 +6,7 @@ Database file #1: ../libvina.bib
 -- IEEEtran.bst version 1.12 (2007/01/11) by Michael Shell.
 -- http://www.michaelshell.org/tex/ieeetran/bibtex/
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in openmp
 Warning--empty author in c++98
 Warning--empty journal in c++98
 Warning--empty author in c++03
@@ -16,45 +17,45 @@ Warning--empty journal in cpplambda
 Warning--empty journal in opencl
 
 Done.
-You've used 23 entries,
+You've used 22 entries,
             4024 wiz_defined-function locations,
-            947 strings with 11762 characters,
-and the built_in function-call counts, 15172 in all, are:
-= -- 1085
-> -- 409
-< -- 99
-+ -- 219
-- -- 77
-* -- 699
-:= -- 2185
-add.period$ -- 52
-call.type$ -- 23
-change.case$ -- 28
-chr.to.int$ -- 240
+            929 strings with 11147 characters,
+and the built_in function-call counts, 14090 in all, are:
+= -- 1032
+> -- 375
+< -- 87
++ -- 199
+- -- 73
+* -- 659
+:= -- 2099
+add.period$ -- 51
+call.type$ -- 22
+change.case$ -- 21
+chr.to.int$ -- 204
 cite$ -- 31
-duplicate$ -- 1146
-empty$ -- 1386
-format.name$ -- 92
-if$ -- 3509
+duplicate$ -- 1071
+empty$ -- 1263
+format.name$ -- 85
+if$ -- 3227
 int.to.chr$ -- 0
-int.to.str$ -- 23
-missing$ -- 223
-newline$ -- 92
-num.names$ -- 25
-pop$ -- 601
+int.to.str$ -- 22
+missing$ -- 207
+newline$ -- 95
+num.names$ -- 21
+pop$ -- 559
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 1157
+skip$ -- 1060
 stack$ -- 0
-substring$ -- 580
-swap$ -- 836
+substring$ -- 502
+swap$ -- 774
 text.length$ -- 19
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 23
-warning$ -- 8
-while$ -- 61
-width$ -- 25
-write$ -- 211
-(There were 8 warnings)
+type$ -- 22
+warning$ -- 9
+while$ -- 57
+width$ -- 24
+write$ -- 212
+(There were 9 warnings)

@@ -19,9 +19,9 @@
 \@writefile{toc}{\contentsline {section}{\numberline {II}Template-based Programming model}{2}}
 \newlabel{sec:model}{{II}{2}}
 \@LN@col{2}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of template-based programming model: Programers write side-effect free functions in C/C++, then encapsulate them into function wrappers. Template library regards a function wrapper as a task. Programers ulitize template library to transform a task into a group of subtasks, map task on physical multicores.}}{2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of template-based programming model: Programers write side-effect free functions in C/C++, then encapsulate them into function wrappers. Template library regards a function wrapper as a task. Tasks are transformed into a group of subtasks based on appropriate parallel patterns, finally map tasks on physical multicores.}}{2}}
 \newlabel{fig:overview}{{1}{2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Matrix-multiplication(sgemm) division:Divide matrix-multiplication task into smaller subtasks. The division process is implemented by source code List. 1. Triple in figure represents task parameters (M, P, N), which means A[M][P] * B[P][N]. The figure is the result of parameterizing K = 2. }}{2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Matrix-multiplication(sgemm) division:Divide matrix-multiplication task into smaller subtasks. The division process is implemented by List. 1. Triple in figure represents task parameters (M, P, N), which means A[M][P] * B[P][N]. The figure is the result of parameterizing K = 2. }}{2}}
 \newlabel{fig:mmexample}{{2}{2}}
 \@writefile{lol}{\contentsline {lstlisting}{source/sgemm.cc}{2}}
 \@LN@col{1}
@@ -89,20 +89,18 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Pipeline Processing for Psuedo Language Translation}}{7}}
 \newlabel{fig:pipe}{{8}{7}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\unhbox \voidb@x \hbox {VI-B}4}Pipeline Transformation for CPU}{7}}
-\citation{Boehm05}
 \citation{openmp}
+\citation{sequoia}
 \citation{sequoia-compiler}
-\citation{sequoia}
 \citation{merge}
-\citation{sequoia}
+\bibstyle{ieeetran}
+\bibdata{../libvina}
 \@LN@col{1}
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Related works}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Related work}{8}}
 \newlabel{sec:related}{{VII}{8}}
 \@LN@col{2}
 \@writefile{toc}{\contentsline {section}{\numberline {VIII}Discussion and Future work}{8}}
 \newlabel{sec:con}{{VIII}{8}}
-\bibstyle{ieeetran}
-\bibdata{../libvina}
 \bibcite{gmapreduce}{1}
 \bibcite{openmp}{2}
 \bibcite{tbb}{3}
@@ -124,8 +122,7 @@
 \bibcite{opencl}{19}
 \bibcite{vartemp}{20}
 \bibcite{Fatahalian08}{21}
-\bibcite{Boehm05}{22}
-\bibcite{sequoia-compiler}{23}
+\bibcite{sequoia-compiler}{22}
 \@LN@col{1}
 \@writefile{toc}{\contentsline {section}{References}{9}}
 \@LN@col{2}

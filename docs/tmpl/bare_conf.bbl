@@ -26,25 +26,36 @@ J.~Dean and S.~Ghemawat, ``Mapreduce: simplified data processing on large
   clusters,'' \emph{Commun. ACM}, vol.~51, no.~1, pp. 107--113, 2008.
 
 \bibitem{openmp}
-(2008) Openmp specificaiton version 3.0.
+\BIBentryALTinterwordspacing
+O.~A.~R. Board, ``Openmp specificaiton version 3.0,'' 2008. [Online].
+  Available: \url{http://www.openmp.org/mp-documents/spec30.pdf}
+\BIBentrySTDinterwordspacing
 
 \bibitem{tbb}
-Intel thread building blocks reference manual.
+\BIBentryALTinterwordspacing
+Intel. Intel thread building blocks reference manual. [Online]. Available:
+  \url{http://www.threadingbuildingblocks.org/documentation.php}
+\BIBentrySTDinterwordspacing
 
 \bibitem{cuda}
-Nvidia opencl programming guide for the cuda.
+\BIBentryALTinterwordspacing
+NVidia. Cuda. [Online]. Available:
+  \url{http://developer.nvidia.com/object/cuda.html}
+\BIBentrySTDinterwordspacing
 
 \bibitem{sequoia}
 K.~Fatahalian, D.~R. Horn, T.~J. Knight, L.~Leem, M.~Houston, J.~Y. Park,
-  M.~Erez, M.~Ren, A.~Aiken, W.~J. Dally, and P.~Hanrahan, ``Memory - sequoia:
-  programming the memory hierarchy,'' in \emph{SC}.\hskip 1em plus 0.5em minus
-  0.4em\relax ACM Press, 2006, p.~83.
+  M.~Erez, M.~Ren, A.~Aiken, W.~J. Dally, and P.~Hanrahan, ``Sequoia:
+  programming the memory hierarchy,'' in \emph{SC '06: Proceedings of the 2006
+  ACM/IEEE conference on Supercomputing}.\hskip 1em plus 0.5em minus
+  0.4em\relax New York, NY, USA: ACM, 2006, p.~83.
 
 \bibitem{merge}
-M.~D. Linderman, J.~D. Collins, H.~W. 0003, and T.~H.~Y. Meng, ``Merge: a
-  programming model for heterogeneous multi-core systems,'' in \emph{ASPLOS},
-  S.~J. Eggers and J.~R. Larus, Eds.\hskip 1em plus 0.5em minus 0.4em\relax
-  ACM, 2008, pp. 287--296.
+M.~D. Linderman, J.~D. Collins, H.~Wang, and T.~H. Meng, ``Merge: a programming
+  model for heterogeneous multi-core systems,'' in \emph{ASPLOS XIII:
+  Proceedings of the 13th international conference on Architectural support for
+  programming languages and operating systems}.\hskip 1em plus 0.5em minus
+  0.4em\relax New York, NY, USA: ACM, 2008, pp. 287--296.
 
 \bibitem{ThiesKA02}
 W.~Thies, M.~Karczmarek, and S.~P. Amarasinghe, ``Streamit: A language for
@@ -87,8 +98,8 @@ J.~A. Kahle, M.~N. Day, H.~P. Hofstee, C.~R. Johns, T.~R. Maeurer, and
 
 \bibitem{imagine}
 U.~J. Kapasi, W.~J. Dally, S.~Rixner, J.~D. Owens, and B.~Khailany, ``The
-  imagine stream processor,'' in \emph{ICCD}.\hskip 1em plus 0.5em minus
-  0.4em\relax IEEE Computer Society, 2002, pp. 282--288.
+  imagine stream processor,'' \emph{Computer Design, International Conference
+  on}, vol.~0, p. 282, 2002.
 
 \bibitem{tempmetaprog}
 D.~Abrahams and A.~Gurtovoy, \emph{C++ Template Metaprogramming: Concepts,
@@ -115,15 +126,11 @@ D.~Gregor and J.~J\"{a}rvi, ``Variadic templates for c++,'' in \emph{SAC '07:
 K.~Fatahalian and M.~Houston, ``Gpus: A closer look,'' \emph{Queue}, vol.~6,
   no.~2, pp. 18--28, 2008.
 
-\bibitem{Boehm05}
-H.-J. Boehm, ``Threads cannot be implemented as a library,'' in \emph{PLDI},
-  V.~Sarkar and M.~W. Hall, Eds.\hskip 1em plus 0.5em minus 0.4em\relax ACM,
-  2005, pp. 261--268.
-
 \bibitem{sequoia-compiler}
 T.~J. Knight, J.~Y. Park, M.~Ren, M.~Houston, M.~Erez, K.~Fatahalian, A.~Aiken,
   W.~J. Dally, and P.~Hanrahan, ``Compilation for explicitly managed memory
-  hierarchies,'' in \emph{PPOPP}, K.~A. Yelick and J.~M. Mellor-Crummey,
-  Eds.\hskip 1em plus 0.5em minus 0.4em\relax ACM, 2007, pp. 226--236.
+  hierarchies,'' in \emph{PPoPP '07: Proceedings of the 12th ACM SIGPLAN
+  symposium on Principles and practice of parallel programming}.\hskip 1em plus
+  0.5em minus 0.4em\relax New York, NY, USA: ACM, 2007, pp. 226--236.
 
 \end{thebibliography}

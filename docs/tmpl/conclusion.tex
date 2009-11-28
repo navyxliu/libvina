@@ -1,10 +1,10 @@
 \section{Discussion and Future work}\label{sec:con}
-The silicon industry has chosen multicore as new
-direction. However, diverging multicore architectures enlarge the gap between algorithm-centric programmers and
-computer system developers.  Conventional C/C++ programming language
-can not reflect hardware.  Existing ad-hoc techniques
-or platform-dependent programming language pose issues of generality
-and portability. 
+%The silicon industry has chosen multicore as new
+%direction. However, diverging multicore architectures enlarge the gap between algorithm-centric programmers and
+%computer system developers.  Conventional C/C++ programming language
+%can not reflect hardware.  Existing ad-hoc techniques
+%or platform-dependent programming language pose issues of generality
+%and portability. 
 %Source-to-source transformation can meet the challenge
 %and help tailor programs to specific multicore architectures.
 
@@ -13,7 +13,7 @@ and portability.
 %new multicore architectures. More worse, 
 
 We present a template metaprogramming approach to perform source-to-source
-transformation for programs with rich information. All functionalities
+transformations for programs with rich information. All functionalities
 are achieved within ISO C++ and organized as template library. The
 library is flexible enough to
 apply more than one parallel
@@ -54,9 +54,10 @@ or prefetch data using template metaprograming accompanying with
 runtime library.
 
 Currently, kernel functions in GPU prohibit recursion. We believe that
-it would be beneficial to introduce template recursion for GPU. TF classes which support strip-mined memory access and loop iteration transformation are
-particularly attractive for GPU targets because because GPUs
-provide memory coalescence for specific access patterns.
+it would be beneficial to introduce template recursion for
+GPUs. In addition, it is attractive for us to explore source transformations for
+strip-mined memory accesses in metaprogramming, becuse modern GPUs provide iprovide memory
+coalescence to optimize memory.
 
 
 General applications also contain a variety of static information to

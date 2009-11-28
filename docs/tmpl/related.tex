@@ -1,30 +1,45 @@
-\section{Related works}\label{sec:related}
-As mentioned before, it is desirable to extend conventional programming languages to reflects new hardwares. Researches in the field have two major directions:
+\section{Related work}\label{sec:related}
+%As mentioned before, it is desirable to extend conventional
+%programming languages to reflects new hardwares. Researches in the field have two major directions:
+Programming models to support parallel programs for muticores can be
+broadly categorized into directions:
 \begin{enumerate}
-\item providing new library to support programming for concurrency
+\item providing library to support programming for concurrency
 \item extending language constructs to extend parallel semantics
 \end{enumerate}
 
-First, library is a common method to extend language capability
-without modifying grammar. Pthread library is a \textit{de facto} standard for
+Library is a common method to extend language capability
+without modifying grammars. Pthread library is a \textit{de facto} standard for
 multi-threading on POSIX-compatible systems. The relationship between
-pthread and native thread is straightforward. Therefore, abstraction
-of pthread is far away from expressing parallelism and concurrency
-naturally. Furthermore, the implementation of thread on hardware is
-undefined in the standard, so it can not guarantee performance or even
-correctness on some architectures \cite{Boehm05}. C++ community intend to develop parallel library while bearing
-generic programming in mind. TBB  has a plenty of
-containers and building blocks similar to the components in libvina. Entities including partitioner and
-scheduler in TBB are created at run time. In that case, key data
-structures have to be thread-safe. Although TBB exploits task
-parallelism or other sophisticated concurrency on general purpose
-processors, the runtime overhead is relative high in data parallel
-programs, especially in the scenario that many lightweight threads are
-executing by hardware. Template-based approach we proposed is orthogonal to runtime parallel
-libraries. We only explore parallelism which can be determined at
-compile time, developers feel free to deploy other ways such as TBB to
+pthread and native thread is straightforward. Therefore, abstractions
+of pthread are far away from expressing parallelism naturally. The same problem occurs on OpenCL or other vender-dependent
+libraries for GPUs. Libvina is a metaprogramming library instead of
+system library. We provides high-level parallel patterns
+and executions as template classes. Implementations take
+responsibility for binding tasks on specific muticore platforms. C++
+community intends to develop parallel libraries while bearing generic programming in mind. TBB  has a plenty of
+containers and building blocks to support loop-parallism and
+task-level parallelism.  Inspired by TBB's approach, we enable the
+same effects in static domain. We aim at utilizing static information
+to perform source
+transformations for different architectures at compile time. Besides, template-based approach we propose is orthogonal to runtime parallel
+library TBB. We only explore parallelism which can be resolved by compilers, developers feel free to deploy TBB to
 farther improve programs.
- 
+
+
+%Furthermore, the implementation of thread on hardware is
+%undefined in the standard, so it can not guarantee performance or even
+%correctness on some architectures \cite{Boehm05}.
+
+%Entities including partitioner and
+%scheduler in TBB are created at run time. In that case, key data
+%structures have to be thread-safe. Although TBB exploits task
+%parallelism or other sophisticated concurrency on general purpose
+%processors, the runtime overhead is relative high in data parallel
+%programs, especially in the scenario that many lightweight threads are
+%executing by hardware. 
+
+
 %% MPI
 %Another dominant parallel library is MPI in supercomputing community. It based on message-passing mechanism and SPMD model to execute parallel program. The difficulties of developing MPI programs are as notorious as pthread counterpart for programmers without sufficent training of parallel programming. 
 %%
@@ -36,33 +51,53 @@ farther improve programs.
 %statement.  Most of works have been merge in forms of IR in
 %modern compilers. New source-to-source transformation compilers focus
 %on function. 
+%The run-time is usually provides in the form of dynamic link library.
+%Although it is simple and
+%portable, the performance is not optimal in most cases. Moreover, a
+%handful of directives in OpenMP leave little room for further improving
+%performance or scaling up to larger systems. Hybrid OpenMP with MPI is
+%possible though, difficulties surge. 
 
-The second choice for language community is to extend language constructs by
-modifying compiler. They add directive or annotation to help compiler
-transform source code. OpenMP~\cite{openmp} compilers transform sequential code into
-multi-threaded equivalence. The run-time is usually provides in the form of dynamic link library. Although it is simple and
-portable, the performance is not optimal in most cases. Moreover, a
-handful of directives in OpenMP leave little room for further improving
-performance or scaling up to larger systems. Hybrid OpenMP with MPI is
-possible though, difficulties surge. Sequoia~\cite{sequoia-compiler} supports
-programming memory hierarchy. First of all, It targets execution
-environment as a tree of machines, which an individual machine owns
-its storage and computation unit. Second, it transforms a
-\textit{task} into a
-cluster of \emph{variants}. Target machine
-is described in XML files. \cite{sequoia} reports that Sequoia can transform programs
-for CellBE, cluster while keeping competitive performance. That
-is at expense of implementing one compiler for each platforms.
-The primary drawback of Sequoia is that its language constructs can not cover common
-parallel patterns such as pipeline or task queue. Merge~\cite{merge} features a uniform runtime
-environment for heterogeneous multicore 
-systems in forms of task and variant. It relies on hierarchical division of task and predicate-based
+The second direction for language community is to extend language constructs by
+modifying compiler. They add language constructs for compiler to
+express parallellism. OpenMP~\cite{openmp} compilers transform sequential code blocks into
+multi-threaded equivalences based on
+directives. OpenMP is \textit{de facto} standard for shared memory
+though, the programming model does not fit heterogeneous mulitcores. Sequoia~\cite{sequoia, sequoia-compiler} supports
+programming memory hierarchy. In order to achieve portability for
+parallel programs, a source-to-source compiler transforms a \textit{task} into a cluster of
+\emph{variants}, and then maps variants on tree-style virtual 
+machines, which are described by external configuration files.
+We derive the same idea to choose implementations at compile time for
+different architectures. Merge~\cite{merge} is a map/reduce programming
+framework for heterogeneous multicore 
+systems in the forms of task and variant. It relies on hierarchical division of task and predicate-based
 dispatch system to assign subtasks on matched multicore target at
-runtime. However, Merge only
-supports \emph{map-reduce} programming model. Methods mentioned before all need non-trivial efforts to
-modify compilers. As discussed in \cite{sequoia}, the authors of the Sequoia were
-still not clear whether the minimal set of primitives they provided provides can
-sufficiently express dynamic applications. We doubt if it is worthwhile to
-invest a compiler given the fact that template library can also
-achieve the same functionalities.
+runtime. Each approach mentioned above can complete a kind of parallel pattern.
+We demonstrate our template-based approach can achieve the same
+functionalities using template metaprogramming if parameters are
+available at compile time. 
+
+We intend to fuse the advantages of pure library approach and
+specialized parallel programming languages. Extending 
+languages to express parallelism usually needs to modify compilers. We
+think it is this process hardwires fixed parallel patterns into the
+compilers. Therefore, we explore the powerness of metaprogramming to
+transform sources for parallelism, which
+can support mulitple parallel programming models while maintain
+portability for mulitcores.
+
+%First of all, it targets execution
+%environment as a tree of machines, which an individual machine owns
+%its storage and computation unit. Second, Target machine
+%is described in XML files. \cite{sequoia} reports that Sequoia can transform programs
+%for CellBE, cluster while keeping competitive performance. That
+%is at expense of implementing one compiler for each platforms.
+%The primary drawback of Sequoia is that its language constructs can not cover common
+%parallel patterns such as pipeline or task queue. Methods mentioned before all need non-trivial efforts to
+%modify compilers. As discussed in \cite{sequoia}, the authors of the Sequoia were
+%still not clear whether the minimal set of primitives they provided provides can
+%sufficiently express dynamic applications. We doubt if it is worthwhile to
+%invest a compiler given the fact that template library can also
+%achieve the same functionalities.
 
