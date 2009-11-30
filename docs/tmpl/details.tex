@@ -1,0 +1,84 @@
+\section{Implementation details}\label{sec:details}
+We implement all the functionalities described before using C++
+template metaprogramming technique. The grand idea is to utilize
+template specialization and recursion to achieve control flow at
+compile time. Besides template mechanism, other  C++ high level
+abstracts act important roles in our approach. Function object and bind
+mechnism is critical to postpone computation at proper place with
+proper enviroment~\cite{moderncpp}. In order to utilize nested buiding blocks,
+lambda expression can generate closure objects in a concise
+form. \textit{e.g.} line 24$\sim$37 of List 1.
+
+\subsection{buiding block}
+Implemenation of building blocks are trivial. We use recursive calls
+to support nest. \textit{seq} and \textit{par} are interoperable
+because we chose proper nested class before calling function \textit{apply}. Note that
+building blocks are level-free in terms of iteration, Thus function objects
+or cloure objects need to be decorated by loop-variable handlers. The
+handlers take responsibility for calculating loop variables in
+normalized form. It is only desirable for nested loop forms,
+\textit{e.g.} line 41 of List 1. Due to the fact that some callable
+objects in C++ such
+as clousure object
+do not provide default constructors, we pass their
+references in those cases.  Consequential, some callsites of building blocks are different
+from Table.~\ref{tbl:bb}. In terms of implementation, building blocks
+on CPU embed OpenMP directive to run in parallel. On GPU, we bind
+them to function of OpenCL~\cite{opencl}, which is a open standard API for heterogenous muliticores.
+
+\subsection{TF class}
+\subsubsection{TF\_hierarchy}
+TF\_hierarchy has two template class definitions. The prime template
+calls back task's inner function, while the partial specialization calls
+leaf. We utilize predicate similar to merge~\cite{merge} to generate subtasks
+recursively. The major difference from merge is that our predicate is
+\textit{metafunction} and is evaluated at place (\textit{e.g.} line 3 below).
+
+%\resetlinenumber[1]
+%\linenumbers
+%\begin{verbatim}
+\begin{lstlisting}
+  template <class TASK,
+    template<class, class>  class PRED,
+    bool SENTINEL = PRED<ARG0, ARG1>::value>
+  struct TF_hierarchy{...}
+
+  template <class TASK,
+    template<class, class>  class PRED>
+  struct TF_hierarchy<TASK, true>
+  {...};
+\end{lstlisting}
+%\end{verbatim}
+%\nolinenumbers
+
+\subsubsection{TF\_pipeline}
+We implement the TF class using variadic template~\cite{vartemp}. The
+simplified implementation is listed as follows. It supports an arbitrary
+number of functions, only limited by compiler's the maximal level of template
+recursion.  
+
+%For C++ compilers don't support variadic template, there
+%are workarounds to achieve the same effect, but quite
+%tedious.\footnote{zhangsq ask me to cite. I implemented the
+ % workarounds myself, but i don't see it is necessary to show them here. too
+ % details... --xliu 28. Nov}.
+
+%\resetlinenumber[1]
+%\linenumbers
+%\begin{verbatim}
+\begin{lstlisting}
+ template <class P, typename... Tail>
+  struct pipeline<P, Tail...> {
+    typedef typename P::input_type in_t;
+    typedef typename P::output_type out_t;
+   
+    static out_t doit(in_t in)
+    {
+     pipeline<Tail...>::doit( P::doit(in) );
+    }
+  };  
+\end{lstlisting}
+%\end{verbatim}
+%\nolinenumbers
+
+%end section

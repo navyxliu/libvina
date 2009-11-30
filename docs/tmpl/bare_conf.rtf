@@ -1,0 +1,490 @@
+{\rtf1\ansi\uc1\deff13\deflang1024
+{\fonttbl{\f0\fnil\fcharset0 Zapf Chancery;}
+{\f1\fnil\fcharset204 Zapf Chancery;}
+{\f2\fnil\fcharset204 Times;}
+{\f3\fnil\fcharset204 Helvetica;}
+{\f4\fnil\fcharset204 Helvetica;}
+{\f5\fnil\fcharset204 Courier;}
+{\f6\fnil\fcharset2 Symbol;}
+{\f7\fnil\fcharset0 MT Extra;}
+{\f8\fnil\fcharset238 Zapf Chancery;}
+{\f9\fnil\fcharset238 Times;}
+{\f10\fnil\fcharset238 Helvetica;}
+{\f11\fnil\fcharset238 Helvetica;}
+{\f12\fnil\fcharset238 Courier;}
+{\f13\fnil\fcharset0 Times;}
+{\f14\fnil\fcharset0 Helvetica;}
+{\f15\fnil\fcharset0 Helvetica;}
+{\f16\fnil\fcharset0 Courier;}
+}
+{\colortbl;
+\red0\green0\blue0;
+\red0\green0\blue255;
+\red0\green255\blue255;
+\red0\green255\blue0;
+\red255\green0\blue255;
+\red255\green0\blue0;
+\red255\green255\blue0;
+\red255\green255\blue255;
+\red0\green0\blue128;
+\red0\green128\blue128;
+\red0\green128\blue0;
+\red128\green0\blue128;
+\red128\green0\blue0;
+\red128\green128\blue0;
+\red128\green128\blue128;
+\red192\green192\blue192;
+}
+{\stylesheet
+{\s0\fs20\snext0 Normal;}
+{\s2\ql\sb240\sa60\keepn\f13\b\fs40 \sbasedon0\snext0 heading 1;}
+{\s2\ql\sb240\sa60\keepn\f13\b\fs40\li0 \sbasedon0\snext0 heading 1;}
+{\s1\ql\sb240\sa60\keepn\f13\b\fs40\li0 \sbasedon0\snext0 heading 1;}
+{\s6\ql\sb240\sa60\keepn\f13\b\fs24\li2048 \sbasedon0\snext0 heading 5;}
+{\s3\ql\sb240\sa60\keepn\f13\b\fs32\li512 \sbasedon0\snext0 heading 2;}
+{\s7\ql\sb240\sa60\keepn\f13\b\fs24\li2560 \sbasedon0\snext0 heading 6;}
+{\s4\ql\sb240\sa60\keepn\f13\b\fs32\li1024 \sbasedon0\snext0 heading 3;}
+{\s5\ql\sb240\sa60\keepn\f13\b\fs24\li1536 \sbasedon0\snext0 heading 4;}
+{\s6\ql\sb240\sa60\keepn\f13\b\fs24 \sbasedon0\snext0 heading 5;}
+{\s1\qc\sb240\sa60\keepn\f13\b\fs40 \sbasedon0\snext0 part;}
+{\s3\ql\sb240\sa60\keepn\f13\b\fs32 \sbasedon0\snext0 heading 2;}
+{\s7\ql\sb240\sa60\keepn\f13\b\fs24 \sbasedon0\snext0 heading 6;}
+{\s4\ql\sb240\sa60\keepn\f13\b\fs32 \sbasedon0\snext0 heading 3;}
+{\s5\ql\sb240\sa60\keepn\f13\b\fs24 \sbasedon0\snext0 heading 4;}
+}
+{\info
+{\title Original file was bare_conf.tex}
+{\doccomm Created using latex2rtf 1.9.19 (released Nov 20 2007) on Thu Nov 26 14:24:45 2009
+}
+}
+{\footer\pard\plain\f13\fs20\qc\chpgn\par}
+\paperw12280\paperh15900\margl2680\margr2700\margt2540\margb1760\pgnstart0\widowctrl\qj\ftnbj\f13\aftnnar
+{\par
+
+\par\pard\qc {\fs30 \pard\qc\sl240\slmult1 \fi300 A Template Metaprogramming approach to Support Parallel Programs for Multicores}
+\par\pard\qc {\fs24  {Xin Liu, Daqiang Zhang, Jingyu Zhou, Minyi Guo, Yao Shen} {Department of Computer Science\par
+\pard\qc\sl240\slmult1 \fi0 Shanghai Jiao Tong University\par
+\pard\qc\sl240\slmult1 \fi0 No. 800, Dongchuan Road, Shanghai, P.R.China\par
+\pard\qc\sl240\slmult1 \fi0 \{navyliu, zhangdq\}@sjtu.edu.cn, \{guo-my, zhou-jy, shen_yao\}@cs.sjtu.edu.cn} }
+\par\pard\qc {\fs24 }
+\par\pard\qc {\fs24 }
+\par\pard\qc {\fs24 }\par
+{\pard\qj\sl240\slmult1 \fi0 \qc{\b Abstract}\par
+\pard\qj\sl240\slmult1 \li1024\ri1024\fi0 In advent of multicore era, plain C/C++ programming language can not fully reflect computer architectures. Source-to-source transformation helps tailor programs close to contemporary hardwares. In this paper, we propose a template metaprogramming approach to perform transformation for programs with rich static information. C++ template metaprogramming techniques we present can conduct parallelization and memory hierarchical optimization for specific multicores. They enable programmers to utilize new architectural features and parallel patterns by extending template library. We implement a prototype template library \endash  libvina to demonstrate the idea. Finally, We evaluate our template library on commodity x86 and GPU platforms by a variety of typical applications in multimedia and scientific fields. In experiments, we show that our approach is flexible to support multiple parallel models and capable of transforming sequential code to parallel equivalence according to specific multicore architectures. Moreover, the cost of programmability using our approach to adapt to more than one multicore platform is manageable. \par
+}\pard\qj\sl240\slmult1 \sb360 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 {\*\bkmkstart BMsec_Intro}1{\*\bkmkend BMsec_Intro}  Introduction\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 Modern computer architectures rely on parallelism and memory hierarchy to improve performance. Both duplicated processors and elaborated storage-on-chip require programmers to aware of underlying machines when they write programs. More worse, multicore technologies have brough various architectural features for different implementations. Thus, it is challenging to develop efficient applications which can take advantage of various multicores.\par
+\pard\qj\sl240\slmult1 \fi300 In essence, we think it is because plain C/C++ programming language can not reflect comtemporary architectures. Traditionally, programmers describe algorithms in seqential logics, and then resort to compiler and hardware optimization to deliver modest performance relative to their machines. In muticore era, this classic prorgramming model gain little. It is desireable to develop alternatives to utilize powerhorse of multicores while hiding architectural features.\par
+\pard\qj\sl240\slmult1 \fi300 Although researches on revolutionary programming models have otained fruitful achievements, some critical issues prohibit changing in general purposed programming. First, it is still unsolved problem what a general parallel or concurrent programming languages looks like. Considering the wide specrum of parallel computers, we doubt it really exists. Second, the cost of hardware in large systems is relative low than software and personnels. The ratio lowers along time pass. It is risky to drop up existing efforts and build software from scratch using new programming models.\par
+\pard\qj\sl240\slmult1 \fi300 An acceptable tradeoff is to extend traditional programming languages to utilize proved achievements. Appearly, the advantage of this approach is that it can exploit multicores progressively. The knowldges and experiences of tranditional programmers are still useful; investment of legancy softwares are saved. In industry, OpenMP\~
+[{\field{\*\fldinst{\lang1024 REF BIB_openmp \\* MERGEFORMAT }}{\fldrslt{openmp}}}
+] and TBB\~
+[{\field{\*\fldinst{\lang1024 REF BIB_tbb \\* MERGEFORMAT }}{\fldrslt{tbb}}}
+] are successful cases.OpenMP provides parallel programming API in the form of compiler directives. TBB is a C++ library, consisting of concurrent containers and iterators. CUDA\~
+[{\field{\*\fldinst{\lang1024 REF BIB_cuda \\* MERGEFORMAT }}{\fldrslt{cuda}}}
+] extends C programming languate to describe groups of threads. The limitation of preceded approaches are platform or vendor dependent. OpenMP and TBB are for shared memory system system such as SMP, while CUDA is property programming model for specific GPU architectures. In academia, Sequoia\~
+[{\field{\*\fldinst{\lang1024 REF BIB_sequoia \\* MERGEFORMAT }}{\fldrslt{sequoia}}}
+] attemps to programming for memory hierarchy. it achieves parallelization by divide a task into subtasks hierarchically and then map subtasks on nodes of machines. Merge\~
+[{\field{\*\fldinst{\lang1024 REF BIB_merge \\* MERGEFORMAT }}{\fldrslt{merge}}}
+] implements map/reduce programming model for heterogeneous multicores. It relies on hierarchical division of task and predicate-based dispatch system to assign subtasks on matched multicore target at run time. Streamit\~
+[{\field{\*\fldinst{\lang1024 REF BIB_ThiesKA02 \\* MERGEFORMAT }}{\fldrslt{ThiesKA02}}}
+] compiler supports stream/kernel model for streaming computation. Runtime of Streamit takes charge of {\i fire}ing kernels for specific architectures. The shortcoming of academical approaches is that each one is capable of one type of parallel patterns. In a word, existing solutions are lack of uniform method to express multiple parallel patterns across various multicores.\par
+\pard\qj\sl240\slmult1 \fi300 Observably, except TBB is a pure library-based solution, aforementioned approaches need compilers to facilite their programming models. it is the ad-hoc approaches embedded into compilers restrict flexibility and extensibility. Therefore, we propose library-based programming model to support parallel programs for multicores. We exploit C++ metaprogramming techniques to perform source-to-source transformation in the unit of function. We use {\i task} to abstract computation-intensive and side-effect free function, which is a candidate for transformation. We extend C++ template specialization to new meaning, which specialize a task to a target\rquote s architecture. Through applying template classes, a task is transformed into many subtasks according to different parallel patterns, and then subtasks are executed in the form of threads. Template classes are implemented for different multicore architectures. As a result, porting from a platform to another only need to adjust template parameters or change implementation of template classes. The difference between TBB and our approach is that we utilize C++ template metaprogramming, so the transformations occur at compile time. Our approach can be regarded as complement of TBB.\par
+\pard\qj\sl240\slmult1 \fi300 Our approach is flexible and extensible. Both parallel patterns and execution models are provided as template classes, so programmers can parallelize tasks using more than one ways. In addtion, template classes are organized as template library. To exploit architectural features, facailite new parallel patterns and execution models, it is easy to extend library. We explore language capability limited in ISO standard C++\~
+[{\field{\*\fldinst{\lang1024 REF BIB_cpp98 \\* MERGEFORMAT }}{\fldrslt{cpp98}}}, {\field{\*\fldinst{\lang1024 REF BIB_cpp03 \\* MERGEFORMAT }}{\fldrslt{cpp03}}}, {\field{\*\fldinst{\lang1024 REF BIB_cpp0x \\* MERGEFORMAT }}{\fldrslt{cpp0x}}}
+], so it is applicable for platforms with standard-compilant C++ compilers. Most of platform-independent template classes can be reused. The limitation of our approach is that using template metaprogramming, only compile-time information are available. That inclues static constant values, constant expression and type information in C++. Therefore, our approach is not a general solution and orients for programs with rich static information. Fortuanately, it is not uncommon that this restriction is satisfied in the fields like embeded applications and scientific computation. Because the runtime of those programs with fixed parameters are significantly longer than compile time even time of writing programs, it will pay off if can resolve transformation at compile time. Besides, it is possible to utilize external tuning framework\~
+[{\field{\*\fldinst{\lang1024 REF BIB_tuningfrm \\* MERGEFORMAT }}{\fldrslt{tuningfrm}}}
+] to adjust parameters of static programs.\par
+\pard\qj\sl240\slmult1 \fi300 In sum, we proposed a template library-based programming model to help tailor programs to multicores. Programers using our approach apply template classes to tansform a task into a groups of subtasks on source-level, and then map subtasks on multicores. \par
+\pard\qj\sl240\slmult1 \fi300 The remaining parts of this paper are structured as follows. Section 2 presents our programming model. Section 3 introduces libvina \endash  a prototype library to facalitate our approach, and how user adapt their code to libina. Audiences with C++ template programming experiences and functional programming language concepts are helpful but not prerequisites. Experiments are in Section 4 to evaluate performance on both CPU and GPU. Section 5 summarizes some related works to support parallel programs for multicores. The last section is conclusion and future work.\par
+\pard\qj\sl240\slmult1 \sb240 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 2  Template-based Programming model\par
+}{\pard\qj\sl240\slmult1 \sb300 \fi0   \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_overview}1{\*\bkmkend BMfig_overview}: Overview of template-based programming model: Programers write side-effect free functions in C/C++, then encapsulate them into function wrappers. Template library regards a function wrapper as a task. Programers ulitize template library to transform a task into a group of subtasks, map task on physical multicores.}{\field{\*\fldinst TC "1 Overview of template-based programming model: Programers write side-effect free functions in C/C++, then encapsulate them into function wrappers. Template library regards a function wrapper as a task. Programers ulitize template library to transform a task into a group of subtasks, map task on physical multicores." \\f f}{\fldrslt }}\par
+}{\pard\qj\sl240\slmult1 \sb480 \fi0   \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_mmexample}2{\*\bkmkend BMfig_mmexample}: Matrix-multiplication(sgemm) division:Divide matrix-multiplication task into smaller subtasks. The division process is implemented by source code List. 1. Triple in figure represents task parameters (M, P, N), which means A[M][P] * B[P][N]. The figure is the result of parameterizing K = 2 }{\field{\*\fldinst TC "2 Matrix-multiplication(sgemm) division:Divide matrix-multiplication task into smaller subtasks. The division process is implemented by source code List. 1. Triple in figure represents task parameters (M, P, N), which means A[M][P] * B[P][N]. The figure is the result of parameterizing K = 2 " \\f f}{\fldrslt }}\par
+}\pard\qj\sl240\slmult1 \sb240 \fi0 Our approach utilizes C++ template mechanism to perform source-to-source transformation for multicores. We uses {\i tasks} to abstract side-effect free functions. A task is wrapped in the form of template class, named {\i function wrapper}. Tasks apply {\i TF classes} according to appropriate parallel patterns. This process is called as adaption. {\i TF classes} are able to manipulate tasks, which take responsiblilty for transforming a tasks into a group of subtasks. Each TF class represents a parallel pattern. Finally, we use {\i building blocks} to define execution models for specific multicore architectures. Both TF classes and Building blocks are template classes and are orangized as a library \endash  libvina. Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_overview \\* MERGEFORMAT }}{\fldrslt{?}}} depicts the diagram of template library-based programming model.\par
+{\pard\qj\sl240\slmult1 \fi0 \pard\ql\b0\i0\scaps0\f16 
+\par   template <class T, int M, int P, int N
+\par           template <class, class> 
+\par           class PRED/*predicate*/
+\par           int K,/*param to divide task*/>
+\par   struct SGEMM \{
+\par   typedef ReadView<T, M, P>  ARG0;
+\par   typedef ReadView<T, P, N>  ARG1;
+\par   typedef WriteView<T, M, N> RESULT;
+\par 
+\par   tyspedef SGEMM<T, M, P, N, PRED, K> SELF;
+\par   typedef TF_hierarchy<SELF, PRED> TF;
+\par 
+\par   void //interface for programmer
+\par   operator()(const Matrix<T, M, P>& A, 
+\par              const Matrix<T, P, N>& B,
+\par              Matrix<T, M, N>& C)
+\par   \{
+\par      TF::doit(A, B, C.SubViewW());
+\par   \}
+\par 
+\par   static void //static entry for TF
+\par   inner(ARG0 A, ARG1 B, RESULT C) \{
+\par      //lambda for iteration
+\par      auto subtask = [&](int i, int j) 
+\par      \{
+\par        Matrix<T, M/K, N/K> tmps[K];
+\par        //lambda for map
+\par        auto m = [&](int k) \{
+\par          TF::doit(
+\par             A.SubViewR<M/K,P/K>(i, k), 
+\par             B.SubViewR<P/K,N/K>(k, j),
+\par             tmps[k].SubViewW(i, j));
+\par        \};
+\par        par<par_tail, K, decltype(m)&>
+\par        ::apply(m);
+\par        reduce<K>(tmps, C[i][j]);
+\par     \};
+\par       
+\par      typedef decltype(subtask)& closure_t;
+\par      par< par<par_tail, K>, K, closure_t>
+\par      ::apply(par_lv_handler2(subtask));  
+\par    \}/*end func*/
+\par 
+\par    static void //static entry for TF
+\par    leaf(ARG0 A, ARG1 B, RESULT C)
+\par    \{
+\par      // compute matrix product directly
+\par      for (int i=0; i<M; ++i)
+\par        for (int j=0; j<N; ++j)
+\par          for (int k=0; k<P; ++k)
+\par            C[i][j]+=A[i][k]*B[k][j];
+\par    \}
+\par   \};
+\par \par
+}\pard\qj\sl240\slmult1 \sb60 \fi300 List. 1. Example code of sgemm: SGEMM class adapts TF_hierarchy class to implement matrix-multiplicaiton(sgemm task). {\i innner} at Line. 20 divides task into subtasks, while {\i leaf} at Line.45 performs computation. Call operator function at Line 14 is the user interface for the task. Line.24{{{\f6\'7E}}}37 is lambda to perform map/reduce, corrsponding to SGEMM(512, 512, 512) node in Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_mmexample \\* MERGEFORMAT }}{\fldrslt{?}}}\par
+\pard\qj\sl240\slmult1 \fi300 [1]\par
+{\pard\qj\sl240\slmult1 \fi0 \pard\ql\b0\i0\scaps0\f16 
+\par   //template full specialization
+\par   template<>
+\par   struct TF_pipeline<>
+\par   \{
+\par     //last stage defintions
+\par     //T* is the type of input
+\par     template<class T>
+\par     static void impl(T* in)
+\par     \{
+\par       //omit...
+\par     \}
+\par     template<class T>
+\par     static void 
+\par     doit(T * in)
+\par     \{
+\par       std::tr1::function<void (T*)> 
+\par         func(&(impl<T>));
+\par 
+\par     mt::thread_t thr(func, in);
+\par    \} 
+\par   \};
+\par 
+\par   //customize pipeline TF class
+\par   typedef TF_pipeline<
+\par     translate<Eng2Frn>,
+\par     translate<Frn2Spn>, 
+\par     translate<Spn2Itn>,
+\par     translate<Itn2Chn>
+\par   > MYPIPE;
+\par 
+\par   MYPIPE::doit(&input);
+\par \par
+}\pard\qj\sl240\slmult1 \sb60 \fi300 List. 2. Example code of langpipe: translation{{<}}AtoB{{>}} is template function, which is capable of translating string from language A to language B. TF class transform standalone functions into a pipeline. \par
+\pard\qj\sl240\slmult1 \fi300 Using our template-based programming model are free to choose ways to parallelize. An example using Sequoia\rquote s programming model is shown in Fig\~{\field{\*\fldinst{\lang1024 REF BMfig_mmexample \\* MERGEFORMAT }}{\fldrslt{?}}}. {\i sgemm} is a task to perform matrix mulitplication. We can apply a TF class dedicated to hierarchical division. List. 1 illustrate the adaption at Line.11. Beside, we building blocks {\i par} and {\i reduce} to express execution. As a result, we implement the straightforward {\i Divide-and-Conquer} algorithm for matrix-multiplicaiton. which divides matrix into K*K submatrices to compute them recursively, and then reduces the results. The decomposition rule and termination of recursion is programmed using template metaprogramming inside of the TF class. To demonstrate the more than one way of parallelization can be achieved in our programming model, List. 2 gives pipeline processing example similar to Streamit. It implements language translation pipeline by synthesizing 4 functions. TF_pipeline is a TF class representing this time-multiplex parallelism. As shown in examples, the paralllel patterns and execution models are dramatically differently, however, our approach can describling them well in uniform language constructs.\par
+\pard\qj\sl240\slmult1 \fi300 Our programming model facilitates to separate roles in software development. Algorithm-centric programmers only concern of algorithm in convential C/C++ form, as at Line.45 of List. 1 and Line.8 of List. 2. On the other side, system programmers known underlying architecture are in charge of developing and applying template class to specialize tasks for the concrete target. This separation not only solves the difficulties of writing and tuning parallel programs, but also facilitates programming model to develop effecient and portable parallel programs for multicores\par
+\pard\qj\sl240\slmult1 \sb240 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 3  Libvina: A template library\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 We implement a prototype template library, libvina, to demonstrate our approach. Libvina consists of 3 components: (1) Data structures, associated with static information as template parameters. (2) Building blocks, provide basic iterations to execute tasks (3) TF class, each one represents a parallel pattern. \par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 3.1  Data Structure\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 To leverage static information, libvina need to associate template parameters with ADTs\rquote  parameters. For example, for Matrix class, it cantains 3 template paramters: type, the number of row, the number of column. A definition of Matrix is at Line.31 of List. 1. \par
+\pard\qj\sl240\slmult1 \fi300 A {\i View} class is a concept to represent data set. Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_view \\* MERGEFORMAT }}{\fldrslt{?}}} depicts relationship of views in libvina. Concrete lines represent implicit conversion in C++, while dashed lines are explicit function calls to complete conversion. Text in edges are constraints when conversions perform. Line.38{{{\f6\'7E}}}42 of List. 1 generate subviews by calling functions. Shadow region is another thread space. The only approach to communicate with other threads is through a special kind of view called {\i ViewMT}. \par
+\pard\qj\sl240\slmult1 \fi300 The primary aim of view classes is to hide communication. Implementations have chance to optimize data movement according to archictures. {\i i.e.} shared memory systems\~
+[{\field{\*\fldinst{\lang1024 REF BIB_larrabee \\* MERGEFORMAT }}{\fldrslt{larrabee}}}
+] and communication-exposed multicores 
+[{\field{\*\fldinst{\lang1024 REF BIB_cellbe \\* MERGEFORMAT }}{\fldrslt{cellbe}}}, {\field{\*\fldinst{\lang1024 REF BIB_imagine \\* MERGEFORMAT }}{\fldrslt{imagine}}}
+] usually have differrent strategies. In addition, a view class is type-safed. Programmers can get compilation errors if they violate data access rules. Early errors are critical to prevent programmers from trapping into multithreaded bugs.\par
+{\pard\qj\sl240\slmult1 \sb240 \fi300  \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_view}3{\*\bkmkend BMfig_view}: View classes in libvina}{\field{\*\fldinst TC "3 View classes in libvina" \\f f}{\fldrslt }}\par
+}\pard\qj\sl240\slmult1 \sb360 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 3.2  Buiding Block\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 Table.\~{\field{\*\fldinst{\lang1024 REF BMtbl_bb \\* MERGEFORMAT }}{\fldrslt{?}}} lists a group of building blocks to execute tasks in libvina. To parallelize programs, we expect most of tasks are executed in SPMD (Single-Program-Multiple-Thread) using {\field{\*\fldinst EQ \\O(H, {\up6 {\field{\*\fldinst SYMBOL 38 \\f "MT Extra" \\h}{\fldrslt }}})}{\fldrslt }}owever, if it is not the case, we have to deal with dependences carefully to guarantee correctness. \par
+\pard\qj\sl240\slmult1 \fi300 Similar to constructs in traditional programming languages, our building blocks support nesting defintion. Both {\i seq} and {\i par} is interoperatable. {\i i.e.} we can define a block like {\par
+\pard\qj\sl240\slmult1 \fi0 \pard\ql\b0\i0\scaps0\f16 
+\par seq<par<par_tail, 4>, 3, F>::apply();
+\par \par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 to build to level-2 loop, and the nested loop are executed in parallel. Its equivalence in OpenMP is as follows: {\par
+\pard\qj\sl240\slmult1 \fi0 \pard\ql\b0\i0\scaps0\f16 
+\par int i, j;
+\par F f;
+\par for (i=0; i<3; ++i)
+\par \{
+\par   #pragma omp parallel private(j)
+\par   for (j=0; j<4; ++j) 
+\par     f(i, j);
+\par \}//implicit barrier
+\par \par
+}{\pard\qj\sl240\slmult1 \sb300 \fi0  \par
+\pard\qc\sl240\slmult1 \fi0 {Table {\*\bkmkstart BMtbl_bb}1{\*\bkmkend BMtbl_bb}: Build blocks in libvina}{\field{\*\fldinst TC "1 Build blocks in libvina" \\f t}{\fldrslt }}\par
+{\pard\qj\sl240\slmult1 \fi0 \par
+\trowd\clbrdrl\brdrs\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx2300\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx4600\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\qc {Name}\cell
+\pard\intbl\qc {Semantics}\cell
+\pard\intbl\ql {Example}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrr\brdrs\cellx2300\clbrdrr\brdrs\cellx4600\clbrdrr\brdrs\cellx6900
+\pard\intbl\qc {{\b seq{{<}}T, K, F{{>}}}}\cell
+\pard\intbl\qc {Iterate function {\i F} {\i K} times}\cell
+\pard\intbl\ql {seq{{<}}seq_tail, 5, F{{>}}}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx2300\clbrdrb\brdrs\clbrdrr\brdrs\cellx4600\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\qc {}\cell
+\pard\intbl\qc {}\cell
+\pard\intbl\ql {::apply();}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrr\brdrs\cellx2300\clbrdrr\brdrs\cellx4600\clbrdrr\brdrs\cellx6900
+\pard\intbl\qc {{\b par{{<}}T, K, F{{>}}}}\cell
+\pard\intbl\qc {Iterate function {\i F} {\i K} times}\cell
+\pard\intbl\ql {par{{<}}par_tail, 4, F{{>}}}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx2300\clbrdrb\brdrs\clbrdrr\brdrs\cellx4600\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\qc {}\cell
+\pard\intbl\qc {in parallel, explicit barrier}\cell
+\pard\intbl\ql {::apply();}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrr\brdrs\cellx2300\clbrdrr\brdrs\cellx4600\clbrdrr\brdrs\cellx6900
+\pard\intbl\qc {{\b reduce{{<}}K, F{{>}}}}\cell
+\pard\intbl\qc {reduce values using function {\i F}}\cell
+\pard\intbl\ql {reduce{{<}}8, F{{>}}}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx2300\clbrdrb\brdrs\clbrdrr\brdrs\cellx4600\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\qc {}\cell
+\pard\intbl\qc {}\cell
+\pard\intbl\ql {::apply(values)}\cell
+\row
+} \par
+}\pard\qj\sl240\slmult1 \sb360 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 3.3  TF class\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 TF class is the short form of {\i TRansformation class}. A side-effect free function is referred to as {\i task} in libvina. As a rule of thumb, computation-intensive functions are usually self-contained, {\i i.e.} external data references are limited and calling graphs of them are simple. Therefore, it\rquote s possible to decouple a task into a cluster of subtasks. The subtasks may be identical except for arguments and we can distribute subtasks on multicore to execute simultaneously. Another approach is to divide a complicated task into finer stages and run in pipeline manner to respect data locality and bandwidth. Two examples mentioned before follow the two patterns respectively. A {\i TF class} is a template class representing a parallel pattern which transforms a task to a group of subtasks in isomorphism.{\i i.e.} the transformed task has the same interface while owns a call graph inside to complete the original computation by a group of subtasks. \par
+\pard\qj\sl240\slmult1 \fi300 We implement two TF classes in libvina. it is noting that it is not necessary to use TF classes to perform source transformations. We encourage to do so because it has engineering advantage, which reduces effects of system programmers. {\par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 \bullet\tab TF_hierarchy It will recursively divide task into subtasks until predicate is evaluated as true. As Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_mmexample \\* MERGEFORMAT }}{\fldrslt{?}}} depicted, we use TF_hierarchy to implement programming model similar to Sequoia.\par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 \bullet\tab TF_pipeline Input arbirary number of functions, the template class can synthesize a call chain, and then execute them in order. Template parameter of class determines whether bind funcitons to threads. This is common pattern for streaming programming model. \par
+}\pard\qj\sl240\slmult1 \sb300 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 4  Adaption for Libvina\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 Programmers who apply our approach need to customize their source code to utilize Libvina. Technically speaking, we provide a group of {\i Concepts} in libvina to support transformations and expect programming to {\i Model} our template classes\~
+[{\field{\*\fldinst{\lang1024 REF BIB_tempmetaprog \\* MERGEFORMAT }}{\fldrslt{tempmetaprog}}}
+]. \par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 4.1  Function Wrapper\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 Function wrapper is an idiom in libvina. Our approach needs to manipulate template functions according to their template arguments. However, a template function is unaddressable until it is instantiated. So programmers have to bind their template functions to entries of classes. Either static function or call operator fuctions is okay though, there is tradeoff. Static function need to predine naming convention. {\i e.g.} TF_hierarchy use names {\i inner} and {\i leaf}. Call operator has unique name to call, so we leave it as user interface, at expense of runtime cost{\up16\chftn}
+{\*\footnote \pard\plain\s246\f13\fs20 {\up16\chftn}C++ does not allow overload call operator using static function, so we have to generate a object to call it.}
+. Line.14 of List. 1 is the case.\par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 4.2  Adaption for TF_hierarchy\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 Line.7{{{\f6\'7E}}}21 in List. 1 are adaption for TF_hierarchy. The codes define the type of subtask for SGEMM at Line.18. It is used as TASK template parameter for TF_hierarchy class. PRED template parameter at Line.21 is a predicate and TF_hierarchy class will evaluate it using SubARG0 and SubARG1. Line.37 calls customized TF class after dividing task. According to template argument, TF class determines whether reenter the static entry at Line.24 or enter {\i call} operator function at Line.58 to perform computaton. Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_hierarchy \\* MERGEFORMAT }}{\fldrslt{?}}} illustrates instantiation process of TF_hierarchy and the final result is depicted in Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_mmexample \\* MERGEFORMAT }}{\fldrslt{?}}}. {\par
+\pard\qj\sl240\slmult1 \sb240 \fi300   \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_hierarchy}4{\*\bkmkend BMfig_hierarchy}: Instantiation process of TF_hierarchy}{\field{\*\fldinst TC "4 Instantiation process of TF_hierarchy" \\f f}{\fldrslt }}\par
+}\pard\qj\sl240\slmult1 \sb360 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 4.3  Adaption for TF_pipeline\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 To leverage TF_pipeline, programmers have to provide a full specialization template class for it. It is because that TF_pipeline can only synthesize functions and execute it in seqence. It does not know how to process the output. A full specialization of TF_pipeline very defines this behavior and is called at last. For {\i langpipe} example, Line.2{{{\f6\'7E}}}20 is the case. Static entry at Line.13 is served for TF_pipeline. We spawn a thread to handle with the output of precious last stage. Line.23{{{\f6\'7E}}}28 is a usage of TF_pipeline with 4 standalone functions. All the stages including our customized one are separate threads so the pipeline is executed in nonblocking way. It is noteworthy that each function e.g {\i translate{{<}}Frn2Spn{{>}}} has to follow type interfaces and define dependences. In {\i lang_pipe} case, we utilize our ViewMT despicted in Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_view \\* MERGEFORMAT }}{\fldrslt{?}}}. ReadViewMT is only generated from WriteView and WriteViewMT. The first case represents initialization, while the second builds dependence transparently when type conversion occurs. We use signal mechanism to provoke downstreaming stages. Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_viewmt \\* MERGEFORMAT }}{\fldrslt{?}}} illustrates the scenario contains 3 threads.\par
+{\pard\qj\sl240\slmult1 \sb240 \fi300   \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_viewmt}5{\*\bkmkend BMfig_viewmt}: Pipelining functions using ViewMTs}{\field{\*\fldinst TC "5 Pipelining functions using ViewMTs" \\f f}{\fldrslt }}\par
+}\pard\qj\sl240\slmult1 \sb480 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 5  Implementation details\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 We implement all the functionalities described before using C++ template metaprogramming technique. The grand idea is to utilize template specialization and recursion to achieve control flow at compile time. Besides template mechanism, other C++ high level abstracts act important roles in our approach. Function object and bind mechnism is critical to postpone computation at proper place with proper enviroment\~
+[{\field{\*\fldinst{\lang1024 REF BIB_moderncpp \\* MERGEFORMAT }}{\fldrslt{moderncpp}}}
+]. To utilize nested buiding blocks, lambda expression {\i e.g.} Line.36{{{\f6\'7E}}}50 of List. 1 generate closure object\~
+[{\field{\*\fldinst{\lang1024 REF BIB_cpplambda \\* MERGEFORMAT }}{\fldrslt{cpplambda}}}
+] at current enviroment. If labmda is not available, the codes to implement same functionalities required complex function objects and not so straightforward.\par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 5.1  buiding block\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 Implemenation of building blocks are trivial. We use recursive calls to support nest. {\i seq} and {\i par} are interoperatable because we chose proper nested class before calling. It is worthy noting that building blocks are level awareless. The function object or cloure object need to be wrapped by loop-variable handlers. The handlers take responsibility for calculating loop variables in normalized form. It is only desirable for nest loop forms, e.g. Line.54 of List. 1. Because some function object such as clousure does not provide default constructor, we pass their references or right-value references. So the callsite is slight different from Table.\~{\field{\*\fldinst{\lang1024 REF BMtbl_bb \\* MERGEFORMAT }}{\fldrslt{?}}}. Building block {\i par} embeds OpenMP directive to run in parallel on CPU. On GPU, we use OpenCL API\~
+[{\field{\*\fldinst{\lang1024 REF BIB_opencl \\* MERGEFORMAT }}{\fldrslt{opencl}}}
+].\par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 5.2  TF class\par
+}\pard\qj\sl240\slmult1 \sb180 \fi0 {\s5\ql\sb240\sa60\keepn\f13\b\fs24 5.2.1  TF_hierarchy\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 We utilize predicate similar to merge\~
+[{\field{\*\fldinst{\lang1024 REF BIB_merge \\* MERGEFORMAT }}{\fldrslt{merge}}}
+] to generate subtask hierarchically. The major difference is that our predicate is {\i metafunction} and is evaluated at place ({\i e.g.} Line.3 below).\par
+\pard\qj\sl240\slmult1 \fi300 [1] {\par
+\pard\qj\sl240\slmult1 \fi0 \pard\ql\b0\i0\scaps0\f16 
+\par   template <class TASK,
+\par     template<class, class>  class PRED,
+\par     bool SENTINEL = PRED<ARG0, ARG1>::value>
+\par   struct TF_hierarchy\{...\}
+\par 
+\par   template <class TASK,
+\par     template<class, class>  class PRED>
+\par   struct TF_hierarchy<TASKtrue>
+\par   \{...\};
+\par \par
+}\pard\qj\sl240\slmult1 \sb180 \fi0 {\s5\ql\sb240\sa60\keepn\f13\b\fs24 5.2.2  TF_pipeline\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 We implement the TF class using variadic template\~
+[{\field{\*\fldinst{\lang1024 REF BIB_vartemp \\* MERGEFORMAT }}{\fldrslt{vartemp}}}
+]. The simplest implementation is listed as follows. It supports arbitrary number of function, only limited by compiler\rquote s the maximal level of template recursion. For C++ compilers don\rquote t support variadic template, there are workarounds to achieve the same effect, but quite tedious.\par
+\pard\qj\sl240\slmult1 \fi300 [1] {\par
+\pard\qj\sl240\slmult1 \fi0 \pard\ql\b0\i0\scaps0\f16 
+\par  template <class P, typename... Tail>
+\par   struct pipeline<P, Tail...> \{
+\par     typedef typename P::input_type in_t;
+\par     typedef typename P::output_type out_t;
+\par    
+\par     static out_t doit(in_t in)
+\par     \{
+\par      pipeline<Tail...>::doit( P::doit(in) );
+\par     \}
+\par   \};  
+\par \par
+}\pard\qj\sl240\slmult1 \sb300 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 6  Experiments and evalution\par
+}\pard\qj\sl240\slmult1 \sb180 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 {\*\bkmkstart BMsectn_method}6.1{\*\bkmkend BMsectn_method}  Methodology\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 We implement our library in ISO C++
+[{\field{\*\fldinst{\lang1024 REF BIB_c__03 \\* MERGEFORMAT }}{\fldrslt{c\\s\\do5({\fs16 \\s\\do4({\fs13 })})03}}}
+]. Theoretically, any standard-compliance C++ compiler should process our classes without trouble. New C++ standard (a.k.a C++0x)
+[{\field{\*\fldinst{\lang1024 REF BIB_c__0x \\* MERGEFORMAT }}{\fldrslt{c\\s\\do5({\fs16 \\s\\do4({\fs13 })})0x}}}
+] adds a lot of language features to ease template metaprogramming. Compilers without C++0x supports need some workarounds to pass compilation though, they do not hurt expressiveness. Consider the trend of C++, development of template library like libvina should become easier and smoother in the future. Currently, C++0x has been partially supported by some mainstreaming compilers. We developed the library and tested using GCC 4.5beta. The first implementation of OpenCL was shipped by Mac OSX 10.6. The GPU performance is collected on that platform.\par
+\pard\qj\sl240\slmult1 \fi300 A couple of algorithms are evaluated for our template approach. They are typical in image processing and scientific fields. In addition, we implemented a psuedo language translation program to illustrate pipeline processing. The programs in experiments are listed as follows:\par
+{\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 {{\i saxpy}}\tab Procedure in BLAS level 1. A scalar multiplies to a single precision vector, which contains 32 million elements. \par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 {{\i sgemm}}\tab Procedure in BLAS level 3. Two 4096*4096 dense matrices multiply. \par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 {{\i dotprod}}\tab Two vectors perform dot production. Each vector comprises 32 million elements. \par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 {{\i conv2d}}\tab 2-Dimensional convolution operation on image. The Image is 4094*4096 black-white format. Pixel is normalized as a single float ranging from 0.0 to 1.0. \par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 {{\i langpipe}}\tab Pseudo-Multi-language translation. A word is translated from one language A to language B, and then another function will translate it from language B to language C, etc. \par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 Two multicore platforms are used to conduct experiments. The hardware platforms are summed up in Table.\~{\field{\*\fldinst{\lang1024 REF BMtbl_mach \\* MERGEFORMAT }}{\fldrslt{?}}}\par
+{\pard\qj\sl240\slmult1 \sb240 \fi0  \par
+\pard\qc\sl240\slmult1 \fi0 {Table {\*\bkmkstart BMtbl_mach}2{\*\bkmkend BMtbl_mach}: Experimental platforms}{\field{\*\fldinst TC "2 Experimental platforms" \\f t}{\fldrslt }}\par
+{{\pard\qc\sl240\slmult1 \fi0 \par
+\trowd\clbrdrl\brdrs\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1150\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx2300\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx4600\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx5750
+\pard\intbl\ql {{\b name}}\cell
+\pard\intbl\ql {{\b type}}\cell
+\pard\intbl\ql {{\b processors}}\cell
+\pard\intbl\ql {{\b memory}}\cell
+\pard\intbl\ql {{\b OS}}\cell
+\pard\intbl\qr \cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrr\brdrs\cellx1150\clbrdrr\brdrs\cellx2300\clbrdrr\brdrs\cellx3450\clbrdrr\brdrs\cellx4600\clbrdrr\brdrs\cellx5750
+\pard\intbl\ql {harpertown}\cell
+\pard\intbl\ql {SMP}\cell
+\pard\intbl\ql {x86 quad-core}\cell
+\pard\intbl\ql {4G}\cell
+\pard\intbl\ql {Linux Fedora}\cell
+\pard\intbl\qr \cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1150\clbrdrb\brdrs\clbrdrr\brdrs\cellx2300\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrb\brdrs\clbrdrr\brdrs\cellx4600\clbrdrb\brdrs\clbrdrr\brdrs\cellx5750
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {server}\cell
+\pard\intbl\ql {2-way 2.0Ghz}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {kernel 2.6.30}\cell
+\pard\intbl\qr \cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrr\brdrs\cellx1150\clbrdrr\brdrs\cellx2300\clbrdrr\brdrs\cellx3450\clbrdrr\brdrs\cellx4600\clbrdrr\brdrs\cellx5750
+\pard\intbl\ql {macbookpro}\cell
+\pard\intbl\ql {laptop}\cell
+\pard\intbl\ql {x86 dual-core}\cell
+\pard\intbl\ql {2G}\cell
+\pard\intbl\ql {Mac OSX}\cell
+\pard\intbl\qr \cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrr\brdrs\cellx1150\clbrdrr\brdrs\cellx2300\clbrdrr\brdrs\cellx3450\clbrdrr\brdrs\cellx4600\clbrdrr\brdrs\cellx5750
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {2.63Ghz}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {Snowleopard}\cell
+\pard\intbl\qr \cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrr\brdrs\cellx1150\clbrdrr\brdrs\cellx2300\clbrdrr\brdrs\cellx3450\clbrdrr\brdrs\cellx4600\clbrdrr\brdrs\cellx5750
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {GPU 9400m}\cell
+\pard\intbl\ql {256M}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\qr \cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1150\clbrdrb\brdrs\clbrdrr\brdrs\cellx2300\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrb\brdrs\clbrdrr\brdrs\cellx4600\clbrdrb\brdrs\clbrdrr\brdrs\cellx5750
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {1.1Ghz}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\ql {}\cell
+\pard\intbl\qr \cell
+\row
+} \par
+}}\pard\qj\sl240\slmult1 \sb240 \fi0 On harpertown, we link Intel Math kernels to perform BLAS procedures except for conv2d. On macbookpro, we implemented all the algorithms on our own. For CPU platform, we link libSPMD thread library to perform computation. The library binds CPUs for each SPMD thread and switch to realtime scheduler on Linux. This configuration helps eliminate the impact of OS scheduler and other processes in the system. \par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s4\ql\sb240\sa60\keepn\f13\b\fs32 6.2  Evaluation\par
+}\pard\qj\sl240\slmult1 \sb180 \fi0 {\s5\ql\sb240\sa60\keepn\f13\b\fs24 6.2.1  Speedup of Hierarchical transformation on CPU\par
+}{\pard\qj\sl240\slmult1 \sb300 \fi0  \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_spdx86}6{\*\bkmkend BMfig_spdx86}: Speedup on Harpertown}{\field{\*\fldinst TC "6 Speedup on Harpertown" \\f f}{\fldrslt }}\par
+}\pard\qj\sl240\slmult1 \sb240 \fi0 Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_spdx86 \\* MERGEFORMAT }}{\fldrslt{?}}} shows the speedup on harpertown. The blade server contains two quad-core Xeon processors. We experiment SPMD transformation for algorithms. {\i saxpy} and {\i conv2d} apply {\i TF_mappar} while {\i dotprod} and {\i sgemm} apply {\i TF_mapreduce}.\par
+\pard\qj\sl240\slmult1 \fi300 We obverse good performance scalability for programs {\i conv2d} and {\i sgemm}. {\i conv2d} does not have any dependences and it can obtain about 7.3 times speedup in our experiments. sgemm needs an extra reduction for each division operation. The final speedup is about 6.3 times when all the cores are available. It is worth noting that we observe almost two-fold speedup from sequence to dual core. However, the speedup degrates to 3.3 time when execution environment change to 4-core. Harpertown consists of 2-way quad-core processors, Linux can not guarantee that 4 subprocedures are executed within a physical processor. Therefore, the cost of memory accesses and synchronization increases from 2-core to 4-core platform. \par
+{\i \pard\qj\sl240\slmult1 \fi300 dotprod} and {\i saxpy} reveal low speedup because non-computation-intensive programs are subject to memory bandwidth. In average, {\i saxpy} needs one load and one store for every two operations. {\i dotprod} has similar situation. They quickly saturate memory bandwidth for SMP system and therefore perform badly. Even though we fully parallelize those algorithms by our template library. \par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s5\ql\sb240\sa60\keepn\f13\b\fs24 6.2.2  Speedup of SPMD transformation on GPU\par
+}{\pard\qj\sl240\slmult1 \sb300 \fi0  \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_spdgpu}7{\*\bkmkend BMfig_spdgpu}: Speedup Comparing GPU with CPU}{\field{\*\fldinst TC "7 Speedup Comparing GPU with CPU" \\f f}{\fldrslt }}\par
+}\pard\qj\sl240\slmult1 \sb240 \fi0 Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_spdgpu \\* MERGEFORMAT }}{\fldrslt{?}}} shows SPMD transformation results for GPU on macbookpro. GPU\rquote s memory model has significantly different from GPU. TF_hierarchy makes little sense. So we directly use building block par to map on OpenCL\rquote s NDRangeKernel function. Programs run on host CPU in sequence as baseline. Embedded GPU on motherboard contains 2 SMs{\up16\chftn}
+{\*\footnote \pard\plain\s246\f13\fs20 {\up16\chftn}Streaming Multiprocessor, each SM consists of 8 scalar processors(SP)}
+. Porting from CPU to GPU, developer only need a couple of lines to change templates while keeping algorithms same {\up16\chftn}
+{\*\footnote \pard\plain\s246\f13\fs20 {\up16\chftn} Because GPU code needs special qualifiers, we did modify kernel functions a little manually. Algorithms are kept except for sgemm. It is not easy to work out sgemm for a laptop, so we added blocking and SIMD instruments for CPU.}
+. As figure depicted, computation-intensive programs {\i sgemm} and {\i conv2d} still maintain their speedups. 4.5 to 5 times performance boost is achieved for them by migrating to GPU. In addition, we observe about 2 times performance boost for {\i saxpy}. Nvidia GPUs execute threads in group of warp (32 threads) on hardware and it is possible to coalesce memory accesses if warps satisfy specific access patterns. Memory coalescence mitigates bandwidth issue occurred on CPU counterpart. Because our program of {\i dotprod} has fixed step to access memory which does not fit any patterns, we can not obtain hardware optimization without tweaking the algorithm.\par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s5\ql\sb240\sa60\keepn\f13\b\fs24 6.2.3  Comparison between different multicores\par
+}{\pard\qj\sl240\slmult1 \sb300 \fi0  \par
+\pard\qc\sl240\slmult1 \fi0 {Table {\*\bkmkstart BMtbl_sgemm}3{\*\bkmkend BMtbl_sgemm}: Comparison of sgemm on CPU and GPU}{\field{\*\fldinst TC "3 Comparison of sgemm on CPU and GPU" \\f t}{\fldrslt }}\par
+{\pard\qj\sl240\slmult1 \fi0 \par
+\trowd\clbrdrl\brdrs\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1725\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx5175\clbrdrt\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\ql {}\cell
+\pard\intbl\qr {baseline}\cell
+\pard\intbl\qr {CPU}\cell
+\pard\intbl\qr {GPU}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1725\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrb\brdrs\clbrdrr\brdrs\cellx5175\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\ql {{\b cores}}\cell
+\pard\intbl\qr {1 x86(penryn)}\cell
+\pard\intbl\qr {8 x86(harpertown)}\cell
+\pard\intbl\qr {2 SMs}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1725\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrb\brdrs\clbrdrr\brdrs\cellx5175\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\ql {{\b Gflops}}\cell
+\pard\intbl\qr {2.64}\cell
+\pard\intbl\qr {95.6}\cell
+\pard\intbl\qr {12.0}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1725\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrb\brdrs\clbrdrr\brdrs\cellx5175\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\ql {{\b effectiveness}}\cell
+\pard\intbl\qr {12.6%}\cell
+\pard\intbl\qr {74.9%}\cell
+\pard\intbl\qr {68.2%}\cell
+\row
+\trowd\clbrdrl\brdrs\clbrdrb\brdrs\clbrdrr\brdrs\cellx1725\clbrdrb\brdrs\clbrdrr\brdrs\cellx3450\clbrdrb\brdrs\clbrdrr\brdrs\cellx5175\clbrdrb\brdrs\clbrdrr\brdrs\cellx6900
+\pard\intbl\ql {{\b lines of function}}\cell
+\pard\intbl\qr {63}\cell
+\pard\intbl\qr {unknown}\cell
+\pard\intbl\qr {21}\cell
+\row
+} \par
+}\pard\qj\sl240\slmult1 \sb240 \fi0 Table.\~{\field{\*\fldinst{\lang1024 REF BMtbl_sgemm \\* MERGEFORMAT }}{\fldrslt{?}}} details {\i sgemm} execution on CPU and GPU. Dense matrix multiplication is one of typical programs which have intensive computation. Problems with this characteristic are the most attractive candidates to apply our template-based approach. Our template library transforms the {\i sgemm} for both CPU and GPU. We choose sequential execution on macbookpro\rquote s CPU as baseline. After mapping the algorithm to GPU, we directly obtains over 4.5 times speedup comparing with host CPU. Theoretically, Intel Core 2 processor can issue 2 SSE instructions per cycle, therefore, the peak float performance is 21 Gflops on host CPU. We obtain 2.64 Gflops which effectiveness is only 12.6% even we employ quite complicated implementation. On the other side, 12 Gflops is observed on GPU whose maximal performance is roughly 17.6 Gflops.{\up16\chftn}
+{\*\footnote \pard\plain\s246\f13\fs20 {\up16\chftn}{{17.6{\i G}{\i f}{\i l}{\i o}{\i p}{\i s}=1.1{\i G}{\i h}{\i z}*2({\i S}{\i M})*8({\i S}{\i P})}}. nVidia declared their GPUs can perform a mad(multiply-add op) per cycle for users who concern performance over precision. However, we can not observe mad hints bring any performance improvement in OpenCL. }
+ Although both column 2 and column 4 implement SIMD algorithm for {\i sgemm}, GPU\rquote s version is obviously easier and effective. It is due to the dynamic SIMD and thread management from GPU hardware\~
+[{\field{\*\fldinst{\lang1024 REF BIB_Fatahalian08 \\* MERGEFORMAT }}{\fldrslt{Fatahalian08}}}
+] can significantly ease vector programming. Programmer can implement algorithm in plain C and then replies on template transformation for GPU. Adapting {\i TF_mapreduce} template class for GPU only need tens of lines code efforts. Like GPU template, we apply {\i TF_mapreduce} to parallelize {\i sgemm} procedure in MKL for CPU. We observe 95.6 Gflops and about 75% effectiveness on harpertown server.\par
+\pard\qj\sl240\slmult1 \sb120 \fi0 {\s5\ql\sb240\sa60\keepn\f13\b\fs24 6.2.4  Pipeline Transformation for CPU\par
+}{\pard\qj\sl240\slmult1 \sb300 \fi0   \par
+\pard\qc\sl240\slmult1 \fi0 {Figure {\*\bkmkstart BMfig_pipe}8{\*\bkmkend BMfig_pipe}: Pipeline Processing for Psuedo Language Translation}{\field{\*\fldinst TC "8 Pipeline Processing for Psuedo Language Translation" \\f f}{\fldrslt }}\par
+}\pard\qj\sl240\slmult1 \sb240 \fi0 Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_pipe \\* MERGEFORMAT }}{\fldrslt{?}}} demonstrates pipeline processing using our template library. As described before, {\i langpipe} simulates a multilingual scenario. We apply template {\i TF_pipeline} listed in Fig.\~{\field{\*\fldinst{\lang1024 REF BMlst_pipe \\* MERGEFORMAT }}{\fldrslt{?}}}. In our case, the program consists of 4 stages, which can transitively translate English to Chinese{\up16\chftn}
+{\*\footnote \pard\plain\s246\f13\fs20 {\up16\chftn}follow the route: English {{{\f6\'AE}}} French {{{\f6\'AE}}} Spanish {{{\f6\'AE}}} Italian {{{\f6\'AE}}} Chinese}
+. Only the preceding stages complete, it can proceed with the next stages. The executing scenario is similar to Fig.\~{\field{\*\fldinst{\lang1024 REF BMfig_viewmt \\* MERGEFORMAT }}{\fldrslt{?}}}. We use bogus loop to consume {{{\i t} {\f6\'6D}{\i s}}} on CPU. For each {{{\i t}}}, we iterate 500 times and then calculate the average consumptive time on harpertown. For grained-granularity cases (20{{{\f6\'6D}{\i s}}}, 50{{{\f6\'6D}{\i s}}}, 100{{{\f6\'6D}{\i s}}}), we can obtain ideal effectiveness in pipelining when 4 cores are exposed to the system. {\i i.e.} our program can roughly output one instance every {{{\i t} {\f6\'6D}{\i s}}}. The speedup is easy to maintain when granularity is big. 100 {{{\f6\'6D}{\i s}}} case ends up 54 {{{\f6\'6D}{\i s}}} for each instance for 8 cores. 50 {{{\f6\'6D}{\i s}}} case bumps at 5 cores and then improves slowly along core increment. 20 {{{\f6\'6D}{\i s}}} case also holds the trend of first two cases. 5 {{{\f6\'6D}{\i s}}} case is particular. We can not observe ideal pipelining until all 8 cores are available. Our Linux kernel scheduler\rquote s granularity is 80 {{{\f6\'6D}{\i s}}} in default. We think that the very fine granular tasks contend CPU resources in out of the order. The runtime behavior presumably incurs extra overhead. Many cores scenario helps alleviate the situation and render regular pipeline processing.\par
+\pard\qj\sl240\slmult1 \sb240 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 7  Related work\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 As mentioned before, it is desirable to extend conventional programming languages to reflects new hardwares. Researches in the field have two major directions: {\par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 1.\tab providing new library to support programming for concurrency \par
+\pard\qj\sl240\slmult1 \sb50 \li600\fi-300 2.\tab extending language constructs to extend parallel semantics \par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 First, library is a common method to extend language capability without modifying grammar. Pthread library is a {\i de facto} standard for multi-threading on POSIX-compatible systems. The relationship between pthread and native thread is straightforward. Therefore, abstraction of pthread is far away from expressing parallelism and concurrency naturally. Furthermore, the implementation of thread on hardware is undefined in the standard, so it can not guarantee performance or even correctness on some architectures 
+[{\field{\*\fldinst{\lang1024 REF BIB_Boehm05 \\* MERGEFORMAT }}{\fldrslt{Boehm05}}}
+]. C++ community intend to develop parallel library while bearing generic programming in mind. TBB has a plenty of containers and building blocks similar to the components in libvina. Entities including partitioner and scheduler in TBB are created at run time. In that case, key data structures have to be thread-safe. Although TBB exploits task parallelism or other sophisticated concurrency on general purpose processors, the runtime overhead is relative high in data parallel programs, especially in the scenario that many lightweight threads are executing by hardware. Template-based approach we proposed is orthogonal to runtime parallel libraries. We only explore parallelism which can be determined at compile time, developers feel free to deploy other ways such as TBB to farther improve programs.\par
+\pard\qj\sl240\slmult1 \fi300 The second choice for language community is to extend language constructs by modifying compiler. They add directive or annotation to help compiler transform source code. OpenMP\~
+[{\field{\*\fldinst{\lang1024 REF BIB_openmp \\* MERGEFORMAT }}{\fldrslt{openmp}}}
+] compilers transform sequential code into multi-threaded equivalence. The run-time is usually provides in the form of dynamic link library. Although it is simple and portable, the performance is not optimal in most cases. Moreover, a handful of directives in OpenMP leave small room for further improving performance or scaling up to larger systems. Hybrid OpenMP with MPI is possible though, difficulties surge. Sequoia supports programming memory hierarchy. First of all, It targets execution environment as a tree of machines, which an individual machine owns its storage and computation unit. Second, it transforms a {\i task} into a cluster of {\i variants}. Target machine is described in XML files. 
+[{\field{\*\fldinst{\lang1024 REF BIB_sequoia \\* MERGEFORMAT }}{\fldrslt{sequoia}}}, {\field{\*\fldinst{\lang1024 REF BIB_sequoia_compiler \\* MERGEFORMAT }}{\fldrslt{sequoia\\s\\do5({\fs16 c})ompiler}}}
+] report that Sequoia can transform programs for CellBE, cluster while keeping competitive performance. That is at expense of implementing one compiler for each platforms. The primary drawback of Sequoia is that its language constructs can not cover common parallel patterns such as pipeline or task queue. Besides, sequoia compiler ignores type information to select optimal implementation. Merge\~
+[{\field{\*\fldinst{\lang1024 REF BIB_merge \\* MERGEFORMAT }}{\fldrslt{merge}}}
+] features a uniform runtime environment for heterogeneous multicore systems in forms of task and variant. However, Merge only support {\i map-reduce} programming model. Its run-time overhead is not negligible for fine-granularity parallelism. Methods mentioned before all need non-trivial efforts to modify compilers. As discussed in 
+[{\field{\*\fldinst{\lang1024 REF BIB_sequoia \\* MERGEFORMAT }}{\fldrslt{sequoia}}}
+], the authors of the Sequoia were still not clear whether the minimal set of primitives they provided provides can sufficiently express dynamic applications. We doubt if it is worthwhile to invest a compiler given the fact that template library can also achieve the same functionalities.\par
+\pard\qj\sl240\slmult1 \sb240 \fi0 {\s3\ql\sb240\sa60\keepn\f13\b\fs32 8  Discussion and Future work\par
+}\pard\qj\sl240\slmult1 \sb60 \fi0 The silicon industry has chosen multicore as new direction. However, diverging multicore architectures enlarge the gap between algorithm-centric programmers and computer system developers. Conventional C/C++ programming language can not reflect hardware. Existing ad-hoc techniques or platform-dependent programming language pose issues of generality and portability. \par
+\pard\qj\sl240\slmult1 \fi300 We present a template metaprogramming approach to perform source-to-source transformation for programs with rich information. Because it applies metaprogramming technique, template library is flexible enough to apply more than one parallel pattern and execution model. In addition, our approach is extensible. Instead of modifying a compiler to add annotations or language constructs, we implement the whole functionalities with ISO C++. Template metaprogramming is intimate for C++ programmers so they can extend the library to facilitate proper parallel patterns and new architectural features. Experiments shows that our template approach can transform algorithms into SPMD threads with competitive performance. These transformation are available for both CPU and GPU, the cost of migration is manageable. Beside, we can apply hierarchical division for programs on CPU. We also transform a group of standalone functions into a pipeline using our template library. It demonstrates that template metaprogramming is powerful enough to support more than one way to parallelize for multicore.\par
+\pard\qj\sl240\slmult1 \fi300 Streaming is an important computation model for innovative multicore architectures. We partially exploit GPU functionality in this paper though, transformation for GPU is quite straightforward. It is still unclear how many efforts need to pay for a full-blown template library, which support streaming computation.\par
+\pard\qj\sl240\slmult1 \fi300 Currently, kernel functions in GPU prohibit recursion. So we believe that it is beneficial to introduce template recursion for GPU kernel functions. TF classes which support strip-mined memory access and loop iteration transformation are particularly attractive for GPU targets because because GPUs provide memory coalescence for specific access patterns.\par
+\pard\qj\sl240\slmult1 \fi300 On CPU, source-to-source transformation should go on improving data locality of programs. We plan to explore template approach to generalize blocking and tiling techniques. It is also possible to re-structure or prefetch data using template metaprograming accompanying with runtime library.\par
+\pard\qj\sl240\slmult1 \fi300 General applications also contain a variety of static information to optimize.The problem is that their memory footprints are irregular and very hard to identify. It is desirable to explores new TF classes to facilitate transforming source code close to target architectures using the static information.\par
+}}
