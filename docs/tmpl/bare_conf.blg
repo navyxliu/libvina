@@ -16,45 +16,45 @@ Warning--empty journal in c++0x
 Warning--empty journal in opencl
 
 Done.
-You've used 21 entries,
+You've used 24 entries,
             4024 wiz_defined-function locations,
-            926 strings with 11077 characters,
-and the built_in function-call counts, 13783 in all, are:
-= -- 1009
-> -- 371
-< -- 87
-+ -- 197
-- -- 72
-* -- 648
-:= -- 2039
-add.period$ -- 49
-call.type$ -- 21
-change.case$ -- 20
-chr.to.int$ -- 204
-cite$ -- 29
-duplicate$ -- 1041
-empty$ -- 1232
-format.name$ -- 84
-if$ -- 3163
+            944 strings with 11673 characters,
+and the built_in function-call counts, 16587 in all, are:
+= -- 1225
+> -- 443
+< -- 114
++ -- 237
+- -- 84
+* -- 782
+:= -- 2425
+add.period$ -- 57
+call.type$ -- 24
+change.case$ -- 23
+chr.to.int$ -- 270
+cite$ -- 32
+duplicate$ -- 1240
+empty$ -- 1469
+format.name$ -- 98
+if$ -- 3824
 int.to.chr$ -- 0
-int.to.str$ -- 21
-missing$ -- 202
-newline$ -- 92
-num.names$ -- 20
-pop$ -- 544
+int.to.str$ -- 24
+missing$ -- 237
+newline$ -- 101
+num.names$ -- 23
+pop$ -- 628
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 1036
+skip$ -- 1246
 stack$ -- 0
-substring$ -- 501
-swap$ -- 761
-text.length$ -- 19
+substring$ -- 658
+swap$ -- 928
+text.length$ -- 24
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 21
+type$ -- 24
 warning$ -- 8
-while$ -- 56
-width$ -- 23
-write$ -- 205
+while$ -- 71
+width$ -- 26
+write$ -- 234
 (There were 8 warnings)

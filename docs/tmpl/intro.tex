@@ -18,7 +18,7 @@ efficient applications which can take advantage of various multicores.
 
 %need new programming model
 In essence, it is because plain C/C++ programming languages
-can not reflect contemporary architectures. Traditionally, programmers
+can not reflect contemporary architectures~\cite{cml}. Traditionally, programmers
 describe algorithms in sequential logics, and then resort to  compiler
 and hardware optimization to deliver modest performance relative to
 their machines. In multicore era, this classic programming model gains
@@ -27,7 +27,8 @@ of multicores while hiding architectural features.
 
 % to aggresssive is not feasible
 Although researches on revolutionary programming models have obtained
-fruitful achievements, they are limited in specific domains~\cite{gmapreduce}.
+fruitful achievements, they are limited in specific
+domains~\cite{gmapreduce, erlang, haskell}.
 One critical issue hinders them from applying in general programming
 field is that one programming model can only
 benefit a small group of users. It is still unclear what
@@ -46,7 +47,7 @@ An acceptable tradeoff is to extend traditional programming
 languages to utilize effective parallel patterns. Appearently, the advantage of
 this approach is that it can exploit multicores progressively. Thus the
 knowledges and
-experiences of traditional programmers are still useful; investment
+experiences of traditional programmers are still useful, and investment
 of legacy software is saved. In industry, OpenMP~\cite{openmp}  and
 TBB~\cite{tbb} are successful cases. OpenMP provides parallel
 programming API in the form of compiler directives. TBB is a C++ library, consisting of concurrent containers and
@@ -119,11 +120,11 @@ and then map them on specific multicores to run simultaneously.
 
 %organization structure
 The remaining parts of this paper are structured as follows.
-Section.~\ref{sec:model} presents our programming model. Section.~\ref{sec:lib} introduces libvina
+Section~\ref{sec:model} presents our programming model. Section~\ref{sec:lib} introduces libvina
 -- a prototype library to facilitate template-based programming model.
-Section.~\ref{sec:adaption} is how programers adapt their source codes to libvina. Section.~\ref{sec:details} gives details of
-implemetation of our library. Section.~\ref{sec:eval}
+Section~\ref{sec:adaption} is how programers adapt their source codes to libvina. Section~\ref{sec:details} gives details of
+implemetation of our library. Section~\ref{sec:eval}
 evaluates performance on both CPU and GPU using our approach.
-Section.~\ref{sec:related} summarizes related work to support parallel programs
-for multicores. Section.~\ref{sec:con} is disscussion and future work.
+Section~\ref{sec:related} summarizes related work to support parallel programs
+for multicores. Section~\ref{sec:con} is disscussion and future work.
 
