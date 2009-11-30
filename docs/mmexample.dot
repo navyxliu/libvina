@@ -1,0 +1,47 @@
+digraph SGEMM {
+        edge [fontsize=8, fontname="Times-Italic"]
+
+        node [shape=box]
+        ROOT[label="SGEMM (4K,4K,4K)" shape=box]
+
+        NODE0 [label="SGEMM (2K,2K,2K)"]
+        NODE1 [label="SGEMM (2K,2K,2K)"]
+        NODE2 [label="SGEMM (2K,2K,2K)"]
+        NODE3 [label="SGEMM (2K,2K,2K)"]
+      
+        ROOT  -> NODE0
+        ROOT  -> NODE1
+        ROOT  -> NODE2
+        ROOT  -> NODE3
+
+        //node [fontsize=8, fontname="Times-Italic"]
+       { 
+        rank=same
+        //NODE_low_left[style=invis]
+        NODE_low[label="SGEMM (512,512,512)"]
+        //NODE_low_right[style=invis]
+       }
+
+       //{
+       // NODE_low_left -> NODE_low[style=dotted dir=none]
+       // NODE_low -> NODE_low_right[style=dotted dir=none]
+       //}
+        {
+         rank=same
+        LEAF0[label="SGEMM (216,216,216)"]
+        LEAF1[label="SGEMM (216,216,216)"]
+        } 
+
+        NODE_low -> LEAF0
+        NODE_low -> LEAF1
+        
+        NODE1 -> NODE_low [style=dotted penwidth=2 dir=none]
+        {
+        rank=same 
+        reduce0 [label="reduce:add" shape=ellipse]
+        LEAF0->LEAF1 [style=invis]
+        LEAF0->reduce0 [style=dashed]
+        LEAF1->reduce0 [style=dashed]
+        }
+ 
+}

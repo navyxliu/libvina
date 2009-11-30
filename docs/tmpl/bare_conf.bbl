@@ -21,9 +21,27 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{cml}
+W.~Thies, M.~Karczmarek, M.~Gordon, D.~Maze, J.~Wong, H.~Hoffmann, M.~Brown,
+  and S.~Amarasinghe, ``A common machine language for grid-based
+  architectures,'' \emph{SIGARCH Comput. Archit. News}, vol.~30, no.~3, pp.
+  13--14, 2002.
+
 \bibitem{gmapreduce}
 J.~Dean and S.~Ghemawat, ``Mapreduce: simplified data processing on large
   clusters,'' \emph{Commun. ACM}, vol.~51, no.~1, pp. 107--113, 2008.
+
+\bibitem{erlang}
+J.~Armstrong, ``The development of erlang,'' in \emph{ICFP '97: Proceedings of
+  the second ACM SIGPLAN international conference on Functional
+  programming}.\hskip 1em plus 0.5em minus 0.4em\relax New York, NY, USA: ACM,
+  1997, pp. 196--203.
+
+\bibitem{haskell}
+S.~Peyton~Jones, A.~Gordon, and S.~Finne, ``Concurrent haskell,'' in \emph{POPL
+  '96: Proceedings of the 23rd ACM SIGPLAN-SIGACT symposium on Principles of
+  programming languages}.\hskip 1em plus 0.5em minus 0.4em\relax New York, NY,
+  USA: ACM, 1996, pp. 295--308.
 
 \bibitem{openmp}
 \BIBentryALTinterwordspacing
