@@ -78,14 +78,15 @@ LDFLAGS+=$(MTSUPPORT)
 #endif
 
 AUX_OBJS = profiler.o toolkits.o mtsupport.o
-OBJS = mat_mul.o lang_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o tpbench.o test_cl.o
+OBJS = mat_mul.o lang_pipe.o dot_prod.o saxpy.o conv2d.o mm_omp.o tpbench.o test_cl.o sgemm.o
 OBJS += $(AUX_OBJS)
 
 all: mat_mul lang_pipe dot_prod conv2d saxpy tpbench
 
 mat_mul: mat_mul.o $(AUX_OBJS) 
 	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
-
+sgemm: sgemm.o $(AUX_OBJS)
+	$(CXX) -o $@ $< $(AUX_OBJS) $(LDFLAGS)
 #matrix muliplication with openmp mlk
 mm_omp: mm_omp.o
 	$(CXX) -o $@ $< $(AUX_OBJS) $(MKLLIB_P) -lrt $(BOOSTLIB)
