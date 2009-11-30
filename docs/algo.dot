@@ -1,0 +1,10 @@
+digraph G_algo{
+  node [shape=box]
+  
+  prime [label="Prime template\nTASK::inner"]
+  spec  [label="Partial specialization\nTASK::leaf\n"]
+  
+  prime : s -> prime : n [label="Predicate:FALSE"]
+  
+  prime -> spec [label="Predicate:TRUE"]
+}
