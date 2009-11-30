@@ -1,6 +1,6 @@
 digraph G_VIEWS {
 
-	edge [fontsize=8, fontname="Times-Italic"]
+	edge [fontsize=15, fontname="Times-Italic"]
 	//label="Relationship of entities and views"
 
         Entity[label="Vector or Matrix, etc.",
@@ -12,12 +12,20 @@ digraph G_VIEWS {
 		ReadView;
 		WriteView;
 	}
-	Entity -> ReadView[label="size--"];
-	Entity -> WriteView [label="size--", style=dashed];
+	//Entity -> ReadView[label="size--"];
+	Entity -> ReadView;
+	//Entity -> WriteView [label="size--", style=dashed];
+	Entity -> WriteView [style=dashed];
 
-	ReadView -> ReadView[label="size--"];
-	WriteView : sw-> WriteView : nw [label="size--", style=dashed];
-	WriteView -> ReadView[label="writer's size >= reader's size"]
+	//ReadView -> ReadView[label="size--"];
+        ReadView : se -> ReadView : ne
+
+	//WriteView : sw-> WriteView : nw [label="size--", style=dashed];
+	WriteView : sw-> WriteView : nw [style=dashed];
+
+
+	//WriteView -> ReadView[label="writer's size >= reader's size"]
+	WriteView -> ReadView
 
 	subgraph cluster0 {
 		label="other thread space"
@@ -30,14 +38,18 @@ digraph G_VIEWS {
 			WriteViewMT;
 		}
 		
-		WriteView -> WriteViewMT[label="writer's size >= writerMT's size,\nwriterMT.signal:=writer", labelfloat=false, style=dashed]
-                ReadView  -> ReadViewMT[label="reader's size >= readerMT's size", labelfloat=false, style=dashed]
+		//WriteView -> WriteViewMT[label="writer's size >= writerMT's size,\nwriterMT.signal:=writer", labelfloat=false, style=dashed]
+		WriteView -> WriteViewMT[label="writerMT.signal:=writer.getSignal()", labelfloat=false, style=dashed]
 		
+                //ReadView  -> ReadViewMT[label="reader's size >= readerMT's size", labelfloat=false, style=dashed]
+                ReadView  -> ReadViewMT[labelfloat=false, style=dashed]
 
-		ReadViewMT->WriteView[label="writer's size >= readerMT's size,\nreaderMT.signal:=writer", labelfloat=false, dir=back, style=dashed]
+
+		//ReadViewMT->WriteView[label="writer's size >= readerMT's size,\nreaderMT.signal:=writer", labelfloat=false, dir=back, style=dashed]
+		ReadViewMT->WriteView[label="readerMT.signal:=writer.genSignal()", labelfloat=false, dir=back, style=dashed]
 
 
-		WriteViewMT -> ReadViewMT[label="writerMT's size >= readerMT's size,\nreaderMT.signal:=writerMT.signal", constraint=false]
-
+		//WriteViewMT -> ReadViewMT[label="writerMT's size >= readerMT's size,\nreaderMT.signal:=writerMT.signal", constraint=false]
+		WriteViewMT -> ReadViewMT[label="readerMT.signal:=writerMT.signal", constraint=false]
 	}
 }

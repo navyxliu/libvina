@@ -10,3 +10,5 @@ draft: *.tex ../*.bib
 	-make paper -s
 	mv bare_conf.pdf draft-`date +%y_%m_%d`.pdf
 	mv bare_conf.tex.backup bare_conf.tex
+clean:
+	-rm -f bare_conf.pdf bare_conf.aux 
