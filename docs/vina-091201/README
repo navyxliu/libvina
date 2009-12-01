@@ -1,0 +1,14 @@
+This paper is close to complete under this dir.
+It's supposed to summit HIPS 2010.
+The future work will go on:
+i) comparing with TBB
+ii) building a heteregenous muliticore framework(cpu+gpu). e.g. image processing app
+
+Heartful thanks for:
+Dr.Zhou jy helped me restructure the contends.
+Zhangdq gave me numerous helpful advices to improve quality.
+Dr.Guo gave me invaluable instructions.
+
+
+1.Dec.2009
+xliu

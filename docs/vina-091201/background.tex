@@ -1,0 +1,100 @@
+\section{Background}\label{sec:background}
+\begin{figure*}
+  % Requires \usepackage{graphicx}
+  \centering
+  \includegraphics[width=0.731\textwidth]{../fig/algorithm}
+  \vspace{-2ex}\caption{Deriving CFSF from traditional CF approaches}\label{fig:cfsf}
+  \label{fig:algorithm}
+  \vspace{-2ex}
+\end{figure*}
+
+Recommender systems aim at predicting the rating of active item $i_a$
+made by active user $u_b$ from user profiles. These profiles are
+represented as a $Q \times P$ item-user matrix $X$, where $Q$ and $P$
+are the sizes of $X$. In this section, we introduce notations for CF.
+Let
+\begin{itemize}
+  \item $\mathcal{I}$ = $\{i_1, i_2, \ldots, i_Q\}$ and
+      $\mathcal{U}$ = $\{u_1, u_2, \ldots, u_P\}$ be the sets of
+      items and users in $X$,
+  \item $\{C_u^{1}, C_u^{1}, \ldots, C_u^{L}\}$ be $L$ user
+      clusters, and users in each cluster share some similar
+      tastes,
+  \item $I\{u\}$, $I\{C_u\}$ and $U\{i\}$ be the set of items rated
+      by user $u$, the set of items rated by user cluster $C_u$,
+      and the set of users who have rated item $i$,
+  \item $r_{u_b, i_a}$ denote the score that user $b$ rates item
+      $a$, $\overline{r_{i_a}}$ and $\overline{r_{u_b}}$ represent
+      the average ratings of item $i_a$ and user $u_b$,
+  \item $SI$, $SU$ and $SUI$ be the sets of the similar items,
+      like-minded users, and similar items and like-minded users,
+  \item $SIR$, $SUR$ and $SUIR$ denote predicting user preferences
+      over the entire item-user matrix from the ratings of the same
+      user make on the similar items, the like-minded users make on
+      the same item, and the like-minded users make on the similar
+      items,
+  \item $SR$ represent predicting user preferences from all the
+      ratings, i.e., $SIR$, $SUR$ and $SUIR$,
+  \item $SIR'$, $SUR'$, $SUIR'$ and $SR'$ be the counterparts of
+      $SIR$, $SUR$, $SUIR$ and $SR$, but they are calculated over
+      the local item-user matrix.
+  \end{itemize}
+Then, the item vector of the matrix $X$ is: $$X_i=[i_1, i_2, \cdots,
+i_Q],  i_q=[r_{1,q}, \cdots, r_{P, q}]^T,$$ where $q \in [1,Q]$. Each
+column vector $i_m$ corresponds to the ratings of a particular item $m$
+by $P$ users. Matrix $X$ can also be represented by user vectors
+illustrated as: $$X_u=[u_1, u_2, \cdots, u_P]^T, u_p=[r_{p,1}, \cdots,
+r_{p, Q}]^T,$$ where $p \in [1,P]$. Each row vector $u_p^T$ indicates a
+user profile that represents a particular user's item ratings.
+Item-based CF approaches, illustrated as Fig.~\ref{fig:algorithm}a,
+find the similar items among item vectors and then use their ratings
+made by the same user to predict his or her preferences. For example,
+given an active item $i_a$ and a user $u_b$, Eq.~\ref{eq:d-icf} denotes
+the mechanism of item-based CF approaches, where $sim_{i_a, i_c}$ is
+the similarity of items $i_a$ and $i_c$, and is usually computed by
+Pearson Correlation Coefficient (PCC) or Vector Space Similarity (VSS).
+\begin{equation}\label{eq:d-icf}
+    SIR: \widehat{r_{u_b, i_a}} \longleftarrow
+    \frac{\sum\limits_{i_c \in SI}{sim_{i_a, i_c}}
+    \cdot r_{u_b, i_c}}{\sum\limits_{i_c \in SI}{sim_{i_a, i_c}}}
+\end{equation}
+
+%The existing item-based CF approaches focus on two aspects to improve accuracy~\cite{Linden:Amazon@2003, Sarwar:WWW01@2001}.
+%One is removing the rating diversity in items and users (e.g., some items incline to obtain high ratings from users and some
+%users tend to give high ratings to items) by exploiting similarity functions. The other is selecting top $M$ most similar items
+%for prediction.
+
+Alternatively, user-based CF approaches take advantage of the similar
+motivation to predict user preferences, where the ratings of
+like-minded users make on the active item are used. Eq.~\ref{eq:d-ucf}
+shows the mechanism of user-based CF approaches, where $sim_{u_b, u_c}$
+is similarity of users $u_b$ and $u_c$.
+\begin{equation}\label{eq:d-ucf}
+    SUR: \widehat{r_{u_b, i_a}} \longleftarrow \frac{\sum\limits_{u_c \in SU}{sim_{u_b, u_c}}
+    \cdot r_{u_c, i_a}}{\sum\limits_{u_c \in SU}{sim_{u_b, u_c}}}
+\end{equation}
+
+Both item-based and user-based CF approaches do not consider $SUIR$
+that is heuristic for accuracy improvement. Let $i$ be a similar item
+to $i_a$ and $u$ be a like-minded user to $u_b$, $SUIR$ is calculated
+as Eq.~\ref{eq:d-suir}.
+\begin{equation}\label{eq:d-suir}
+    SUIR: \widehat{r_{u_b, i_a}} \longleftarrow \frac{\sum\limits_{u, i \in SUI}
+    {sim_{(i, i_a), (u, u_b)} \cdot r_{u, i}}}{\sum\limits_{u, i \in SUI}{sim_{(i, i_a), (u, u_b)}}},
+\end{equation}
+where $sim_{(i, i_a), (u, u_b)}$ is the weight for the rating user $u$
+makes on item $i$, denoting how much the rating $r_{u, i}$ is
+considered in prediction. It is defined as Eq.~\ref{eq:simsui} in CFSF.
+
+
+UI-based CF approaches~\cite{Ma2007@SIGIR,wangjun:CF@2006} have been
+proposed to combine $SIR$, $SUR$ and $SUIR$, given as
+Eq.~\ref{eq:d-ui}.
+\begin{equation}\label{eq:d-ui}
+  SR: \widehat{r_{u_b, i_a}} \longleftarrow \pounds \{SIR, SUR, SUIR\}
+\end{equation}
+where $\pounds$ is a fusion function that fuses the ratings from $SIR$,
+$SUR$ and $SUIR$, whose mechanisms are illustrated as
+Fig.~\ref{fig:algorithm}a. Due to the time-consuming search for active
+items and users over the entire item-user matrix, all memory-based CF
+approaches achieve limited scalability.
