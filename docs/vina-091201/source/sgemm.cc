@@ -15,12 +15,12 @@
              const Matrix<T, P, N>& B,
              Matrix<T, M, N>& C)
   {
-     auto wview = C.subViewW();
-     TF::doit(A, B, wview);
+     TF::doit(A, B, C.SubViewW());
   }
 
   static void //static entry for TF
   inner(ARG0 A, ARG1 B, RESULT C) {
+     //define SubTask here
      typedef SGEMM<T, M/K, P/K, N/K, PRED, K>
      SubTask;
      typedef typename SubTask::TF SubTF;
@@ -29,18 +29,21 @@
      //lambda for iteration
      auto subtask = [&](int i, int j) 
      {
-       SubMatrix tmps;
-       //lambda for map
+       SubMatrix tmps[K];
+       //lambda for division
        auto m = [&](int k) {
+         tmps[k].zero(); //initialize
          SubTF::doit(
-            A.SubViewR<M/K,P/K>(i, k), 
-            B.SubViewR<P/K,N/K>(k, j),
-            tmps[k].SubViewW(i, j));
+            A.template SubViewR<M/K,P/K>(i, k), 
+            B.template SubViewR<P/K,N/K>(k, j),
+            tmps[k].SubViewW());
        };
-       //map k operations, and then 
+       //perform k operations
        par<par_tail, K, decltype(m)&>
        ::apply(m);
-       reduce<K, plus<SubMatrix>>(tmps, C[i*M/K][j*N/K]);
+       //sum up temporaries to submatrix of C. 
+       reduce<K, plus<SubMatrix>>
+       (tmps, C.template<M/K, N/K>SubViewW(i, j));
     };
      //calculate each submatrix in parallel 
      typedef decltype(subtask)& closure_t;

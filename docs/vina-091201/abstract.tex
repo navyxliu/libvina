@@ -1,0 +1,38 @@
+\begin{abstract}
+Collaborative Filtering (CF) has achieved widespread success in
+recommender systems, such as Amazon and Yahoo! music. However, CF
+usually suffers from two fundamental problems - data sparsity and
+limited scalability. Among the two broad classes of CF approaches,
+namely, memory-based and model-based, the former usually falls short of
+the system scalability demands, because these approaches predict user
+preferences over the entire item-user matrix. The latter often achieves
+unsatisfactory accuracy, because they cannot precisely capture the
+diversity in user rating styles.
+
+In this paper, we propose an efficient Collaborative Filtering approach
+using Smoothing and Fusing (CFSF) strategies. CFSF formulates CF
+problem as a local prediction problem by mapping it from the entire
+large-scale item-user matrix to a locally reduced item-user matrix.
+Given an active item and a user, CFSF constructs a local item-user
+matrix as the basis of prediction. To alleviate the data sparsity, CFSF
+presents fusion strategy for the local item-user matrix, which fuses
+the ratings of the same user makes on the similar items, and the
+like-minded users make on the same as well as similar items. To
+eliminate the diversity in user rating styles, CFSF uses smoothing
+strategy that clusters users over the entire item-user matrix and then
+smoothes ratings within each user cluster. Empirical study shows that
+CFSF outperforms the state-of-the-art CF approaches in terms of
+accuracy and scalability.
+
+%CF approaches in terms of accuracy and scalability.
+
+%Thus, the scale of problem is significantly reduced.
+
+
+\end{abstract}
+
+% A category with the (minimum) three required fields
+\category{H.3.3}{Information Storage and Retrieval}{Information Search
+and Retrieval}[Information Filtering] \terms{Approaches, Performance,
+Experimentation} \keywords{Collaborative Filtering, Clustering, Fusion,
+Smoothing}

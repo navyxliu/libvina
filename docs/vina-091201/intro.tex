@@ -1,0 +1,130 @@
+%\section{Related work}\label{sec:related}
+%\begin{figure}
+%  % Requires \usepackage{graphicx}
+%  \centering
+%  \includegraphics[width=0.8\linewidth]{../fig/motivation}
+%  \caption{CFSF Motivation}\label{fig:motivation}
+%  \label{fig:algorithm}
+%\end{figure}
+\section{Introduction}\label{sec:Intro}
+%multicore problem
+Modern computer architectures rely on parallelism and memory
+hierarchy to improve performance. Both duplicated processors and
+elaborated storage-on-chip require programmers to be aware of underlying
+machines when they write programs. Even worse,
+multicore technologies have brought many architectural features for
+different implementations. Thus, it is challenging to develop
+efficient applications which can take advantage of various multicores.
+
+%need new programming model
+In essence, it is because plain C/C++ programming languages
+can not reflect contemporary architectures~\cite{cml}. Traditionally, programmers
+describe algorithms in sequential logics, and then resort to  compiler
+and hardware optimization to deliver modest performance relative to
+their machines. In multicore era, this classic programming model gains
+little. It is desirable to develop alternatives to utilize horsepower
+of multicores while hiding architectural features.
+
+% to aggresssive is not feasible
+Although researches on revolutionary programming models have obtained
+fruitful achievements, they are limited in specific
+domains~\cite{gmapreduce, erlang, haskell}.
+One critical issue hinders them from applying in general programming
+field is that one programming model can only
+benefit a small group of users. It is still unclear what
+general purpose programming model is. Besides, the cost hardware usually weights
+a small part in a computer system relative to software and
+personnel. The ratio lowers with time. Therefore, vendors are
+reluctant to adopt fundamental changes of software stacks for
+multicore evolvement.
+
+%Second, the cost of hardware in large systems
+%is relative low than software and personnels. The ratio lowers along time
+%pass. It is risky to drop up existing efforts and build software from
+%scratch using new programming models.
+
+An acceptable tradeoff is to extend traditional programming
+languages to utilize effective parallel patterns. Appearently, the advantage of
+this approach is that it can exploit multicores progressively. Thus the
+knowledges and
+experiences of traditional programmers are still useful, and investment
+of legacy software is saved. In industry, OpenMP~\cite{openmp}  and
+TBB~\cite{tbb} are successful cases. OpenMP provides parallel
+programming API in the form of compiler directives. TBB is a C++ library, consisting of concurrent containers and
+iterators. CUDA~\cite{cuda} extends C programming languate to describe
+groups of threads for GPU. The limitation of preceded approaches are
+platform or vendor dependent. In academia,
+Sequoia~\cite{sequoia} attempts to programming for memory hierarchy. It
+achieves parallelization by divide a task into subtasks hierarchically and then map
+subtasks on nodes of machines. Merge~\cite{merge} implements
+map/reduce programming model for heterogeneous
+multicores. Streamit~\cite{ThiesKA02} compiler supports stream/kernel
+model for streaming computation. Its run-time schedules kernels for specific architectures. The shortcoming of academical approaches is that each one
+is capable of one type of parallel patterns.  In a word, existing solutions
+lack uniform method to express multiple parallel patterns
+across various multicores.
+
+%FIXME: move to related works
+%It(merge) relieson hierarchical division of task and predicate-based
+%dispatch system to assign subtasks on matched multicore target at
+%runtime. OpenMP and TBB are for shared memory system
+%system such as SMP, while CUDA is property programming
+%model for specific GPU architectures.
+
+Observably, except TBB is a pure library-based solution, aforementioned
+approaches need compilers to facilite their programming models. It is
+the ad-hoc approaches embedded into compilers restrict flexibility and
+extensibility. Therefore, we propose a template-based programming model to
+support parallel programs for multicores. We exploit C++
+metaprogramming techniques to perform source-to-source transformation
+in the unit of functions. We use \emph{tasks} to abstract
+computation-intensive and side-effect free functions, which are candidates for transformations. We extend the meaning of template
+specialization~\cite{tcpl}. Our approach specializes a task for target's
+architectures.  Through applying template classes, a task is
+transformed into many subtasks according to different parallel
+patterns, and then subtasks are executed in the form of threads.
+Template classes are implemented for different multicore
+architectures. As a result, porting software from one platform to another only
+needs to adjust template parameters or change implementations of
+template classes. The difference between TBB and our approach is that
+we utilize C++ template metaprogramming, so the transformations complete
+at compile time. 
+
+%pros and cons
+Our approach is flexible and extensible. Both parallel patterns and
+execution models are provided as template classes, thus programmers can
+parallelize tasks using more than one way. In addition, template
+classes are organized as template library. It is
+possible to exploit architectural
+features and new parallelization strategies by extending library. We
+explore language features limited in ISO
+standard C++~\cite{c++98, c++03, c++0x}, so it is applicable for
+platforms with standard-compilant compilers. Most 
+platform-independent template classes can be reused. The limitation of
+template-based approach is that using template metaprogramming, only compile-time
+information is available. That includes static constant values,
+constant expression and type information in C++. Therefore, our
+approach is not a general solution and orients for programs with rich
+static information. Fortunately, it is not uncommon that this
+restriction is satisfied in the fields like embedded applications and
+scientific computation. Because the runtime of those programs with fixed
+parameters are significantly longer than compile time even the time to
+write programs, it will pay off if can resolve transformations at
+compile time. Besides, it is possible to utilize external
+tuning framework~\cite{tuningfrm} to adjust parameters of static programs.
+
+In summary, we proposed a template-based programming model, which 
+tailors programs to multicores. Programers apply template classes to
+transform functions into the parallel equivalences on source-level,
+and then map them on specific multicores to run simultaneously.
+
+%organization structure
+The remaining parts of this paper are structured as follows.
+Section~\ref{sec:model} presents our programming model. Section~\ref{sec:lib} introduces libvina
+-- a prototype library to facilitate template-based programming model.
+Section~\ref{sec:adaption} is how programers adapt their source codes to libvina. Section~\ref{sec:details} gives details of
+implemetation of our library. Section~\ref{sec:eval}
+evaluates performance on both CPU and GPU using our approach.
+Section~\ref{sec:related} summarizes related work to support parallel programs
+for multicores. Section~\ref{sec:con} is disscussion and future work.
+

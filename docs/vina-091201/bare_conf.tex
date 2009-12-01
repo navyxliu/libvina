@@ -1,0 +1,133 @@
+\RequirePackage{lineno}
+\documentclass[conference]{IEEEtran}
+%\documentclass[draft, onecolumn]{IEEEtran}
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+% =============+s\\==================================================
+%\usepackage{subfigure, graphicx, booktabs}
+%\usepackage{algpseudocode, algorithmicx, algorithm}
+\usepackage{amsmath, amsthm, listings, booktabs}
+
+%Code environment
+\newcommand{\code}[1]{{\tt#1}}
+\newcommand{\todo}[1]{\textbf{TODO: #1}}
+\newcommand\inputsrc[1]{{\tt \lstinputlisting[]{source/#1} }}
+\newcommand{\reffig}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\reftable}[1]{Table~\ref{tbl:#1}}
+\long\def\comment#1{}
+
+\def\ssp{\def\baselinestretch{0.99}\large\normalsize}
+
+%\addtolength{\columnsep}{-3mm}
+
+% setup listing parameters
+%\lstloadlanguages{c++,c}
+\lstset{language=c++,basicstyle=\scriptsize}
+\lstset{numbers=left,numberstyle=\tiny,stepnumber=1}
+%%\lstset{labelstep=1}
+%\lstset{stringspaces=false}
+\lstset{stringstyle=\tt}
+%\lstset{singlecomment={/*}{*/}}
+%\lstset{commentline=/*}
+\lstset{commentstyle=\it}
+\lstset{morekeywords={pragma, par, seq, par_tail, _tail, omp, parallel}} 
+%%\lstset{indent=6mm}
+\lstset{xleftmargin=6mm}
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+   \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+   \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+   \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+   \DeclareGraphicsRule{*}{mps}{*}{}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+   \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+   \graphicspath{{./}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+   \DeclareGraphicsExtensions{.png, .pdf, .eps}
+\fi
+
+% ===============================================================
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+%\newdef{definition}[theorem]{Definition}
+%\newdef{remark}[theorem]{Remark}
+
+
+\begin{document}
+\title{A Template Metaprogramming Approach to Support Parallel
+  Programs for Multicores}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{
+\IEEEauthorblockN{Xin Liu, Minyi Guo, Daqiang Zhang, Jingyu Zhou, Yao Shen}
+\IEEEauthorblockA{Department of Computer Science\\
+Shanghai Jiao Tong University\\
+No. 800, Dongchuan Road, Shanghai, P.R.China\\
+navyliu@sjtu.edu.cn}
+}
+%\{guo-my\}@cs.sjtu.edu.cn,
+%\{zhangdq\}@sjtu.edu.cn, \{zhou-jy, shen\_yao\}@cs.sjtu.edu.cn
+% make the title area
+\maketitle
+
+
+\begin{abstract}
+In advent of multicore era, plain C/C++ programming languages can not
+fully reflect computer architectures. Source-to-source
+transformations help tailor programs close to contemporary
+hardwares. In this paper, we propose template-based approach to perform 
+transformations for programs with rich static information.
+We present C++ template metaprogramming techniques to conduct
+parallelization for specific
+multicores. Parallel patterns and executions are provided in the form of
+template classes and oraganized as library. We implement a prototype
+template library -- Libvina, to demonstrate the idea. It enables
+programmers to utilize new architectural
+features and add parallelization strategies by extending template library. 
+Finally, we evaluate our template library on
+commodity x86 and GPU platforms by a variety of typical procedures
+in multimedia and scientific fields. In experiments, we show that our
+approach is flexible to support multiple parallel models and capable
+of transforming sequential codes to parallel equivalences according to
+specific multicore architectures. Moreover, the cost of programmability using our
+approach to adapt to more than one multicore is manageable.
+\end{abstract}
+
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+\input{intro.tex}
+%\input{background.tex}
+\input{method.tex}
+\input{library.tex}
+\input{details.tex}
+\input{evaluation.tex}
+\input{related.tex}
+\input{conclusion.tex}
+%\input{acknowledge.tex}
+\bibliographystyle{ieeetran}
+\bibliography{../libvina}
+
+
+
+% that's all folks
+\end{document}
