@@ -1,12 +1,12 @@
-\section{Experiment}\label{sec:eval}
-\subsection{Methodology}\label{sectn:method}
+\section{Evaluation}\label{sec:eval}
+%In order to evaluate our proposed approach, we carry out a series of experiments.
+%\subsection{Settings}\label{sectn:method}
 %compiler and libs
-We implement our library in ISO
+We implement libvina in ISO
 C++. Theoretically, any standard-compliant C++ compiler
-should process our classes without trouble. New C++ standard (a.k.a C++0x\cite{c++0x}) adds many language features to ease metaprogramming\footnote{When we
-  conducted this work, C++0x was close to finish. Iimplementing C++0x
-  were in progress for many compilers}. Compilers
-without C++0x support need some workarounds to pass compilation
+should process our library without trouble. New C++ standard (a.k.a C++0x\cite{c++0x}) adds many language features to ease metaprogramming\footnote{When we conduct this work, C++0x is close to finish. Iimplementing C++0x
+  is in progress for many compilers, including gcc, icc etc.}. Compilers
+without C++0x need some workarounds to pass compilation
 though, they do not hurt expressiveness. We develop the library and
 test using GCC 4.5 beta.  The
 first implementation of OpenCL is shipped by Mac OSX 10.6, where we
@@ -15,24 +15,6 @@ collect the date of GPU performance.
 % Consider the trend of C++,
 %development of template library like libvina should become easier
 %and smoother in the future.  
-
-A couple of procedures are evaluated for our template approach.  They
-are typical in multimedia and scientific fields. In
-addition, we implement a pseudo language translation program to
-illustrate pipeline processing. The programs in experiments are listed
-as follows:
-
-\begin{itemize}
-\item \textit{saxpy} Procedure in BLAS level 1. A scalar multiplies to a single precision vector, which contains 32 million elements.
-\item \textit{sgemm} Procedure in BLAS level 3. Two 4096*4096 dense matrices multiply.
-\item \textit{dotprod} Two vectors perform dot product. Each vector
-  comprises 32 million elements.
-\item \textit{conv2d} 2-Dimensional convolution operation on image.  The Image
-  is 4094*4096 black-white format. Pixel is normalized as a single
-  float ranging from 0.0 to 1.0.
-\item \textit{langpipe} Pseudo-Multi-language translation. A word is translated from one language A to language B, and then another function will translate it from language B to language C, etc.
-\end{itemize}
-
 Two multicore platforms are used to conduct experiments. The hardware
 platforms are summed up in Table.~\ref{tbl:mach}. On harpertown, we link Intel Math kernel to perform BLAS procedures
 if they are available. On macbookpro, we implement all the procedures on
@@ -58,8 +40,33 @@ macbookpro&laptop &x86 dual-core &2G&Mac OSX\\
 \end{center}
 \end{table}
 
-\subsection{Evaluation}
-\subsubsection{Speedup of Hierarchical transformation on CPU}
+A couple of procedures are evaluated for our template approach.  They
+are typical in multimedia and scientific fields. In
+addition, we implement a pseudo language translation program to
+illustrate pipeline processing. The programs in experiments are listed
+as follows:
+
+\begin{itemize}
+\item \textit{saxpy} A procedure in BLAS level 1, which represents a
+  scalar multiplies to a vector of sing precision floats, which contains 32 million elements.
+\item \textit{sgemm} Procedure in BLAS level 3. Two 4096*4096 dense matrices multiply.
+\item \textit{dotprod} Two vectors perform dot product. Each vector
+  comprises 32 million elements.
+\item \textit{conv2d} 2-Dimensional convolution operation on image.  The Image
+  is 4094*4096 black-white format. Pixel is normalized as a single
+  float ranging from 0.0 to 1.0.
+\item \textit{langpipe} Pseudo-multi-language translation. A word is translated from one language A to language B, and then another function will translate it from language B to language C, etc.
+\end{itemize}
+
+
+\subsection{Libvina Performance}
+We evaluate our library using preceded programs. Experiment
+~\ref{exp:1} apply our TF class to hierarchically divide
+tasks on CPU. Experiment ~\ref{exp:2} evaluate performance of SPMD
+transformation for GPU. Experiment ~\ref{exp:3} analyses a case and
+compare CPU and GPU results. Experiment
+~\ref{exp:4} evaluate a pipelining programs using our approach.
+\subsubsection{Speedup of hierarchical transformation on CPU}\label{exp:1}
 \begin{figure}
 \includegraphics{speedupx86.0}
 \caption{Speedup of hierarchical transformation on Harpertown: We
@@ -89,7 +96,7 @@ store for every two operations. \textit{dotprod} has similar
 situation. They quickly saturate memory bandwidth for our SMP system, even though we fully parallelize those
 algorithms by our template library. 
 
-\subsubsection{Speedup of  SPMD transformation on GPU}
+\subsubsection{Speedup of  SPMD transformation on GPU}\label{exp:2}
 \begin{figure}
 \includegraphics{speedupgpu.0}
 \caption{Speedup Comparing GPU with CPU: We exploit the same set of
@@ -121,7 +128,36 @@ occurred on CPU counterpart. Because our program of \textit{dotprod} has fixed
 step to access memory which does not fit any patterns, we can not
 obtain hardware optimization without tweaking the algorithm.
 
-\subsubsection{Comparison between different multicores}
+\subsubsection{Pipeline Transformation for CPU}
+\begin{figure}[htp]
+\includegraphics{pipeline.0}
+\caption{Pipeline Processing for Psuedo Language Translation:
+  improvement of 4-stage pipeline on CPU.}\label{fig:pipe}
+\end{figure}
+
+Fig.~\ref{fig:pipe} demonstrates pipeline processing using our
+template library. As described before, \textit{langpipe} simulates a
+multilingual scenario. We apply template TF\_pipeline listed in
+List 2. In our case, the program consists of 4 stages,
+which can transitively translate English to Chinese\footnote{follow the 
+  route: English  $\to$ French $\to$ Spanish $\to$ Italian $\to$
+  Chinese}. Only its preceding stage completes,  the thread is waked
+up and proceeds. The executing scenario is similar to Fig.~\ref{fig:viewmt}. We use bogus loop to consume $t \  \mu s$ on CPU. For each $t$, we iterate 500
+times and then calculate the average consumptive time on harpertown. For
+grained-granularity cases (20$\mu s$, 50$\mu s$, 100$\mu s$), we can obtain ideal
+effectiveness in pipelining when 4 cores are exposed to the system.
+\textit{i.e.} our program can roughly output one instance every $t\  \mu
+s$. The speedup is easy to maintain when granularity is big. 100 $\mu s$ case ends up 54 $\mu s$ for each instance for 8 cores. 50  $\mu s$ case
+bumps at 5 cores and then improves slowly along core increment. 20
+$\mu s$ case also holds the trend of first two cases. 5 $\mu s$ case is
+particular. We can not observe ideal pipelining until all 8
+cores are available.  Our Linux kernel scheduler's granularity is 80
+$\mu s$ in default. We think that fine-grained tasks contend
+CPU resources in out of the order, so the operations presumably
+incur extra overhead. Many cores scenario help alleviate the
+situation and render regular pipeline processing.
+
+\subsection{Comparison between different multicores}\label{exp:3}
 \begin{table}[hbt]
 \caption{Comparison of sgemm on CPU and GPU}\label{tbl:sgemm}
 \begin{tabular}{|l|r|r|r|}
@@ -164,33 +200,5 @@ transformation for GPU.  Adapting to GPU only need tens of lines code
 efforts. Like GPU template, we apply building blocks directly to parallelize \textit{sgemm} procedure for CPU. We observe 95.6 
 Gflops and about 75\% effectiveness on harpertown server.
 
-\subsubsection{Pipeline Transformation for CPU}
-\begin{figure}[htp]
-\includegraphics{pipeline.0}
-\caption{Pipeline Processing for Psuedo Language Translation:
-  improvement of 4-stage pipeline on CPU.}\label{fig:pipe}
-\end{figure}
-
-Fig.~\ref{fig:pipe} demonstrates pipeline processing using our
-template library. As described before, \textit{langpipe} simulates a
-multilingual scenario. We apply template TF\_pipeline listed in
-List 2. In our case, the program consists of 4 stages,
-which can transitively translate English to Chinese\footnote{follow the 
-  route: English  $\to$ French $\to$ Spanish $\to$ Italian $\to$
-  Chinese}. Only its preceding stage completes,  the thread is waked
-up and proceeds. The executing scenario is similar to Fig.~\ref{fig:viewmt}. We use bogus loop to consume $t \  \mu s$ on CPU. For each $t$, we iterate 500
-times and then calculate the average consumptive time on harpertown. For
-grained-granularity cases (20$\mu s$, 50$\mu s$, 100$\mu s$), we can obtain ideal
-effectiveness in pipelining when 4 cores are exposed to the system.
-\textit{i.e.} our program can roughly output one instance every $t\  \mu
-s$. The speedup is easy to maintain when granularity is big. 100 $\mu s$ case ends up 54 $\mu s$ for each instance for 8 cores. 50  $\mu s$ case
-bumps at 5 cores and then improves slowly along core increment. 20
-$\mu s$ case also holds the trend of first two cases. 5 $\mu s$ case is
-particular. We can not observe ideal pipelining until all 8
-cores are available.  Our Linux kernel scheduler's granularity is 80
-$\mu s$ in default. We think that fine-grained tasks contend
-CPU resources in out of the order, so the operations presumably
-incur extra overhead. Many cores scenario help alleviate the
-situation and render regular pipeline processing.
 
 %end section.
