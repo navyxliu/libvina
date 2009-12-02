@@ -31,7 +31,7 @@
 %\lstset{singlecomment={/*}{*/}}
 %\lstset{commentline=/*}
 \lstset{commentstyle=\it}
-\lstset{morekeywords={pragma, par, seq, par_tail, _tail, omp, parallel}} 
+\lstset{morekeywords={pragma, par, seq, par_tail, _tail, reduce, omp, parallel}} 
 %%\lstset{indent=6mm}
 \lstset{xleftmargin=6mm}
 
@@ -117,17 +117,14 @@ approach to adapt to more than one multicore is manageable.
 
 \input{intro.tex}
 %\input{background.tex}
-\input{method.tex}
+\input{design.tex}
 \input{library.tex}
-\input{details.tex}
+\input{impl.tex}
 \input{evaluation.tex}
 \input{related.tex}
 \input{conclusion.tex}
 %\input{acknowledge.tex}
 \bibliographystyle{ieeetran}
-\bibliography{../libvina}
+\bibliography{libvina}
 
-
-
-% that's all folks
 \end{document}

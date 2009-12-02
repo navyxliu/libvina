@@ -1,31 +1,22 @@
-  //template full specialization
-  template<>
-  struct TF_pipeline<>
-  {
-    //last stage defintions
-    //T* is the type of input
-    template<class T>
-    static void impl(T* in)
-    {
-      //omit...
-    }
-    template<class T>
-    static void 
-    doit(T * in)
-    {
-      std::tr1::function<void (T*)> 
-        func(&(impl<T>));
+//template full specialization
+template<>
+struct TF_pipeline<>
+{
+  //last stage definitions
+  static void impl(ReadViewMT *input) {
+    //omitted...
+  }
 
-      mt::thread_t thr(func, in);
-   } 
-  };
+  static void doit(ReadViewMT *input) {
+    std::tr1::function<void (ReadViewMT*)> 
+      func(&impl);
 
-  //customize pipeline TF class
-  typedef TF_pipeline<
-    translate<Eng2Frn>,
-    translate<Frn2Spn>, 
-    translate<Spn2Itn>,
-    translate<Itn2Chn>
-  > MYPIPE;
+    mt::thread_t thr(func, input);
+  } 
+};
 
-  MYPIPE::doit(&input);
+//customized TF_pipeline class
+typedef TF_pipeline<stage1, stage2,
+                    stage3, stage4> MYPIPE;
+
+MYPIPE::doit(&input);
