@@ -21,7 +21,7 @@ draft: *.tex ../*.bib $(SOURCES)
 	mv bare_conf.tex.backup bare_conf.tex
 
 tgz:
-	tar cvfz vina-`date +%y%m%d`.tar.gz *.tex *.bib README Makefile sourc
+	tar cvfz vina-`date +%y%m%d`.tar.gz *.tex *.bib README Makefile source
 
 clean:
 	rm -f *.log *.dvi *.ps *.pdf *~ *.bak *.toc *.lof *.aux *.bbl *.blg *.log *.lot
