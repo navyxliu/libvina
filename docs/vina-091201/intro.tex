@@ -52,11 +52,10 @@ knowledges and
 experiences of traditional programmers are still useful, and investment
 of legacy software is saved. OpenMP~\cite{openmp}  and
 CUDA~\cite{cuda} are successful cases. OpenMP provides parallel
-programming API for C/Fortran in the form of compiler directives. CUDA~\cite{cuda} extends C programming languate to describe
+programming API for C/Fortran in the form of compiler directives. CUDA extends C programming language to describe
 groups of threads for GPU. The limitation of those approaches are
 platform or vendor dependent. On the other side, many experimental
-programming models are proposed to support multiple multicore
-archictures in recent years.
+programming models are proposed to support multiple archictures in recent years.
 Sequoia~\cite{sequoia} attempts to program for memory hierarchy. It
 achieves parallelization by divide a task into subtasks hierarchically and then map
 subtasks on physical machines. Merge~\cite{merge} implements
@@ -130,11 +129,10 @@ and then map them on specific multicores to run simultaneously.
 
 %organization structure
 The remaining parts of this paper are structured as follows.
-Section~\ref{sec:model} presents our programming model. Section~\ref{sec:lib} introduces libvina
--- a prototype library to facilitate template-based programming model.
-Section~\ref{sec:adaption} is how programers adapt their source codes to libvina. Section~\ref{sec:details} gives details of
+Section~\ref{sec:model} presents our programming model. 
+Section~\ref{sec:adaption} uses two examples to present how to libvina. Section~\ref{sec:details} gives details of
 implemetation of our library. Section~\ref{sec:eval}
 evaluates performance on both CPU and GPU using our approach.
 Section~\ref{sec:related} summarizes related work to support parallel programs
-for multicores. Section~\ref{sec:con} is disscussion and future work.
+for multicores. Section~\ref{sec:con} is conclusion and future work.
 

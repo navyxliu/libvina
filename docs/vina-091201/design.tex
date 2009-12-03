@@ -2,7 +2,7 @@
 \label{sec:model}
 
 \begin{figure}[htb]
-\includegraphics[width=3.3in]{../overview}
+\includegraphics[width=3.3in, height=4.0in]{../overview}
 \caption{Overview of template-based programming model: Programmers
 write side-effect free functions in C/C++, then encapsulate them in
 template classes. Such a template encapsulate the computing function and can be 
@@ -103,8 +103,10 @@ The instantiation process of \code{TF\_hierarchy} is illustrated in \reffig{hier
 when predicate is false, the task is recursively divided into subtasks; when predicate
 is true, the code (\code{TASK::leaf}) computes a subtask.
 
-%A side-effect free function is referred to as \emph{task} in libvina. As a rule of thumb,
-\todo{In this paper, we consider a class of computation-intensive functions (or tasks) that are 
+%A side-effect free function is referred to as \emph{task} in
+%libvina. As a rule of thumb,
+%nFIXME
+\comment{In this paper, we consider a class of computation-intensive functions (or tasks) that are 
 self-contained, i.e., external data references are limited and
 calling graphs of them are simple. For these functions, it's possible to
 decouple a task into a cluster of subtasks. These subtasks are identical
@@ -207,13 +209,13 @@ Name& Semantics& Usage Example\\
 \end{tabular}\label{tbl:bb}
 \end{table}
 
-A building block class is a high-level abstraction of execution patterns that
+A building block class is a high-level abstraction of executions that
 hide architecture-specific details. Programmers can use building blocks to
 execute tasks on different multi-core platforms.
 \reftable{bb} lists building blocks in libvina. For tasks that can
 executed in SPMD (Single-Program-Multiple-Data) fasion, \code{par} class spawns
-multiple threads to execute subtasks in parallel. \code{seq} class supports
-sequential execution patterns. Parameter $T$ in \code{par} or \code{seq} could be nested
+multiple threads to execute iterations in parallel. \code{seq} class 
+execute iterations in order. Parameter $T$ in \code{par} or \code{seq} could be nested
 \code{par}, nested \code{seq}, or \code{\_tail} (meaning no further nestings).
 For instance, we can write the following statement 
 
