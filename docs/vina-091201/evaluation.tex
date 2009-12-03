@@ -1,24 +1,47 @@
-\section{Evaluation}\label{sec:eval}
-%In order to evaluate our proposed approach, we carry out a series of experiments.
-%\subsection{Settings}\label{sectn:method}
-%compiler and libs
-We implement libvina in ISO
-C++. Theoretically, any standard-compliant C++ compiler
-should process our library without trouble. New C++ standard (a.k.a C++0x\cite{c++0x}) adds many language features to ease metaprogramming\footnote{When we conduct this work, C++0x is close to finish. Iimplementing C++0x
-  is in progress for many compilers, including gcc, icc etc.}. Compilers
-without C++0x need some workarounds to pass compilation
-though, they do not hurt expressiveness. We develop the library and
-test using GCC 4.5 beta.  The
-first implementation of OpenCL is shipped by Mac OSX 10.6, where we
-collect the data of GPU performance.
+\section{Evaluation}
+\label{sec:eval}
+
+%In this section, we evaluated the performance of our library with benchmarks.
+
+\subsection{Benchmarks and Experimental Settings}
+
+We evaluated our template approach with typical procedures
+in multimedia and scientific fields. Additionally,
+we implemented a micro-benchmark to evaluate the performance of
+pipeline processing. These benchmark programs are listed
+as follows:
+
+\begin{itemize}
+\item \textit{saxpy}. A procedure in BLAS level 1, which represents a
+scalar multiplies to a vector of 32 million single precision floats.
+
+\item \textit{sgemm}. A procedure in BLAS level 3, which represents
+two 4096*4096 dense matrices multiply.
+
+\item \textit{dotprod}. Two vectors perform dot product. Each vector
+  comprises of 32 million elements.
+
+\item \textit{conv2d}. 2-Dimensional convolution operation on image.  The Image
+  is in 4094*4096 black-white format. Pixel is normalized as a single
+  float ranging from 0.0 to 1.0.
+
+\item \textit{pipe}.  This micro-benchmark consists of 4 stages
+and each stage consumes $t \  \mu s$ CPU time. The execution iterates the
+pipeline 500 times.  Similar to \reffig{viewmt}, a stage can execute only when the preceding stage
+finishes.  
+
+%Pseudo-multi-language translation. A word is translated from one language A to language B, and then another function will translate it from language B to language C, etc.
+
+\end{itemize}
 
 % Consider the trend of C++,
 %development of template library like libvina should become easier
 %and smoother in the future.  
-Two multicore platforms are used to conduct experiments, which are summed up in Table.~\ref{tbl:mach}. On harpertown, we link Intel Math kernel to perform BLAS procedures
-if they are available\footnote{Sgemm, saxpy, and dotprod are available
-  for MKL. We use sequential version of MKL in the experiment}. On macbookpro, we implement all the procedures on
-our own. 
+
+Two multicore platforms used in our experiments are described in Table~\ref{tbl:mach}.
+The harpertown blade server contains two quad-core Xeon processors. 
+The embedded Nvidia GPU on motherboard contains two streaming multiprocessors,
+each consists of 8 scalar processors(SP) and supports up to 128 threads.
 
 \begin{table}[hbt]
 \caption{Experimental platforms}\label{tbl:mach}
@@ -32,129 +55,126 @@ harpertown&SMP &x86 quad-core  &4G&Linux Fedora\\
 2-way  2.0Ghz & &kernel 2.6.30\\
 \hline
 macbookpro&laptop &x86 dual-core &2G&Mac OSX\\
-                    &           & 2.63Ghz         &  &Snowleopard\\
-                   &           &GPU 9400m    &256M & \\
-                    &           & 1.1Ghz   & &\\
+                    &            & 2.63Ghz         &  &Snowleopard\\
+                   &             &GPU: Nvidia      &256M & \\
+                    &            &9400m 1.1Ghz     & &\\
 \hline
 \end{tabular} 
 \end{center}
 \end{table}
 
-A couple of procedures are evaluated for our template approach.  They
-are typical in multimedia and scientific fields. In
-addition, we implement a pseudo language translation program to
-illustrate pipeline processing. The programs in experiments are listed
-as follows:
+We developed and tested libvina using GCC 4.5 beta.  For GPU, we developed
+our library with OpenCL~\cite{opencl} shipped with Mac OSX 10.6. 
+On harpertown, we link Intel's Math Kernel Library (MKL) to perform BLAS procedures
+if they are available\footnote{Sgemm, saxpy, and dotprod are available
+in MKL and we use the sequential version in the experiments.}.
+On macbookpro, we implement all the procedures on our own. 
 
-\begin{itemize}
-\item \textit{saxpy} A procedure in BLAS level 1, which represents a
-  scalar multiplies to a vector of 32 million sing precision floats.
-\item \textit{sgemm} A procedure in BLAS level 3, which represents two 4096*4096 dense matrices multiply.
-\item \textit{dotprod} Two vectors perform dot product. Each vector
-  comprises 32 million elements.
-\item \textit{conv2d} 2-Dimensional convolution operation on image.  The Image
-  is 4094*4096 black-white format. Pixel is normalized as a single
-  float ranging from 0.0 to 1.0.
-\item \textit{langpipe} Pseudo-multi-language translation. A word is translated from one language A to language B, and then another function will translate it from language B to language C, etc.
-\end{itemize}
 
 \subsection{Libvina Performance}
-We evaluate our library using preceded programs. Experiment 1 applies our TF class to hierarchically divide
-tasks for CPU. Experiment 2 evaluates performance of 
-transformations for GPU. Experiment 3 evaluates the
-performance of a pipeline programs using TF\_pipeline.
-\subsubsection{Speedup of hierarchical transformation on CPU}\label{exp:1}
+
+%We evaluate our library using preceded programs.
+%Experiment 1 applies our TF class to hierarchically divide
+%tasks for CPU. Experiment 2 evaluates performance of 
+%transformations for GPU. Experiment 3 evaluates the
+%performance of a pipeline programs using TF\_pipeline.
+
+\subsubsection{Speedup of hierarchical transformation on CPU}
+\label{exp:1}
+
 \begin{figure}
-\includegraphics{../speedupx86.0}
-\caption{Speedup of hierarchical transformation on Harpertown}\label{fig:spdx86}
+  \includegraphics{../speedupx86.0}
+  \caption{Speedup of Hierarchical Transformation on CPU}
+  \label{fig:spdx86}
 \end{figure}
 
-Fig.~\ref{fig:spdx86} shows the speedups of programs which apply our
-TF\_hierarchy class on harpertown. The blade
-server contains two quad-core Xeon
-processors. We experiment hierarchical transformation for
-algorithms. All predicates are set to cater to CPU's last level cache(LLC).
+\reffig{spdx86} shows the speedup of programs that apply our
+\code{TF\_hierarchy} class on harpertown. 
+%All predicates are set to cater for CPU's last level cache (LLC).
+Programs \textit{conv2d} and \textit{sgemm} show good performance scalability.
+\textit{conv2d} obtains about 7.3 times speedup with 8 cores, because it does not
+have any data dependences.
+\textit{sgemm} achieves 6.3 times speedup using 8 cores, because it
+needs an extra reduction for each subtask.  It is
+worthy noting that there is almost two-fold speedup with two cores. 
+When using four cores, Linux cannot guarantee that four tasks are distributed
+on the same physical processor. As a result, the cost of memory accesses and synchronization
+increase from two cores to four cores.
 
-Programs \textit{conv2d} and \textit{sgemm} show good performance scalability. \textit{conv2d} does not have any dependences
-and it can obtain about 7.3 times speedup. \textit{sgemm}
-needs an extra reduction for each division operation. The final
-speedup is about 6.3 times when all the cores are available. It is
-worthy noting that there is almost two-fold speedup from sequence to
-dual core case for \textit{sgemm}. But
-the speedup degrates to 3.3 times when the number of core continuously
-doubles. Harpertown consists of two quad-core processors,  but Linux
-can not guarantee that 4 tasks are distributed in a physical
-processor. Therefore, the cost of memory accesses and synchronization
-increase from 2-core to 4-core.
+%the speedup degrates to 3.3 times when the number of core continuously
+%doubles. Harpertown consists of two quad-core processors,  but Linux
+%can not guarantee that 4 tasks are distributed evenly in a physical
+%processor. Therefore, the cost of memory accesses and synchronization
+%increase from 2-core to 4-core.
 
 \textit{dotprod} and \textit{saxpy} show low speedups because non-computation-intensive
 programs are subject to memory bandwidth.  In average, \textit{saxpy} needs one load and one 
-store for every two operations. \textit{dotprod} has similar
-situation. They quickly saturate memory bandwidth for our SMP system, even though we fully parallelize those
-algorithms by our template library. 
+store for every two operations. \textit{dotprod} has similar execution patterns.
+They quickly saturate memory bandwidth for our SMP system. 
 
-\subsubsection{Speedup of  transformation on GPU}\label{exp:2}
+
+\subsubsection{Speedup on GPU}\label{exp:2}
 
 \begin{figure}
 \includegraphics{../speedupgpu.0}
-\caption{Speedup of transformation on GPU. We use building blocks to
-  map tasks on GPUs}\label{fig:spdgpu}
+\caption{Speedup of transformations on GPU.}
+\label{fig:spdgpu}
 \end{figure}
 
-Fig.~\ref{fig:spdgpu} shows SPMD transformation results for GPU on
-macbookpro. Because GPUs momory model is different from CPU memory
-hierarchy, applying source transformation of TF\_hierarchy makes
-little sense, so we directly use building
-blocks to translate iterations into OpenCL's NDRangeKernel
-function. Programs running on host CPU  in sequence are set as
-baseline. Embedded GPU on motherboard contains 2
-SMs\footnote{Streaming Multiprocessor, each SM consists of 8 scalar processors(SP)}.
-Porting from CPU to GPU, developers only need to change
-template classes while keeping algorithms same \footnote{
-Because GPU code needs special qualifiers, we did modify kernel
-functions a little manually.  Most algorithms are kept same except for
-sgemm.  Because it is not easy
- to work out sgemm on platform macbookpro, we add blocking and SIMD
- instruments for CPU.}. As figure depicted,  computation-intensive programs
-\textit{sgemm} and \textit{conv2d} still maintain their speedups. 4.5 to 5 times
-performance boost is achieved for them by migrating to GPU.
-In addition, we observe about 2 times performance boost for
-\textit{saxpy}. Nvidia GPUs execute
-threads in group of warp (32 threads) on hardware and it is
+\reffig{spdgpu} shows SPMD transformation results for GPU on
+macbookpro. The running time of sequential programs running on host CPU is set to
+be the baseline.
+%Porting from CPU to GPU, developers only need to change
+%template classes while keeping algorithms same \footnote{
+%Because GPU code needs special qualifiers, we did modify kernel
+%functions a little manually.  Most algorithms are kept same except for
+%sgemm.  Because it is not easy
+% to work out sgemm on platform macbookpro, we add blocking and SIMD
+% instruments for CPU.}.
+As figure depicted,  computation-intensive programs
+\textit{sgemm} and \textit{conv2d} achieve 4.5 to 5 times speedup
+by migrating to GPU.
+\textit{saxpy} has about two times performance boost, while \textit{dotprod}
+has no performance improvement. This is because
+Nvidia GPUs execute threads in group of warp (32 threads) on hardware and it is
 possible to coalesce memory accesses if warps satisfy
-specific access patterns~\cite{nvopencl}. Memory coalescence mitigates bandwidth issue
-occurred on CPU counterpart. Because our program of \textit{dotprod} has fixed
-step to access memory which does not fit any patterns, we can not
-obtain hardware optimization without tweaking the algorithm.
+specific access patterns~\cite{nvopencl}. For \textit{saxpy}, memory coalescence
+mitigates bandwidth issue occurred on CPU counterpart. However, this is not
+the case for \textit{dotprod}.
+%Because our program of \textit{dotprod} has fixed
+%step to access memory which does not fit any patterns, we can not
+%obtain hardware optimization without tweaking the algorithm.
 
-\subsubsection{Pipeline Transformation on CPU}\label{exp:4}
+\subsubsection{Performance of Pipeline Patterns on CPU}
+\label{exp:4}
+
 \begin{figure}[htp]
 \includegraphics{../pipeline.0}
-\caption{Speedup of 4-stage pipeline on 8-core CPU.}\label{fig:pipe}
+\caption{Performance of a four-stage pipeline on 8-core CPU.}
+\label{fig:pipe}
 \end{figure}
 
-We use \textit{langpipe} to simulate a pipelining scenario, which apply TF\_pipeline similar to Fig.~\ref{fig:pipe:code}. In our case, the program consists of 4 stages,
-which can transitively translate English to Chinese\footnote{follow the 
-  route: English  $\to$ French $\to$ Spanish $\to$ Italian $\to$
-  Chinese. We implement translation by querying word tables.}. Only its preceding stage completes,  the thread is waked
-up and proceeds. The executing scenario is similar to Fig.~\ref{fig:viewmt}. We use bogus loop to consume $t \  \mu s$ on CPU. For each $t$, we iterate 500
-times and then calculate the average consumptive time on harpertown. 
+This experiment evaluates the performance of pipeline patterns of our template
+library. Specifically, we choose micro-benchmark \textit{pipe} with varying
+granularities for each stage, from 5 $\mu s$ to 100 $\mu s$. \reffig{pipe} shows
+that when the time for each stage is larger than 20 $\mu s$, a pipeline can
+roughly produce one output every $t$ $\mu s$. For instance, when $t=100$ $\mu s$,
+the output is generated every 54 $\mu s$ for eight cores (two four-stage pipelines).
 
-As Fig.~\ref{fig:pipe} shown, grained-granularity cases (20$\mu s$,
-50$\mu s$, 100$\mu s$) can obtain ideal
-effectiveness in pipelining using our template transformation.  
-\textit{I.e.},  when 4 cores are exposed to the system, our program can roughly output one instance every $t\  \mu
-s$. The speedup is easy to maintain when granularity is big. 100 $\mu s$ case ends up 54 $\mu s$ for each instance for 8 cores. 50  $\mu s$ case
-bumps at 5 cores and then improves slowly along core increment. 20
-$\mu s$ case also holds the trend of first two cases. 5 $\mu s$ case is
-particular. We can not observe ideal pipelining until all 8
+%\textit{I.e.},  when 4 cores are exposed to the system, our program can roughly output one instance every $t\  \mu
+%s$. The speedup is easy to maintain when granularity is big. 100 $\mu s$ case ends up 54 $\mu s$ for each instance for 8 cores. 50  $\mu s$ case
+%bumps at 5 cores and then improves slowly along core increment. 20
+%$\mu s$ case also holds the trend of first two cases.
+For fine-grained pipeline of 5 $\mu s$ per stage, we can not observe ideal pipelining until all 8
 cores are available.  Our Linux kernel scheduler's granularity is 80
-$\mu s$ in default. We think that fine-grained tasks contend
-CPU resources in out of the order, so the operations presumably
-incur extra overhead. Many cores scenario help alleviate the
-situation and render regular pipeline processing.
+$\mu s$ by default. In this case, fine-grained tasks contend for
+CPU resources, incuring extra overhead. Many cores scenario help alleviate the
+problem.
 
-\subsection{Comparison between different multicores}\label{exp:3}
+\comment{
+\subsection{Comparison between different multicores}
+\label{exp:3}
+
 \begin{table}[hbt]
 \caption{Comparison of sgemm on CPU and GPU}\label{tbl:sgemm}
 \begin{tabular}{|l|r|r|r|}
@@ -172,31 +192,32 @@ situation and render regular pipeline processing.
 \end{tabular}
 \end{table}
 
-Table.~\ref{tbl:sgemm} details \textit{sgemm} execution on CPU and GPU. Dense matrix
+Table~\ref{tbl:sgemm} details \textit{sgemm} execution on CPU and GPU. Dense matrix
 multiplication is one of  typical programs which have
-intensive computation. Problems with this characteristic are the most
-attractive candidates to apply our template-based approach.
-Our template library transforms the \textit{sgemm} for both CPU and 
-GPU using building blocks. We choose sequential execution on macbookpro's CPU as
-baseline. After mapping the algorithm to GPU, we directly obtains over
-4.5 times speedup comparing with host CPU. Theoretically,  Intel Core
-2 processor can issue 2 SSE instructions per cycle,  therefore, the
-peak float performance is 21 Gflops on host CPU. We obtain 2.64 Gflops which
-effectiveness is only 12.6\% even we employ quite complicated
-implementation. On the other side, over 12 Gflops is observed on GPU whose
-maximal performance is roughly 17.6 Gflops.\footnote{$17.6Gflops = 1.1Ghz * 2(SM) *
-  8(SP)$. Nvidia declared their GPUs can perform a mad(multiply-add
-  op) per cycle  for users who concern performance over precision. However, we can
-  not observe mad hints bring any performance improvement in OpenCL. }
+intensive computations.
+%Problems with this characteristic are the most
+%attractive candidates to apply our template-based approach.
+%Our template library transforms the \textit{sgemm} for both CPU and 
+%GPU using building blocks.
+Sequential execution on macbookpro's CPU is used as baseline to compare with.
+After mapping the algorithm to GPU, we obtain over 4.5 times speedup.
+Theoretically, Intel Core2 processor can issue two SSE instructions per cycle. 
+Therefore, the peak float performance is 21 Gflops on host CPU. We obtain 2.64 Gflops,
+which utilizes about only 12.6\% of full capacity.
+%even we employ quite complicated implementation.
+On the other side, over 12 Gflops is observed on GPU whose
+maximal performance is roughly 17.6 Gflops ($17.6Gflops = 1.1Ghz * 2(SM) *
+8(SP))$~\footnote{Nvidia declared their GPUs can perform a mad (multiply-add
+op) per cycle  for users who are concerned about performance over precision. However, we can
+not observe mad hints bring any performance improvement in OpenCL.}.
+
 Although both column 2 and column 4 implement SIMD algorithm for
 \textit{sgemm}, GPU's version is obviously easier and effective. It is
 due to the dynamic SIMD and thread management from GPU
 hardware~\cite{Fatahalian08} can significantly ease vector programming. Programmer can
-implement algorithm in plain C and then replies on template
+implement algorithm in plain C and then relies on template
 transformation for GPU.  Adapting to GPU only need tens of lines code
 efforts. Like GPU template, we change homebrewed sgemm to MKL
 procedure and apply building blocks to parallelize it for CPU. We obtain 95.6 
 Gflops and about 75\% effectiveness on harpertown server.
-
-
-%end section.
+}
