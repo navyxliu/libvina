@@ -92,22 +92,20 @@ navyliu@sjtu.edu.cn}
 In advent of multicore era, plain C/C++ programming languages can not
 fully reflect computer architectures. Source-to-source
 transformations help tailor programs close to contemporary
-hardwares. In this paper, we propose template-based approach to perform 
-transformations for programs with rich static information.
-We present C++ template metaprogramming techniques to conduct
-parallelization for specific
-multicores. Parallel patterns and executions are provided in the form of
-template classes and oraganized as library. We implement a prototype
+hardwares. In this paper, we propose a template metaprogramming
+approach to support parallel programs, which performs
+source-to-source transformations for specific
+multicores. Our approach is purely library-based, which represents
+parallel patterns and executions as template classes. We implement a prototyped
 template library -- Libvina, to demonstrate the idea. It enables
-programmers to utilize new architectural
-features and add parallelization strategies by extending template library. 
+programmers to exploit new architectural
+features and apply new parallel patterns by extending the library. 
 Finally, we evaluate our template library on
-commodity x86 and GPU platforms by a variety of typical procedures
+commodity CPU and GPU platforms by a variety of typical procedures
 in multimedia and scientific fields. In experiments, we show that our
 approach is flexible to support multiple parallel models and capable
 of transforming sequential codes to parallel equivalences according to
-specific multicore architectures. Moreover, the cost of programmability using our
-approach to adapt to more than one multicore is manageable.
+specific multicore architectures. 
 \end{abstract}
 
 % For peerreview papers, this IEEEtran command inserts a page break and
@@ -128,3 +126,23 @@ approach to adapt to more than one multicore is manageable.
 \bibliography{libvina}
 
 \end{document}
+%In advent of multicore era, plain C/C++ programming languages can not
+%fully reflect computer architectures. Source-to-source
+%transformations help tailor programs close to contemporary
+%hardwares. In this paper, we propose template-based approach to perform 
+%transformations for programs with rich static information.
+%We present C++ template metaprogramming techniques to conduct
+%parallelization for specific
+%multicores. Parallel patterns and executions are provided in the form of
+%template classes and oraganized as library. We implement a prototype
+%template library -- Libvina, to demonstrate the idea. It enables
+%programmers to utilize new architectural
+%features and add parallelization strategies by extending template library. 
+%Finally, we evaluate our template library on
+%commodity x86 and GPU platforms by a variety of typical procedures
+%in multimedia and scientific fields. In experiments, we show that our
+%approach is flexible to support multiple parallel models and capable
+%of transforming sequential codes to parallel equivalences according to
+%specific multicore architectures. Moreover, the cost of programmability using our
+%approach to adapt to more than one multicore is manageable.
+
