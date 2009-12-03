@@ -13,8 +13,8 @@ struct SGEMM {
 
   //interface for programmer
   void operator()(const Matrix<T, M, P>& A, 
-                const Matrix<T, P, N>& B,
-                Matrix<T, M, N>& C) {
+                  const Matrix<T, P, N>& B,
+                  Matrix<T, M, N>& C) {
     TF::doit(A, B, C.SubViewW());
   }
 
