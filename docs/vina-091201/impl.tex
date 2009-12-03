@@ -6,19 +6,27 @@ template metaprogramming technique.
 The main idea is to utilize
 template specialization and recursion to manage control flow at
 compile time. Besides template mechanism, other C++ high-level
-abstractions act important roles in our approach.
+abstractions play an important role in our approach.
 Function objects and bind mechnism are commonly employed to postpone computation
-at proper place with proper enviroment~\cite{moderncpp}.
+at proper places with proper enviroment~\cite{moderncpp}.
 %In order to utilize nested buiding blocks,
 %lambda expression can generate closure objects in a concise
 %form, e.g., line 24$\sim$37 of \reffig{sgemm}.
 
+We implemented libvina in ISO C++ following the new C++ standard (i.e., C++0x\cite{c++0x}),
+because C++0x adds many language features to ease metaprogramming~\footnote{When
+we conduct this work, C++0x is close to finish. Implementing C++0x is a work in
+progress for many compilers, including GCC and Intel compiler.}. Compilers
+without C++0x support need some workarounds, which are also implemented in our
+library.
+%Theoretically, any standard-compliant C++ compiler
+%should process our library without trouble. 
+
 Implemenation of building blocks are straightforward. We use recursive calls
 to support nesting patterns. \code{seq} and \code{par} are interoperable
-because we chose properly nested classes before calling function \code{apply}. Note that
-building blocks do not know the nesting levels during the execution. To solve this
-problem, each function object or cloure object is decorated with a loop-variable
-counter.
+because we chose properly nested classes before calling function \code{apply}.
+%Note that building blocks do not know the nesting levels during the execution. To solve this
+%problem, each function object or cloure object is decorated with a loop-variable counter.
 %The handlers take responsibility for calculating loop variables in
 %normalized form. It is only desirable for nested loop forms,
 %\textit{e.g.} line 41 of List 1.
@@ -29,8 +37,12 @@ references in those cases.
 
 For CPU, building blocks are implemented by embedding OpenMP directives. On GPU, we bind
 building block classes to functions of OpenCL~\cite{opencl}, an open standard API
-for heterogenous muliticores. The \code{mt::thread} is implemented using pthread.
+for heterogenous muliticores. For instance, we use OpenCL's \code{NDRangeKernel} function
+to implement \code{par} template class. The \code{mt::thread} is implemented using pthread.
 For the signal mechanism among views, conditional variables of pthread are used
 for CPU and events are employed for GPU.
 
-%end section
+%Because GPUs momory model is different from CPU memory
+%hierarchy, applying source transformation of TF\_hierarchy makes
+%little sense, so we directly use building
+%blocks to translate iterations into OpenCL's NDRangeKernel function. 
