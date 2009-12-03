@@ -13,6 +13,14 @@ $(MAIN).pdf: *.tex ../*.bib $(SOURCES)
 	$(PDFLATEX) $(MAIN).tex
 	$(PDFLATEX) $(MAIN).tex 
 
+#	$(DVIPS) $(MAIN).dvi -o $(MAIN).ps
+
+.dvi.ps:
+	$(DVIPS) $< -o $@
+
+.ps.pdf:
+	ps2pdf $<
+
 draft: *.tex ../*.bib $(SOURCES)
 	cp bare_conf.tex bare_conf.tex.backup
 	sed -in 's/conference/draft,onecolumn/g' bare_conf.tex
