@@ -12,15 +12,18 @@
 %elaborated memory hierarchy and exposed communication are adopted by
 %new multicore architectures. More worse, 
 
-We present a template-based programming model to support parallel
+We have presented a template-based programming model to support parallel
 programs for multicores. Our approach performs source-to-source
 transformations using C++ template metaprogramming. All functionalities
-are achieved within ISO C++ and organized as a template library. The
+are achieved within the ISO C++ and organized as a template library. The
 library is flexible enough to
 apply more than one parallel
 pattern. In addition, programmers can extend the library to
 exploit new architectural
-features or apply customized parallel patterns for applications.
+features or apply customized parallel patterns for applications. Our approach supports different multicores because we use building
+block classes to abstract executions on physical targets. In our
+prototype library, we implement the corresponding versions for CPU
+and GPU.
 
 %.  Experiments show
 %that our template approach can transform algorithms into SPMD threads
@@ -54,24 +57,25 @@ features or apply customized parallel patterns for applications.
 %blocking and tiling techniques.  It is also possible to re-structure
 %or prefetch data using template metaprograming accompanying with
 %runtime library.
-Our approach can support different multicores because we use building
-block classes to abstract exections on physical targets. In our
-prototype library, we implement the corresponding versions for CPU
-and GPU.  On CPU, we plan to develop methods to re-structure or
+Currently, we are working on further improving libvina.
+On CPU, we plan to develop methods to re-structure and
 prefetch data based on metaprogramming techniques accompanying with runtime
-supports. On GPU, It is attractive for us to explore source transformations for
-strip-mined memory accesses in metaprogramming, because modern GPUs
-provide memory coalescence to optimize memory.
+supports. On GPU, we plan to explore source
+transformations for strip-mined memory accesses in metaprogramming,
+because modern GPUs provide memory coalescence to optimize memory. 
+Moreover,  we are investigating to use much general static information
+to parallelize general programs, which usually contain irregular memory
+footprints. For example, traditional static program analysis
+conducted by compilers could be helpful for our source-level transformations.
 
 %Currently, kernel functions in GPUs prohibit recursion. We believe that
 %it would be beneficial to introduce template recursion for
 %GPUs.
 
-General applications also contain a variety of static information to
-optimize.The problem is that their memory footprints are irregular and
-hard to identify. It is still unclear that template metaprogramming is
-sufficient to perform source transformations for those
-cases. We expect to use more general static information to
-parallelize programs. \textit{E.g.} compiler analysis, which is traditionally used
-for optimizations, could find some meaning properities of programs for
-our soruce-level transformations.
+%It is still unclear that template metaprogramming is
+%sufficient to perform source transformations for those
+%cases. 
+
+%%General applications
+%%also contain a variety of static information. 
+
