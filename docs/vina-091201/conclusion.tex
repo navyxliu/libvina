@@ -6,7 +6,7 @@
 %or platform-dependent programming language pose issues of generality
 %and portability. 
 %Source-to-source transformation can meet the challenge
-%and help tailor programs to specific mulSticore architectures.
+%and help tailor programs to specific multicore architectures.
 
 %Not only the more processor cores but also
 %elaborated memory hierarchy and exposed communication are adopted by
@@ -16,11 +16,11 @@ We have presented a template-based programming model to support parallel
 programs for multicores. Our approach performs source-to-source
 transformations using C++ template metaprogramming. All functionalities
 are achieved within the ISO C++ and organized as a template library. The
-library is flexible enough to
-apply more than one parallel
+library is flexible enough to apply more than one parallel
 pattern. In addition, programmers can extend the library to
 exploit new architectural
-features or apply customized parallel patterns for applications. Our approach supports different multicores because we use building
+features or apply customized parallel patterns for applications. Our approach
+supports different multicores because we use building
 block classes to abstract executions on physical targets. In our
 prototype library, we implement the corresponding versions for CPU
 and GPU.
@@ -35,11 +35,11 @@ and GPU.
 %metaprogramming is powerful enough to support more than one way to
 %parallelize for multicore.
 
-%Our programming model bridges algorithm experts and diverging multcore
+%Our programming model bridges algorithm experts and diverging multicore
 %architectures. Domain-specific experts focus on algorithms in form of
 %conventional programming languages. They wrap functions to template
 %classes and then pass them to \emph{TF class} as template parameter. Template
-%mechniasm takes responisbility to transform source code according to
+%mechniasm takes responsibility to transform source code according to
 %their targets.
 
 %Streaming is an important computation model for innovative
@@ -55,27 +55,21 @@ and GPU.
 %On CPU, source-to-source transformation should go on improving data
 %locality of programs. We plan to explore template approach to  generalize
 %blocking and tiling techniques.  It is also possible to re-structure
-%or prefetch data using template metaprograming accompanying with
+%or prefetch data using template metaprogramming accompanying with
 %runtime library.
 Currently, we are working on further improving libvina.
 On CPU, we plan to develop methods to re-structure and
-prefetch data based on metaprogramming techniques accompanying with runtime
-supports. On GPU, we plan to explore source
+prefetch data with runtime support based on metaprogramming techniques.
+On GPU, we plan to explore source
 transformations for strip-mined memory accesses in metaprogramming,
 because modern GPUs provide memory coalescence to optimize memory. 
-Moreover,  we are investigating to use much general static information
-to parallelize general programs, which usually contain irregular memory
-footprints. For example, traditional static program analysis
+Moreover,  we are investigating how to use static information
+to parallelize programs with irregular memory
+footprints, where traditional static program analysis
 conducted by compilers could be helpful for our source-level transformations.
 
 %Currently, kernel functions in GPUs prohibit recursion. We believe that
 %it would be beneficial to introduce template recursion for
 %GPUs.
 
-%It is still unclear that template metaprogramming is
-%sufficient to perform source transformations for those
-%cases. 
-
-%%General applications
-%%also contain a variety of static information. 
-
+%The source code for this work is available at \url{http://code.google.com/p/libvina/}.

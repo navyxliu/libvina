@@ -1,73 +1,68 @@
-%\section{Related work}\label{sec:related}
-%\begin{figure}
-%  % Requires \usepackage{graphicx}
-%  \centering
-%  \includegraphics[width=0.8\linewidth]{../fig/motivation}
-%  \caption{CFSF Motivation}\label{fig:motivation}
-%  \label{fig:algorithm}
-%\end{figure}
-\section{Introduction}\label{sec:Intro}
+\section{Introduction}
+\label{sec:Intro}
+
 %multicore problem
 Modern computer architectures rely on parallelism and memory
 hierarchy to improve performance. Both duplicated processors and
 elaborated storage-on-chip require programmers to be aware of underlying
-machines when they write programs. Even worse,
+machines when they write programs. Nowadays,
 multicore technologies have brought many architectural features for
 different implementations. Thus, it is challenging to develop
-efficient applications which can take advantage of various multicores.
+efficient parallel applications that can take advantage of various multicores.
 
 %need new programming model
 In essence, it is because plain C/C++ programming languages
-can not reflect contemporary architectures~\cite{cml}. Traditionally, programmers
-describe algorithms in sequential logics, and then resort to  compiler
-and hardware optimization to deliver modest performance relative to
-their machines. In multicore era, this model gains
-little. It is desirable to develop alternatives to exploit horsepower
+cannot reflect contemporary architectures~\cite{cml}. Traditionally, programmers
+describe their algorithms using sequential logics, and then resort to compiler
+and hardware optimization for best performance that their machines can achieve.
+In the multicore era, this model apparently does not take full advantage of the
+hardware. It is imperative to develop alternatives to exploit horsepower
 of multicores while hiding architectural features.
 
-% to aggresssive is not feasible
+% to aggressive is not feasible
 Although researches on revolutionary programming models have obtained
 fruitful achievements, they are suitable in specific
 domains~\cite{gmapreduce, erlang, haskell}.
-One critical issue hinders them from applying in general programming
+One critical issue hinders them from being applied in general programming
 field is that one programming model can only
-benefit a small group of users. Besides, the cost of hardware
-usually occupies a small ratio of the whole computer system relative
-to the cost of software and
-personnel. The ratio lowers with time. Therefore, system vendors are
-reluctant to adopt fundamental changes of software stacks for
+benefit a small group of users.
+%Besides, the cost of hardware usually occupies a small ratio of the whole computer system relative
+%to the cost of software and personnel. The ratio lowers with time. Therefore,
+System vendors are reluctant to adopt fundamental changes of software stacks for
 multicore evolvement.
 
 %It is still unclear what general purpose programming model is.
 %Second, the cost of hardware in large systems
-%is relative low than software and personnels. The ratio lowers along time
+%is relative low than software and personnel. The ratio lowers along time
 %pass. It is risky to drop up existing efforts and build software from
 %scratch using new programming models.
 
 An acceptable tradeoff is to extend traditional programming
 languages to facilitate effective parallel patterns. The advantage of
 this strategy is that it can exploit multicores progressively based on
-original sources. Thus the
-knowledges and
+legacy code sources. Thus the knowledge and
 experiences of traditional programmers are still useful, and investment
 of legacy software is saved. OpenMP~\cite{openmp}  and
 CUDA~\cite{cuda} are successful cases. OpenMP provides parallel
 programming API for C/Fortran in the form of compiler directives. CUDA
 extends the C programming language to describe
 groups of threads for GPU. The limitation is that those approaches
-depend on specific platforms or vendors. On the other side, many experimental
+depend on specific platforms or vendors.
+
+On the other side, many experimental
 programming models are proposed to support multiple architectures in recent years.
 Sequoia~\cite{sequoia} attempts to program for memory hierarchy. It
-achieves parallelization by dividing a task into subtasks
-hierarchically and then mapping
-subtasks on physical machines. Merge~\cite{merge} implements
-map/reduce programming model for heterogeneous
+achieves parallelization by hierarchically dividing a task into subtasks
+and then mapping subtasks on physical machines. Merge~\cite{merge} implements
+MapReduce programming model for heterogeneous
 multicores. Streamit~\cite{ThiesKA02} compiler supports stream/kernel
-model for streaming computation. The shortcoming of the experimental
-attempts is that each one
-is only capable of one type of parallel patterns.  In a word, existing solutions
-lack a uniform method to express multiple parallel patterns
-across various multicores.
+model for streaming computation. These attempts often target at one type of
+parallel patterns. Thus, their expressiveness is limited.
+%shortcoming of the experimental attempts is that each one
+%is only capable of one type of parallel patterns.  In a word, existing solutions
+%lack a uniform method to express multiple parallel patterns
+%across various multicores.
+
 %Its run-time schedules kernels for specific architectures.
 %TBB is a C++ library, consisting of concurrent containers and
 %iterators. 
@@ -79,62 +74,67 @@ across various multicores.
 %model for specific GPU architectures.
 
 %Observably, except TBB is a pure library-based solution, aforementioned
-%approaches need compilers to facilite their programming models. It is
+%approaches need compilers to facilitate their programming models. It is
 %the ad-hoc approaches embedded into compilers restrict flexibility and
 %extensibility. Therefore, 
 
 We propose a template-based programming model to
 support parallel programs for multicores. We exploit the C++
-metaprogramming techniques to perform source-to-source transformations
+metaprogramming techniques~\cite{tempmetaprog} to perform source-to-source transformations
 in the unit of functions. We use \emph{tasks} to abstract
-computation-intensive and side-effect free functions, which are
-candidates for transformations. Extending the meaning of C++ template
-specialization~\cite{tcpl},  our approach specializes a task for target's
-architectures.  Through applying template classes, a task is
-transformed into many subtasks according to different parallel
-patterns, and then subtasks are executed in the form of threads.
-Template classes are implemented for different multicore
-architectures. As a result, porting software from one platform to another only
-needs to adjust template parameters or change implementations of
-template classes. 
+computation-intensive and side-effect free functions.
+By extending C++ template
+specialization~\cite{tcpl}, our approach specializes a task for targeted
+architectures. Our template classes can transform a task into many subtasks
+according to different parallel patterns, and then subtasks are executed in
+parallel in the form of threads.
+
 %The difference between TBB and our approach is that
 %we utilize C++ template metaprogramming, so the transformations complete
 %at compile time. 
 
 %pros and cons
+We have implemented our approach in a template library called libvina. For 
+many applications in embedded and scientific fields, there are rich
+static information, such as static constant values, constant
+expression, and type information in C++ programs.
+We have transformed many typical procedures in these fields into their parallel
+equivalences at source-level using libvina. Our evaluation shows that the
+transformed code can run different multicores with significant speedups, while
+porting software from one platform to another only
+needs to adjust template parameters or change implementations of
+template classes at compile time. 
+
+%It is possible to utilize external
+%tuning framework~\cite{tuningfrm} to adjust parameters of static programs.
+
+\comment{
 Our approach is flexible and extensible. Both parallel patterns and
-executions are provided as template classes, thus programmers can
+execution models are provided as template classes, thus programmers can
 parallelize programs using more than one way, targeting to multiple architectures. In addition, template
 classes are organized as a library. It is
 easy to exploit architectural
 features or apply appropriate parallelism strategies for specific applications
-by extending the library. We
-explore language features limited in the ISO
+by extending the library.
+
+We explore language features limited in the ISO
 standard C++~\cite{c++98, c++03, c++0x}, therefore our approach is
-applicable for every platforms with standard-compilant compilers. Most 
-platform-independent template classes can be reused. 
-Furthermore, our approach can exploit the static information to
-support parallel programs for multicores.
-Many applications in embedded and scientific fields have rich
-static information, such as static constant values, constant
-expression and type information in C++. The runtime of those programs
-with fixed parameters are significantly longer than the time of
-compilation,  even
-the time of writing the programs, so it will pay off if we can resolve
-parallelization at compile time. In
-addition, it is possible to utilize external
-tuning framework~\cite{tuningfrm} to adjust parameters of static programs.
+applicable for every platforms with standard-compliant compilers. Most 
+platform-independent template classes can be reused.
+} 
 
-In summary, we proposed a template-based programming model, which 
-tailors programs to multicores. Our approach enables programers to transform functions into the parallel
-equivalences on source-level, and then map them on specific multicores to run simultaneously.
+%The runtime of those programs
+%with fixed parameters are significantly longer than the time of
+%compilation,  even
+%the time of writing the programs, so it will pay off if we can resolve
+%parallelization at compile time.
 
-%organization structure
-The remaining parts of this paper are structured as follows.
+The rest of this paper is organized as follows.
 Section~\ref{sec:model} presents our programming model. 
-Section~\ref{sec:adaption} uses two examples to present how to use libvina. Section~\ref{sec:details} gives details of
-implemetation of our library. Section~\ref{sec:eval}
-evaluates performance on both CPU and GPU using our approach.
+Section~\ref{sec:adaption} uses two examples to present how to use libvina.
+Section~\ref{sec:details} details the implementation of our library.
+Section~\ref{sec:eval} evaluates performance on both CPU and GPU using our approach.
 Section~\ref{sec:related} summarizes related work to support parallel programs
-for multicores. Section~\ref{sec:con} is conclusion and future work.
+for multicores.
+Finally, Section~\ref{sec:con} concludes with future work.
 

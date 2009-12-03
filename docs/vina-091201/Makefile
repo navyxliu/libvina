@@ -20,6 +20,9 @@ draft: *.tex ../*.bib $(SOURCES)
 	mv bare_conf.pdf draft-`date +%y_%m_%d`.pdf
 	mv bare_conf.tex.backup bare_conf.tex
 
+rtf:
+	latex2rtf $(MAIN).tex
+
 tgz:
 	tar cvfz vina-`date +%y%m%d`.tar.gz *.tex *.bib README Makefile source
 
