@@ -103,7 +103,7 @@ increase from two cores to four cores.
 
 %the speedup degrates to 3.3 times when the number of core continuously
 %doubles. Harpertown consists of two quad-core processors,  but Linux
-%can not guarantee that 4 tasks are distributed evenly in a physical
+%cannot guarantee that 4 tasks are distributed evenly in a physical
 %processor. Therefore, the cost of memory accesses and synchronization
 %increase from 2-core to 4-core.
 
@@ -142,7 +142,7 @@ specific access patterns~\cite{nvopencl}. For \textit{saxpy}, memory coalescence
 mitigates bandwidth issue occurred on CPU counterpart. However, this is not
 the case for \textit{dotprod}.
 %Because our program of \textit{dotprod} has fixed
-%step to access memory which does not fit any patterns, we can not
+%step to access memory which does not fit any patterns, we cannot
 %obtain hardware optimization without tweaking the algorithm.
 
 \subsubsection{Performance of Pipeline Patterns on CPU}
@@ -165,7 +165,7 @@ the output is generated every 54 $\mu s$ for eight cores (two four-stage pipelin
 %s$. The speedup is easy to maintain when granularity is big. 100 $\mu s$ case ends up 54 $\mu s$ for each instance for 8 cores. 50  $\mu s$ case
 %bumps at 5 cores and then improves slowly along core increment. 20
 %$\mu s$ case also holds the trend of first two cases.
-For fine-grained pipeline of 5 $\mu s$ per stage, we can not observe ideal pipelining until all 8
+For fine-grained pipeline of 5 $\mu s$ per stage, we cannot observe ideal pipelining until all 8
 cores are available.  Our Linux kernel scheduler's granularity is 80
 $\mu s$ by default. In this case, fine-grained tasks contend for
 CPU resources, incurring extra overhead. Many cores scenario help alleviate the
