@@ -32,12 +32,12 @@ cores. The input of reduce phase is the output of the map phase.
 
 \end{itemize}
 
-The transformation from a task to parallel patterns is a
-source-to-source conversion with C++ templates, which is enabled by \emph{TF
-classes} (Section~\ref{sect:tf}).  The converted code calls
+The transformation for a task from sequential code to parallel equivalence is a
+source-to-source conversion with C++ templates, which is enabled by a \emph{TF
+class} (Section~\ref{sect:tf}).  The converted code calls
 architecture-specific building block classes (Section~\ref{sect:bb}) so that
 when compiled, a task can execute on
-different multi-core systems in parallel at run time. 
+different multicore systems in parallel at run time. 
 
 The rest of this section first describes three class types of our approach, i.e.,
 TF, view, and building block classes. 
@@ -95,7 +95,7 @@ invokes \code{TASK::leaf} function (leaf node, no recursion).
 \begin{figure}[hpt]
   \includegraphics[width=3.0in]{../algo}
   \caption{Instantiation process of \code{TF\_hierarchy}. The predicate is a template
-class, which is evaluted using \code{TASK}'s parameters.}
+class, which is evaluated using \code{TASK}'s parameters.}
   \label{fig:hierarchy}
 \end{figure}
 
