@@ -1,11 +1,11 @@
-\section{Template-based Programming model}
+\section{Template-based Programming Model}
 \label{sec:model}
 
 \begin{figure}[htb]
 \includegraphics[width=3.3in, height=4.0in]{../overview}
 \caption{Overview of template-based programming model: Programmers
-write side-effect free functions in C/C++, then encapsulate them in
-template classes. Such a template encapsulate the computing function and can be 
+write side-effect free functions in C/C++, and then encapsulate them in
+template classes. Such a template encapsulates the computing function and can be 
 automatically transformed into a
 group of subtasks by TF classes based on appropriate parallel patterns. Finally,
 subtasks directly run on physical multicores.}
@@ -13,7 +13,7 @@ subtasks directly run on physical multicores.}
 \end{figure}
 
 We propose a template metaprogramming approach to support parallel programs
-running on different multi-core systems. \reffig{overview} gives an overview
+running on different multicore systems. \reffig{overview} gives an overview
 of our approach: a side-effect free function is abstracted as a \emph{task}
 and is wrapped in a template class. We provide template classes
 to support different parallel patterns:
@@ -50,7 +50,7 @@ TF, view, and building block classes.
 \label{sect:tf}
 
 A \textit{TF class} (short name for \textit{TransFormation class}) is a template
-class representing a parallel pattern which transforms a task to a group of
+class representing a parallel pattern that transforms a task to a group of
 subtasks in isomorphism. In other words, the transformed task has the same interface
 while owns a call graph inside to complete the original computation by a
 group of subtasks. Specifically, the following two classes are used in this paper: 
@@ -62,7 +62,7 @@ In fact, \code{TF\_hierarchy} can implement a programming model similar to Sequo
 we use \code{TF\_hierarchy} to implement both hierarchy and MapReduce pattern.
 
 \item \textbf{TF\_pipeline}. This template class synthesizes a call chain of an
-arbirary number of functions into a pipeline. This is a common pattern for
+arbitrary number of functions into a pipeline. This is a common pattern for
 stream kernel programming model.
 \end{itemize} 
 
@@ -110,7 +110,7 @@ is true, the code (\code{TASK::leaf}) computes a subtask.
 self-contained, i.e., external data references are limited and
 calling graphs of them are simple. For these functions, it's possible to
 decouple a task into a cluster of subtasks. These subtasks are identical
-except for arguments and we can distribute subtasks on multi-core to execute simultaneously. 
+except for arguments and we can distribute subtasks on multicore to execute simultaneously. 
 }
 
 %We implement two TF classes in libvina though  it is not
@@ -119,7 +119,7 @@ except for arguments and we can distribute subtasks on multi-core to execute sim
 %effects of system programmers.
 
 \subsubsection{TF\_pipeline}
-The \code{TF\_pipeline} class using variadic template~\cite{vartemp}, as
+The \code{TF\_pipeline} class using variadic template~\cite{vartemp} is
 illustrated in \reffig{pipeline:code}. \code{TF\_pipeline} supports an arbitrary
 number of functions chaining together and the only limitation is the maximal
 level of template recursions of a compiler.
@@ -141,20 +141,20 @@ level of template recursions of a compiler.
 \label{sec:view}
 
 A \emph{View} is a class representing a subset of container's data. For example,
-a matrix type could have views that contains a subset of elements of a matrix.
+a matrix type could have views that contain a subset of elements of a matrix.
 There are two kinds of views, \code{ReadView} and \code{WriteView}.
 A \code{ReadView} is read-only, while a \code{WriteView} allows write operations on its data
 (by providing interfaces to write). 
 
-To ensure multi-thread safety, \code{ReadViewMT} and \code{WriteViewMT} are
+To ensure thread safety, \code{ReadViewMT} and \code{WriteViewMT} are
 defined. For these two types, each object contains a signal that is copied across multiple
-threads. All operations of \code{ReadViewMT} or \code{WriteViewMT} are blocked until the
-current thread is signaled by other threads.
+threads. All operations of \code{ReadViewMT} or \code{WriteViewMT} are blocked until
+other threads signal the current thread.
 
-\reffig{view} depicts the relationship of views. Concrete lines means that
+\reffig{view} depicts the relationship of views. A concrete line means that
 a type cast from a source node to a destination node is legal, i.e., an implicit
 conversion in C++.  Dashed lines means a source node can generate objects of
-the type of the destination node. Labels on the dashed line signifies how
+the type of the destination node. Labels on the dashed line signify how
 signals are created or copied.
 Shadow region is another thread space.
 
@@ -211,12 +211,12 @@ Name& Semantics& Usage Example\\
 
 A building block class is a high-level abstraction of executions that
 hide architecture-specific details. Programmers can use building blocks to
-execute tasks on different multi-core platforms.
+execute tasks on different multicore platforms.
 \reftable{bb} lists building blocks in libvina. For tasks that can
-executed in SPMD (Single-Program-Multiple-Data) fasion, \code{par} class spawns
+executed in a SPMD (Single-Program-Multiple-Data) fashion, \code{par} class spawns
 multiple threads to execute iterations in parallel. \code{seq} class 
-execute iterations in order. Parameter $T$ in \code{par} or \code{seq} could be nested
-\code{par}, nested \code{seq}, or \code{\_tail} (meaning no further nestings).
+executes iterations in order. Parameter $T$ in \code{par} or \code{seq} could be nested
+\code{par}, nested \code{seq}, or \code{\_tail} (meaning no further nesting).
 For instance, we can write the following statement 
 
 %However, if it is

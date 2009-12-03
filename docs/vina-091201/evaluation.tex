@@ -136,7 +136,7 @@ As figure depicted,  computation-intensive programs
 by migrating to GPU.
 \textit{saxpy} has about two times performance boost, while \textit{dotprod}
 has no performance improvement. This is because
-Nvidia GPUs execute threads in group of warp (32 threads) on hardware and it is
+Nvidia GPUs execute threads in units of warp (each warp consists of 32 threads) on hardware and it is
 possible to coalesce memory accesses if warps satisfy
 specific access patterns~\cite{nvopencl}. For \textit{saxpy}, memory coalescence
 mitigates bandwidth issue occurred on CPU counterpart. However, this is not
@@ -168,7 +168,7 @@ the output is generated every 54 $\mu s$ for eight cores (two four-stage pipelin
 For fine-grained pipeline of 5 $\mu s$ per stage, we can not observe ideal pipelining until all 8
 cores are available.  Our Linux kernel scheduler's granularity is 80
 $\mu s$ by default. In this case, fine-grained tasks contend for
-CPU resources, incuring extra overhead. Many cores scenario help alleviate the
+CPU resources, incurring extra overhead. Many cores scenario help alleviate the
 problem.
 
 \comment{

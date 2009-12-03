@@ -33,13 +33,13 @@ the template parameter \code{TASK} for \code{TF\_hierarchy}. Template parameter 
 at line 12 is a predicate, which is evaluated by \code{TF\_hierarchy} class 
 using \code{ARG0} and \code{ARG1}.
 
-Inside function \code{inner}, line 24-26 define size-reduced classes after dividing the task. 
-Line 28$\sim$44 is a lambda expression to perform a MapReduce-style computation.
+Inside function \code{inner}, lines 24-26 define size-reduced classes after dividing the task. 
+Lines 28-44 describe a lambda expression~\cite{cpplambda} to perform a MapReduce-style computation.
 Line 30 defines temporary matrices.
 First, lambda $m$ computes $n$-th temporary sub-matrix, where line 40 computes
-$K$ temporary matrices in parallel. Then, line 42-43 reduces these
+$K$ temporary matrices in parallel. Then, lines 42-43 reduces these
 $K$ temporary matrices to obtain sub-matrix of row $i$, column $j$. 
-Finally, line 47-48 computes all sub-matrices in parallel.
+Finally, lines 47-48 computes all sub-matrices in parallel.
 
 %Line 30$\sim$32 of \reffig{sgemm} generate subviews by calling functions.
 
@@ -71,7 +71,7 @@ where $M=P=N=4096$ and $k=2$.
 %using template metaprogramming inside of the TF class. 
 
 \begin{figure}[htb]
-\includegraphics[width=3.5in]{../mmexample}
+\includegraphics[width=3.6in]{../mmexample}
 \caption{An illustration of recursively dividing SGEMM into subtasks, where
 $M=P=N=4096$ and $K=2$. Note each task is divided into $K*K$ subtasks.
 }
@@ -90,7 +90,7 @@ $M=P=N=4096$ and $K=2$. Note each task is divided into $K*K$ subtasks.
 %Building blocks \textit{par} and \textit{reduce} to express execution.
 \reffig{pipe:code} gives an example of pipeline processing similar to Streamit~\cite{ThiesKA02}.
 In this example, the pipeline synthesizes four standalone functions.
-Line 1-16 define a full specialization of \code{TF\_pipeline}, which is the end
+Lines 1-16 define a full specialization of \code{TF\_pipeline}, which is the end
 condition of recursion for definition \code{MYPIPE} at line 18-20.
 Line 22 is an example of using \code{MYPIPE}. 
 %\code{TF\_pipeline} is a TF class representing time-multiplex parallelism.
@@ -116,7 +116,7 @@ As \reffig{viewmt} showing, \code{WriteViewMT} of a previous stage signals the
 %define dependences.
 
 \begin{figure}[tp]
-  \includegraphics[width=3.1in]{../viewmt}
+  \includegraphics[width=3.6in]{../viewmt}
   \caption{Pipeline processing using ViewMTs. Access to a \code{ReadViewMT} is
   blocking until it is signaled. A stage sets its signal of \code{WriteViewMT}
 after data processing is complete.}
