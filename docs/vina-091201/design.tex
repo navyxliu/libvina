@@ -12,7 +12,7 @@ subtasks directly run on physical multicores.}
 \label{fig:overview}
 \end{figure}
 
-We propose a template metaprogramming approach to support parallel programms
+We propose a template metaprogramming approach to support parallel programs
 running on different multi-core systems. \reffig{overview} gives an overview
 of our approach: a side-effect free function is abstracted as a \emph{task}
 and is wrapped in a template class. We provide template classes
@@ -26,15 +26,15 @@ and subtasks can execute on multiple cores in parallel.
 subtasks, where the output of a previous subtask is directly used as the input
 of the next subtask and each subtask execute on a core.
 
-\item \textbf{Map-Reduce pattern.} A task is divided into a map phase and a
+\item \textbf{MapReduce pattern.} A task is divided into a map phase and a
 reduce phase, where subtasks in each phase can execute in parallel on multiple
 cores. The input of reduce phase is the output of the map phase.
 
 \end{itemize}
 
 The transformation from a task to parallel patterns is a
-source-to-source conversion with C++ templates, which are called \emph{TF
-class} in this paper (Section~\ref{sect:tf}).  The converted code calls
+source-to-source conversion with C++ templates, which is enabled by \emph{TF
+classes} (Section~\ref{sect:tf}).  The converted code calls
 architecture-specific building block classes (Section~\ref{sect:bb}) so that
 when compiled, a task can execute on
 different multi-core systems in parallel at run time. 
@@ -59,7 +59,7 @@ group of subtasks. Specifically, the following two classes are used in this pape
 \item \textbf{TF\_hierarchy}. This template class recursively divides a task into subtasks
 until certain predicate is evaluated as true. %As Fig.~\ref{fig:mmexample} depicted,  we use
 In fact, \code{TF\_hierarchy} can implement a programming model similar to Sequoia and
-we use \code{TF\_hierarchy} to implement both hierarchy and Map-Reduce pattern.
+we use \code{TF\_hierarchy} to implement both hierarchy and MapReduce pattern.
 
 \item \textbf{TF\_pipeline}. This template class synthesizes a call chain of an
 arbirary number of functions into a pipeline. This is a common pattern for
@@ -69,12 +69,14 @@ stream kernel programming model.
 \subsubsection{TF\_hierarchy}
 
 \reffig{tf:code} illustrates the class definition of \code{TF\_hierarchy}. The
-prime template (line 1 to 10) takes three parameters, i.e., user supplied \code{TASK}
-class, a predicate class, and a bool value.
-The predicate class is similar to Merge~\cite{merge} and is used to generate subtasks
-recursively. The main difference from Merge is that our predicate is a
-\emph{metafunction} and is evaluated in place: the bool value is evaluated at
-compilation time and depends on the two types, \code{TASK::ARG0} and \code{TASK::ARG1},
+prime template (line 1 to 10) takes  user supplied \code{TASK}
+class and a predicate class as parameters. Note the third parameter, the bool value,
+is calculated from the predicate class at compile time, so programmers don't
+use this parameter. 
+The predicate class is similar to Merge~\cite{merge} and is used to generate
+control flow for recursions. The main difference from Merge is that our predicate is a
+\emph{metafunction} and is evaluated in place to obtain the bool value, which
+depends on the two types, \code{TASK::ARG0} and \code{TASK::ARG1}
 defined in the class \code{TASK}. Usually these two types are views (Section~\ref{sec:view})
 with statically known size. When the third parameter is evaluated as false, the
 prime template is used and \code{doit} function invokes recursive
@@ -158,12 +160,12 @@ Shadow region is another thread space.
 %threads is through a special kind of view called \emph{ViewMT}.  
 
 The design of view class serves two purposes. 1) The classes are type-safe.
-Because template instantiation is not visible for programmers, our
+Because template instantiation is invisible for programmers, our
 source transformations by templates may introduce subtle errors. We
 expect compilers complain explicitly when unintentional
 transformations happen. For example, when a \code{ReadView} is accidently used
 for writes, the compiler will complain for errors. 2) View classes hide architecture specifics. %communication details. 
-Implementations have choice to optimize data movement according to
+Implementations have choices to optimize data movement according to
 architectures. Shared memory systems~\cite{larrabee} and communication-exposed
 multicores~\cite{cellbe, imagine} usually have different strategies to perform
 the operations. In fact, our implementation of for CPU and GPU are different (See
@@ -211,7 +213,7 @@ execute tasks on different multi-core platforms.
 \reftable{bb} lists building blocks in libvina. For tasks that can
 executed in SPMD (Single-Program-Multiple-Data) fasion, \code{par} class spawns
 multiple threads to execute subtasks in parallel. \code{seq} class supports
-pipeline patterns. Parameter $T$ in \code{par} or \code{seq} could be nested
+sequential execution patterns. Parameter $T$ in \code{par} or \code{seq} could be nested
 \code{par}, nested \code{seq}, or \code{\_tail} (meaning no further nestings).
 For instance, we can write the following statement 
 

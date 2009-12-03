@@ -1,10 +1,11 @@
-\section{Adaption for Libvina}
+\section{Examples of Using Libvina}
 \label{sec:adaption}
 
 Programmers who apply our metaprogramming approach need to customize their
-source code to utilize libvina. Libvina provides a group of \emph{concepts}
-to support transformations and expects programmrs to \emph{model} our
-template classes~\cite{tempmetaprog}. 
+source code to utilize libvina.
+%Libvina provides a group of \emph{concepts}
+%to support transformations and expects programmrs to \emph{model} our
+%template classes~\cite{tempmetaprog}. 
 In the following, we describe two examples 
 to illustrate the usage of our template library. 
 
@@ -38,8 +39,7 @@ Line 30 defines temporary matrices.
 First, lambda $m$ computes $n$-th temporary sub-matrix, where line 40 computes
 $K$ temporary matrices in parallel. Then, line 42-43 reduces these
 $K$ temporary matrices to obtain sub-matrix of row $i$, column $j$. 
-Finally, line 47-48 computes all sub-matrices in parallel, where \code{par\_helper2}
-keeps a counter for two-level loops.
+Finally, line 47-48 computes all sub-matrices in parallel.
 
 %Line 30$\sim$32 of \reffig{sgemm} generate subviews by calling functions.
 

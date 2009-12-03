@@ -45,7 +45,7 @@ struct SGEMM {
     //calculate each submatrix in parallel 
     typedef decltype(subtask)& closure_t;
     par<par<_tail, K>, K, closure_t>
-      ::apply(par_helper2(subtask));  
+      ::apply(subtask);  
   }/*end func*/
 
   //static entry for TF
