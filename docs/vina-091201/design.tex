@@ -78,7 +78,7 @@ control flow for recursions. The main difference from Merge is that our predicat
 \emph{metafunction} and is evaluated in place to obtain the bool value, which
 depends on the two types, \code{TASK::ARG0} and \code{TASK::ARG1}
 defined in the class \code{TASK}. Usually these two types are views (Section~\ref{sec:view})
-with statically known size. When the third parameter is evaluated as false, the
+with statically known sizes. When the third parameter is evaluated as false, the
 prime template is used and \code{doit} function invokes recursive
 \code{TASK:inner} function, which divides a task into subtasks.
 On the other hand, when the third parameter is evaluated as true, the partial
@@ -235,10 +235,11 @@ F f;
 int i, j;
 for (i=0; i<3; ++i)
 {
-  #pragma omp parallel private(j)
-  for (j=0; j<4; ++j) 
+  #pragma omp parallel for private(j)
+  for (j=0; j<4; ++j){ 
     f(i, j);
-}//implicit barrier
+  }//implicit barrier
+}
 \end{lstlisting}
 
 %The first template parameter $T$ of iterations is used to support nest. It could be
