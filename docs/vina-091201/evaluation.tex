@@ -40,7 +40,7 @@ finishes.
 
 Two multicore platforms used in our experiments are described in Table~\ref{tbl:mach}.
 The harpertown blade server contains two quad-core Xeon processors. 
-The embedded Nvidia GPU on motherboard contains two streaming multiprocessors,
+On macbookpro, the embedded Nvidia GPU on motherboard contains two streaming multiprocessors,
 each consists of 8 scalar processors(SP) and supports up to 128 threads.
 
 \begin{table}[hbt]
@@ -56,6 +56,7 @@ harpertown&SMP &x86 quad-core  &4G&Linux Fedora\\
 \hline
 macbookpro&laptop &x86 dual-core &2G&Mac OSX\\
                     &            & 2.63Ghz         &  &Snowleopard\\
+\cline{3-4}
                    &             &GPU: Nvidia      &256M & \\
                     &            &9400m 1.1Ghz     & &\\
 \hline
@@ -84,7 +85,7 @@ On macbookpro, we implement all the procedures on our own.
 
 \begin{figure}
   \includegraphics{../speedupx86.0}
-  \caption{Speedup of Hierarchical Transformation on CPU}
+  \caption{Speedup of hierarchical transformation on CPU}
   \label{fig:spdx86}
 \end{figure}
 
