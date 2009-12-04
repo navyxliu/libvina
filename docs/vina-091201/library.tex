@@ -118,7 +118,7 @@ As \reffig{viewmt} showing, \code{WriteViewMT} of a previous stage signals the
 \begin{figure}[tp]
   \includegraphics[width=3.6in]{../viewmt}
   \caption{Pipeline processing using ViewMTs. Access to a \code{ReadViewMT} is
-  blocking until it is signaled. A stage sets its signal of \code{WriteViewMT}
+  blocked until it is signaled. A stage sets its signal of \code{WriteViewMT}
 after data processing is complete.}
   \label{fig:viewmt}
 \end{figure}
