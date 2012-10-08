@@ -60,19 +60,19 @@ namespace vina {
       template <class F>  
       static fn_nullary * to_nullary(F f)
       {
-	return f.template target<fn_nullary>();
+        return f.template target<fn_nullary>();
       }
 
       template <class U>
       static fn_unary * to_unary(U f)
       {
-	return f.template target<fn_unary>();
+        return f.template target<fn_unary>();
       }
 
       template <class F>
       static fn_ternary to_ternary(F f)
       {
-	return f.template target<fn_ternary>();
+        return f.template target<fn_ternary>();
       }
     };
   }//mt

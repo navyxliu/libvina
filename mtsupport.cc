@@ -13,20 +13,20 @@ namespace vina {
       impl& operator=(const impl&);
     public:
       impl() : ready_(false), cond_(new boost::condition_variable),
-		      mutex_(new mutex_t){}
+        mutex_(new mutex_t){}
 
       void set() {
-	{
-	  boost::lock_guard<boost::mutex>(*mutex_);
-	  ready_ = true;
-	}
-	cond_->notify_all();
+        {
+          boost::lock_guard<boost::mutex>(*mutex_);
+          ready_ = true;
+        }       
+        cond_->notify_all();
       }
       void wait() const {
-	boost::unique_lock<boost::mutex> lock(*mutex_);
-	while ( !ready_ ) {
-	  cond_->wait(lock); // unlock internally
-	}
+        boost::unique_lock<boost::mutex> lock(*mutex_);
+        while ( !ready_ ) {
+          cond_->wait(lock); // unlock internally
+        }
       }
     };
     signal::signal() : pimpl_(new impl) {}

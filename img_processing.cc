@@ -39,7 +39,7 @@ struct conv2d_map
 		       vina::view_trait2<RESULT>::WRITER_SIZE_X,
 		       vina::view_trait2<RESULT>::WRITER_SIZE_Y>::value
 		  >Map;
-  
+ 
   typedef view_trait2<IN>   trait0;
   typedef view_trait2<KERL>   trait1;
   typedef view_trait2<RESULT> trait_result;
