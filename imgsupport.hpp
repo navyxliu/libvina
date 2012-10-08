@@ -89,7 +89,7 @@ namespace vina{
 		   color_type_, 0, 0, 0);
       png_write_info(handle_, info_);
       for (int k=0; k<height_; ++k)
-	row_pointers[k] = raw + k * width_ * bytes_per_pixel;
+        row_pointers[k] = raw + k * width_ * bytes_per_pixel;
       png_write_image(handle_, (png_byte **)row_pointers);
     }
   private:
